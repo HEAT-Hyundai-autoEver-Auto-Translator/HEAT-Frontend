@@ -1,5 +1,5 @@
 # Docker Compose 파일 버전
-version: '3'
+version: "3"
 
 services:
   frontend:
@@ -21,7 +21,7 @@ services:
 
     ports:
       # 호스트와 컨테이너의 포트 매핑
-      - '8080:8080'
+      - "8080:8080"
 
     # 컨테이너가 시작될 때 실행할 명령
     entrypoint: sh /tmp/entry.sh
@@ -44,4 +44,3 @@ volumes:
       type: none
       # 볼륨 옵션- 로컬 드라이버와 바인드
       o: bind
-
