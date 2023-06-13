@@ -1,0 +1,3 @@
+[submodule "env"]
+	path = env
+	url = https://github.com/HEAT-Hyundai-autoEver-Auto-Translator/HEAT-Frontend-env.git

@@ -1,0 +1,47 @@
+# Docker Compose 파일 버전
+version: '3'
+
+services:
+  frontend:
+    # 컨테이너의 이름
+    container_name: frontend
+
+    build:
+      # 빌드 컨텍스트의 경로
+      context: ./
+      # 사용할 Dockerfile의 이름
+      dockerfile: Dockerfile
+
+    volumes:
+      - type: volume
+        # 사용할 볼륨의 이름
+        source: frontend-volume
+        # 볼륨이 마운트될 컨테이너 내부의 경로
+        target: /app
+
+    ports:
+      # 호스트와 컨테이너의 포트 매핑
+      - '8080:8080'
+
+    # 컨테이너가 시작될 때 실행할 명령
+    entrypoint: sh /tmp/entry.sh
+
+    env_file:
+      # 환경 변수를 포함하는 파일의 경로
+      - env/.env
+
+# 볼륨 설정
+volumes:
+  frontend-volume:
+    # 볼륨의 이름
+    name: frontend-volume
+    # 볼륨 드라이버
+    driver: local
+    driver_opts:
+      # 호스트의 경로
+      device: ./app
+      # 볼륨 타입- 생성하지 않음
+      type: none
+      # 볼륨 옵션- 로컬 드라이버와 바인드
+      o: bind
+
