@@ -17,12 +17,12 @@ services:
         # 사용할 볼륨의 이름
         source: frontend-volume
         # 볼륨이 마운트될 컨테이너 내부의 경로
-        target: /app
+        target: /heat-app
 
     ports:
       # 호스트와 컨테이너의 포트 매핑
       - "8080:8080"
-
+      - "6006:6006"
     # 컨테이너가 시작될 때 실행할 명령
     entrypoint: sh /tmp/entry.sh
 
@@ -39,7 +39,7 @@ volumes:
     driver: local
     driver_opts:
       # 호스트의 경로
-      device: ./app
+      device: ./heat-app
       # 볼륨 타입- 생성하지 않음
       type: none
       # 볼륨 옵션- 로컬 드라이버와 바인드
