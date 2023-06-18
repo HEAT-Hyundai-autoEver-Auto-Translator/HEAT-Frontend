@@ -1,11 +1,23 @@
-import "@/../styles/globals.css";
-import { AuthGuard } from "components/auth/AuthGuard";
+import { Global, ThemeProvider } from "@emotion/react";
+import Sidebar from "components/layout/Sidebar";
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
+import { defaultTheme } from "styles/defaultTheme";
+import { global } from "styles/global";
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const isMainPage = router.pathname.startsWith("/main");
+
   return (
-    <AuthGuard>
-      <Component {...pageProps} />
-    </AuthGuard>
+    <div>
+      <ThemeProvider theme={defaultTheme}>
+        <Global styles={[global]} />
+        {isMainPage && <Sidebar />}
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </div>
   );
 }
+
+export default MyApp;

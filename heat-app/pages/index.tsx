@@ -3,27 +3,25 @@ import { useRouter } from "next/router";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
-const Home = () => {
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [user, setUser] = useAtom(userAtom);
+const HomePage = () => {
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [user] = useAtom(userAtom);
   const router = useRouter();
 
-  // console.log(isAuthenticated);
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser((prev) => ({ ...prev, role: "User" }));
+  const handleStart = () => {
+    if (isAuthenticated) {
+      router.push(`/main/${user.id}`);
+    } else {
+      router.push("/login");
+    }
   };
+
   return (
-    <>
-      홈페이지입니다. 번역기능이 제공됩니다
-      <button onClick={() => logout()}>로그아웃</button>
-      {user.role === "Admin" ? (
-        <button onClick={() => router.push("admin")}>
-          관리자 페이지로 이동
-        </button>
-      ) : null}
-    </>
+    <div>
+      <h1>HEAT에 오신 것을 환영합니다!</h1>
+      <button onClick={handleStart}>시작하기</button>
+    </div>
   );
 };
 
-export default Home;
+export default HomePage;

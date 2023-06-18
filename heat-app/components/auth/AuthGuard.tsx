@@ -1,23 +1,30 @@
+import { useAtom } from "jotai";
 import { useRouter } from "next/router";
-import { AdminGuard } from "./AdminGuard";
-import { LoginGuard } from "./LoginGuard";
+import { useEffect } from "react";
+import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
+import { userAtom } from "utils/atoms/userAtom";
 
-type GuardProps = {
-  children: JSX.Element;
+type AuthGuardProps = {
+  children: React.ReactNode;
+  adminOnly?: boolean;
 };
 
-export const AuthGuard = ({ children }: GuardProps) => {
+const AuthGuard = ({ children, adminOnly }: AuthGuardProps) => {
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [user] = useAtom(userAtom);
   const router = useRouter();
 
-  console.log(router.pathname);
+  useEffect(() => {
+    if (!isAuthenticated || (adminOnly && user.role !== "admin")) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, user, router, adminOnly]);
 
-  return (
-    <LoginGuard>
-      {router.pathname.startsWith("/admin") ? (
-        <AdminGuard>{children}</AdminGuard>
-      ) : (
-        children
-      )}
-    </LoginGuard>
-  );
+  if (!isAuthenticated || (adminOnly && user.role !== "admin")) {
+    return null;
+  }
+
+  return <>{children}</>;
 };
+
+export default AuthGuard;

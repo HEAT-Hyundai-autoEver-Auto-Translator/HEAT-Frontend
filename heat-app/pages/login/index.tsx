@@ -1,5 +1,7 @@
+import { useTheme } from "@emotion/react";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
@@ -8,19 +10,31 @@ const Login = () => {
   const [user, setUser] = useAtom(userAtom);
   const router = useRouter();
 
-  const handleLogin = (role: string) => {
-    setIsAuthenticated(true);
-    if (role === "Admin") {
-      setUser((prev) => ({ ...prev, role: "Admin" }));
+  const theme = useTheme();
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(`/main/${user.id}`);
     }
-    router.push("/"); // 로그인 후 이동할 경로 지정
+  }, [isAuthenticated, user, router]);
+
+  const handleLogin = (role: string) => {
+    //로그인 로직 처리하는 부분
+    setIsAuthenticated(true);
+    if (role === "admin") {
+      setUser((prev) => ({ ...prev, id: 1, role: "admin" }));
+    }
   };
 
   return (
     <>
       로그인 페이지
-      <button onClick={() => handleLogin("User")}>일반 로그인 버튼</button>
-      <button onClick={() => handleLogin("Admin")}>관리자 로그인 버튼</button>
+      <button
+        style={{ color: theme.colors.primary.default }}
+        onClick={() => handleLogin("normal")}
+      >
+        일반 로그인 버튼
+      </button>
+      <button onClick={() => handleLogin("admin")}>관리자 로그인 버튼</button>
     </>
   );
 };
