@@ -1,6 +1,7 @@
 import AuthGuard from "components/auth/AuthGuard";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
+import { ROUTES } from "utils/ROUTES";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
@@ -15,7 +16,7 @@ const Admin = () => {
     <AuthGuard adminOnly>
       관리 페이지 입니다. 관리기능이 제공됩니다
       <div>{uid}</div>
-      <button onClick={() => router.push(`/main/${user.id}`)}>
+      <button onClick={() => router.push(ROUTES.MAIN(user.id))}>
         메인 페이지로
       </button>
     </AuthGuard>

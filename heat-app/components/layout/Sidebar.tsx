@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
+import { ROUTES } from "utils/ROUTES";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { defaultUser, userAtom } from "utils/atoms/userAtom";
 
@@ -19,7 +20,7 @@ const Sidebar = () => {
       {/* 여기에 다른 사이드바 요소를 추가할 수 있습니다. */}
       사이드바 입니다
       {user && user.role === "admin" ? (
-        <button onClick={() => router.push(`/admin/${user.id}`)}>
+        <button onClick={() => router.push(ROUTES.ADMIN(user.id))}>
           관리자 페이지로
         </button>
       ) : null}

@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { ROUTES } from "utils/ROUTES";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
@@ -13,7 +14,7 @@ const Login = () => {
   const theme = useTheme();
   useEffect(() => {
     if (isAuthenticated) {
-      router.push(`/main/${user.id}`);
+      router.push(ROUTES.MAIN(user.id));
     }
   }, [isAuthenticated, user, router]);
 

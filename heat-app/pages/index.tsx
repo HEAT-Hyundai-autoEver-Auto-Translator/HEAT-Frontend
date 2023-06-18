@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
+import { ROUTES } from "utils/ROUTES";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
@@ -10,9 +11,9 @@ const HomePage = () => {
 
   const handleStart = () => {
     if (isAuthenticated) {
-      router.push(`/main/${user.id}`);
+      router.push(ROUTES.MAIN(user.id));
     } else {
-      router.push("/login");
+      router.push(ROUTES.LOGIN);
     }
   };
 

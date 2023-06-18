@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { ROUTES } from "utils/ROUTES";
 import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
 import { userAtom } from "utils/atoms/userAtom";
 
@@ -16,7 +17,7 @@ const AuthGuard = ({ children, adminOnly }: AuthGuardProps) => {
 
   useEffect(() => {
     if (!isAuthenticated || (adminOnly && user.role !== "admin")) {
-      router.push("/login");
+      router.push(ROUTES.LOGIN);
     }
   }, [isAuthenticated, user, router, adminOnly]);
 
