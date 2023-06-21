@@ -18,6 +18,7 @@ const HomePage = () => {
   };
 
   const TEST_ENV = process.env.NEXT_PUBLIC_TEST;
+  console.log(TEST_ENV);
   return (
     <div>
       <h1>HEAT에 오신 것을 환영합니다!</h1>
