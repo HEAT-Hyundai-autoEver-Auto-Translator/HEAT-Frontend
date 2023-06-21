@@ -11,10 +11,6 @@ const nextConfig = {
     config.resolve.alias["@"] = path.join(__dirname, "pages");
     return config;
   },
-  env: {
-    NEXT_PUBLIC_TEST: process.env.NEXT_PUBLIC_TEST,
-    NEXT_PUBLIC_TEST_2: "testest2",
-  },
 };
 
 module.exports = nextConfig;
