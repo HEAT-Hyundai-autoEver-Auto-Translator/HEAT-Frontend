@@ -17,10 +17,12 @@ const HomePage = () => {
     }
   };
 
+  const TEST_ENV = process.env.NEXT_PUBLIC_TEST;
   return (
     <div>
       <h1>HEAT에 오신 것을 환영합니다!</h1>
       <button onClick={handleStart}>시작하기</button>
+      <p>{TEST_ENV}</p>
     </div>
   );
 };
