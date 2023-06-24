@@ -1,12 +1,12 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 type StackProps = Partial<{
   w: string;
   h: string;
   spacing: string;
-  align: string;
-  justify: string;
+  alignItems: string;
+  justifyContent: string;
   wrap: string;
 }>;
 
@@ -19,23 +19,23 @@ const stack = css`
 export const HStack = styled.div<StackProps>`
   ${stack}
   flex-direction: row;
-  align-items: ${({ align }) => align};
-  justify-content: ${({ justify }) => justify};
-  gap: ${({ spacing = "0" }) => spacing};
-  flex-wrap: ${({ wrap = "nowrap" }) => wrap};
-  width: ${({ w = "auto" }) => w};
-  height: ${({ h = "auto" }) => h};
+  align-items: ${({ alignItems }) => alignItems};
+  justify-content: ${({ justifyContent }) => justifyContent};
+  gap: ${({ spacing = '0' }) => spacing};
+  flex-wrap: ${({ wrap = 'nowrap' }) => wrap};
+  width: ${({ w = 'auto' }) => w};
+  height: ${({ h = 'auto' }) => h};
 `;
 
 export const VStack = styled.div<StackProps>`
   ${stack}
   flex-direction: column;
-  align-items: ${({ align }) => align};
-  justify-content: ${({ justify }) => justify};
-  gap: ${({ spacing = "0" }) => spacing};
-  flex-wrap: ${({ wrap = "nowrap" }) => wrap};
-  width: ${({ w = "auto" }) => w};
-  height: ${({ h = "auto" }) => h};
+  align-items: ${({ alignItems }) => alignItems};
+  justify-content: ${({ justifyContent }) => justifyContent};
+  gap: ${({ spacing = '0' }) => spacing};
+  flex-wrap: ${({ wrap = 'nowrap' }) => wrap};
+  width: ${({ w = 'auto' }) => w};
+  height: ${({ h = 'auto' }) => h};
 `;
 
 /*
