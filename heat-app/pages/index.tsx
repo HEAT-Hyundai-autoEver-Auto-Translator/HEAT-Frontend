@@ -8,8 +8,6 @@ import { userAtom } from 'utils/atoms/userAtom';
 import HeatLogo from '@/../public/HeatLogo.svg';
 import AutoEverLogo from '@/../public/AutoEverLogo.svg';
 import { Spacer } from 'components/common/Spacer';
-import Image from 'next/image';
-import styled from '@emotion/styled';
 import { Button } from 'components/common/Button';
 
 const HomePage = () => {

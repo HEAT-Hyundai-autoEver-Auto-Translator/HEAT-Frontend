@@ -10,7 +10,7 @@ type ButtonProps = {
 
 export const Button = styled.button<ButtonProps>`
   width: ${({ size }) => (size === 'large' ? '40rem' : '20rem')};
-  height: ${({ size }) => (size === 'large' ? '5rem' : '3rem')};
+  height: ${({ size }) => (size === 'large' ? '6rem' : '3rem')};
   background-color: ${({ bgColor }) => bgColor || 'white'};
   border-radius: 10px;
   border: none;

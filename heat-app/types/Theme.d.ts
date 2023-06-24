@@ -17,6 +17,7 @@ type Colors = {
   mono: {
     black: string;
     white: string;
+    input_gray: string;
     gray300: string;
     gray200: string;
     gray100: string;
