@@ -1,4 +1,4 @@
-import "@emotion/react";
+import '@emotion/react';
 
 type Colors = {
   primary: {
@@ -60,8 +60,8 @@ type Radius = {
   circle: string;
 };
 
-declare module "@emotion/react" {
-  export interface Theme {
+declare module '@emotion/react' {
+  export interface Theme extends Theme {
     colors: Colors;
     fonts: Fonts;
     zIndex: ZIndex;
