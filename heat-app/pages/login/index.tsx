@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import { HStack, VStack } from 'components/common/Stack';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ROUTES } from 'utils/ROUTES';
 import { isAuthenticatedAtom } from 'utils/atoms/isAuthenticatedAtom';
 import { userAtom } from 'utils/atoms/userAtom';
@@ -11,11 +11,11 @@ import AutoEverLogo from '@/../public/AutoEverLogo.svg';
 import GoogleLogin from '@/../public/GoogleLogin.svg';
 import { Spacer } from 'components/common/Spacer';
 import { Button } from 'components/common/Button';
-import styled from '@emotion/styled';
 import { Box } from 'components/common/Box';
 import { Divider } from 'components/common/Divider';
-import { Input } from 'components/common/Input';
 import { Text } from 'components/common/Text';
+import RegisterButton from 'components/pages/login/RegisterButton';
+import { StyledInput } from 'components/premade/StyledInput';
 
 const Login = () => {
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
@@ -48,24 +48,10 @@ const Login = () => {
           borderWidth="2px"
           borderRadius="20px"
           borderStyle="solid"
-          padding="3.5rem 1rem 3.5rem 1rem"
+          padding="3.5rem 3.5rem 3.5rem 3.5rem"
         >
-          <Input
-            inputSize="large"
-            fontColor={theme.colors.mono.black}
-            bgColor={theme.colors.mono.input_gray}
-            placeholder="Email"
-            paddingLeft="2.5rem"
-            paddingRight="2.5rem"
-          />
-          <Input
-            inputSize="large"
-            fontColor={theme.colors.mono.black}
-            bgColor={theme.colors.mono.input_gray}
-            placeholder="Password"
-            paddingLeft="2.5rem"
-            paddingRight="2.5rem"
-          />
+          <StyledInput inputSize="lg" placeholder="Email" />
+          <StyledInput inputSize="lg" placeholder="Password" />
           <Button
             size="large"
             fontColor={theme.colors.mono.white}
@@ -85,7 +71,7 @@ const Login = () => {
           </Button>
           <HStack w="100%" spacing="1rem">
             <Divider
-              width="35%"
+              width="30%"
               color={theme.colors.primary.default}
               thickness="2px"
             />
@@ -93,17 +79,21 @@ const Login = () => {
               Social Login
             </Text>
             <Divider
-              width="35%"
+              width="30%"
               color={theme.colors.primary.default}
               thickness="2px"
             />
           </HStack>
-
-          <GoogleLogin width="45rem" height="6rem" />
+          <Button
+            size="large"
+            onClick={() => {}}
+            bgColor="#FF8944"
+            hoverColor="#BC5C24"
+          >
+            <GoogleLogin width="45rem" height="6rem" fill="var(--fillColor)" />
+          </Button>
         </Box>
-        <Text fontSize="2rem" color={theme.colors.primary.default}>
-          Register
-        </Text>
+        <RegisterButton />
       </VStack>
       <Spacer />
       <AutoEverLogo

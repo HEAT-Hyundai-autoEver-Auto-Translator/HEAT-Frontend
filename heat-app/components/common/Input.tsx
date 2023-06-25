@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 
-type InputProps = {
+export type InputProps = {
   bgColor?: string;
   fontColor?: string;
-  inputSize: 'large' | 'small';
+  inputSize?: 'xl' | 'lg' | 'sm';
   fontWeight?: 'bold' | 'normal';
   placeholder?: string;
   paddingLeft?: string;
@@ -12,12 +12,25 @@ type InputProps = {
 };
 
 export const Input = styled.input<InputProps>`
-  width: ${({ inputSize }) => (inputSize === 'large' ? '40rem' : '20rem')};
-  height: ${({ inputSize }) => (inputSize === 'large' ? '6rem' : '3rem')};
+  width: ${({ inputSize }) => {
+    if (inputSize === 'xl') return '60rem';
+    if (inputSize === 'lg') return '40rem';
+    return '20rem';
+  }};
+  height: ${({ inputSize }) => {
+    if (inputSize === 'xl') return '7rem';
+    if (inputSize === 'lg') return '6rem';
+    return '3rem';
+  }};
   background-color: ${({ bgColor }) => bgColor || 'white'};
   border-radius: 20px;
   border: none;
-  font-size: ${({ inputSize }) => (inputSize === 'large' ? '2rem' : '1rem')};
+  font-size: ${({ inputSize }) => {
+    if (inputSize === 'xl') return '2.5rem';
+    if (inputSize === 'lg') return '2rem';
+    if (inputSize === 'sm') return '0.8rem';
+    return '1rem';
+  }};
   font-weight: ${({ fontWeight }) => fontWeight || 'normal'};
   color: ${({ fontColor }) => fontColor || 'black'};
   padding-left: ${({ paddingLeft }) => paddingLeft || '0px'};
@@ -26,4 +39,4 @@ export const Input = styled.input<InputProps>`
   &::placeholder {
     color: ${({ placeholderColor }) => placeholderColor || '#909090'};
   }
-`;
+}`;
