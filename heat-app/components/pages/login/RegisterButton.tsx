@@ -3,17 +3,36 @@ import { Modal } from 'components/common/Modal';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
 import { useState } from 'react';
-import CloseIcon from '@/../public/closeIcon.svg';
 import { Spacer } from 'components/common/Spacer';
 
 import { StyledInput } from 'components/premade/StyledInput';
 import { Button } from 'components/common/Button';
+
+// Import react-hook-form and AvatarUploader
+import { useForm } from 'react-hook-form';
+import AvatarUploader from './AvatarUploader';
+
+interface FormValues {
+  email: string;
+  username: string;
+  password: string;
+  avatar: FileList;
+}
 
 const RegisterButton = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
+  };
+
+  // Initialize react-hook-form
+  const { register, handleSubmit, control } = useForm<FormValues>();
+
+  // This function will be called when the form is submitted
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
+    // TODO: Send data to the backend
   };
 
   return (
@@ -27,33 +46,54 @@ const RegisterButton = () => {
         Register
       </Text>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
-        <VStack w="25vw" spacing="2.5rem">
+        <VStack w="50rem" spacing="2.5rem">
           <Text fontSize="3rem" fontWeight={theme.fonts.weight.bold}>
             Register
           </Text>
-          <StyledInput inputSize="lg" placeholder="Email" />
-          <StyledInput inputSize="lg" placeholder="Username" />
-          <StyledInput inputSize="lg" placeholder="Password" />
-          <Spacer />
-          <HStack w="85%" spacing="1rem" justifyContent="flex-end">
-            <Button
-              size="xs"
-              bgColor={theme.colors.primary.semi_light}
-              hoverColor={theme.colors.primary.default}
-              fontColor={theme.colors.mono.white}
-              onClick={() => {}}
-            >
-              Submit
-            </Button>
-            <Button
-              size="xs"
-              bgColor={theme.colors.mono.input_gray}
-              hoverColor={theme.colors.mono.gray200}
-              onClick={toggleModal}
-            >
-              Cancel
-            </Button>
-          </HStack>
+          {/* Start of the form */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <VStack spacing="2.5rem">
+              <StyledInput
+                inputSize="lg"
+                placeholder="Email"
+                {...register('email')}
+              />
+              <StyledInput
+                inputSize="lg"
+                placeholder="Username"
+                {...register('username')}
+              />
+              <StyledInput
+                inputSize="lg"
+                placeholder="Password"
+                {...register('password')}
+                type="password"
+              />
+              {/* Avatar image upload */}
+              <AvatarUploader control={control} />
+              <Spacer />
+              <HStack w="100%" spacing="1rem" justifyContent="flex-end">
+                <Button
+                  size="xs"
+                  bgColor={theme.colors.primary.semi_light}
+                  hoverColor={theme.colors.primary.default}
+                  fontColor={theme.colors.mono.white}
+                  type="submit" // Make this button submit the form
+                >
+                  Submit
+                </Button>
+                <Button
+                  size="xs"
+                  bgColor={theme.colors.mono.input_gray}
+                  hoverColor={theme.colors.mono.gray200}
+                  onClick={toggleModal}
+                >
+                  Cancel
+                </Button>
+              </HStack>
+            </VStack>
+          </form>
+          {/* End of the form */}
         </VStack>
       </Modal>
     </>
@@ -61,19 +101,3 @@ const RegisterButton = () => {
 };
 
 export default RegisterButton;
-
-// <div
-// style={{
-//   display: 'flex',
-//   justifyContent: 'flex-end',
-//   width: '100%',
-//   height: '12',
-// }}
-// >
-// <CloseIcon
-//   width="12"
-//   height="12"
-//   onClick={toggleModal}
-//   style={{ cursor: 'pointer' }}
-// />
-// </div>

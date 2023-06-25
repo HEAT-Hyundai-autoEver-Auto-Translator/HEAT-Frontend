@@ -5,7 +5,7 @@ type ButtonProps = {
   hoverColor?: string;
   size: 'lg' | 'sm' | 'xl' | 'xs';
   fontWeight?: 'bold' | 'normal';
-  onClick: () => void;
+  onClick?: () => void;
   children: React.ReactNode;
 };
 

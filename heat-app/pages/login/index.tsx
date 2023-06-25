@@ -90,7 +90,7 @@ const Login = () => {
             bgColor="#FF8944"
             hoverColor="#BC5C24"
           >
-            <GoogleLogin width="45rem" height="6rem" fill="var(--fillColor)" />
+            <GoogleLogin width="450" height="60" fill="var(--fillColor)" />
           </Button>
         </Box>
         <RegisterButton />

@@ -12,6 +12,8 @@ const nextConfig = {
     });
     return config;
   },
+  // 이미지 최적화 에러로 인해 꺼둠
+  images: { unoptimized: true },
 };
 
 module.exports = nextConfig;

@@ -1,7 +1,13 @@
 import { useTheme } from '@emotion/react';
 import { Input, InputProps } from 'components/common/Input';
+import { InputHTMLAttributes } from 'react';
 
-export const StyledInput = ({ placeholder, ...rest }: InputProps) => {
+interface StyledInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  inputSize?: 'xl' | 'lg' | 'sm';
+  placeholder?: string;
+}
+
+export const StyledInput = ({ placeholder, ...rest }: StyledInputProps) => {
   const theme = useTheme();
 
   return (
