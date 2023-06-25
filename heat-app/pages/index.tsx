@@ -33,7 +33,7 @@ const HomePage = () => {
       <Spacer />
       <HeatLogo fill={theme.colors.mono.white} width="550" height="200" />
       <Button
-        size="large"
+        size="lg"
         fontColor={theme.colors.mono.white}
         bgColor={theme.colors.primary.semi_light}
         onClick={handleStart}

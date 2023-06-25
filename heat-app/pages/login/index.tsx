@@ -53,7 +53,7 @@ const Login = () => {
           <StyledInput inputSize="lg" placeholder="Email" />
           <StyledInput inputSize="lg" placeholder="Password" />
           <Button
-            size="large"
+            size="lg"
             fontColor={theme.colors.mono.white}
             bgColor={theme.colors.primary.semi_light}
             onClick={() => handleLogin('normal')}
@@ -62,7 +62,7 @@ const Login = () => {
           </Button>
 
           <Button
-            size="large"
+            size="lg"
             fontColor={theme.colors.mono.white}
             bgColor={theme.colors.primary.semi_light}
             onClick={() => handleLogin('admin')}
@@ -85,7 +85,7 @@ const Login = () => {
             />
           </HStack>
           <Button
-            size="large"
+            size="lg"
             onClick={() => {}}
             bgColor="#FF8944"
             hoverColor="#BC5C24"
