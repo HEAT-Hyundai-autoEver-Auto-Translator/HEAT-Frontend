@@ -1,13 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-type StackProps = Partial<{
+export type StackProps = Partial<{
   w: string;
   h: string;
   spacing: string;
   alignItems: string;
   justifyContent: string;
   wrap: string;
+  padding: string;
+  margin: string;
 }>;
 
 const stack = css`
@@ -25,6 +27,8 @@ export const HStack = styled.div<StackProps>`
   flex-wrap: ${({ wrap = 'nowrap' }) => wrap};
   width: ${({ w = 'auto' }) => w};
   height: ${({ h = 'auto' }) => h};
+  padding: ${({ padding = '0' }) => padding};
+  margin: ${({ margin = '0' }) => margin};
 `;
 
 export const VStack = styled.div<StackProps>`
@@ -36,6 +40,8 @@ export const VStack = styled.div<StackProps>`
   flex-wrap: ${({ wrap = 'nowrap' }) => wrap};
   width: ${({ w = 'auto' }) => w};
   height: ${({ h = 'auto' }) => h};
+  padding: ${({ padding = '0' }) => padding};
+  margin: ${({ margin = '0' }) => margin};
 `;
 
 /*

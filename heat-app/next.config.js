@@ -3,10 +3,7 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   output: 'export',
-  // Optional: Add a trailing slash to all paths `/about` -> `/about/`
-  // trailingSlash: true,
-  // Optional: Change the output directory `out` -> `dist`
-  // distDir: 'dist',
+
   webpack: config => {
     config.resolve.alias['@'] = path.join(__dirname, 'pages');
     config.module.rules.push({
@@ -15,6 +12,8 @@ const nextConfig = {
     });
     return config;
   },
+  // 이미지 최적화 에러로 인해 꺼둠
+  images: { unoptimized: true },
 };
 
 module.exports = nextConfig;

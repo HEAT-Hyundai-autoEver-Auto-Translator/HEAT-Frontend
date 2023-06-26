@@ -1,7 +1,7 @@
 const colors = {
   primary: {
     default: '#003F7F',
-    semi_light: '#2D679B',
+    semi_light: '#3182CE',
     light: '#EDF2F7',
   },
   semantic: {
@@ -15,6 +15,7 @@ const colors = {
   mono: {
     black: '#161616',
     white: '#f9f9f9',
+    input_gray: '#EDF2F7',
     gray300: '#777777',
     gray200: '#999999',
     gray100: '#bbbbbb',
