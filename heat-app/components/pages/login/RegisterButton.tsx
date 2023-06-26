@@ -9,15 +9,18 @@ import { StyledInput } from 'components/premade/StyledInput';
 import { Button } from 'components/common/Button';
 
 // Import react-hook-form and AvatarUploader
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
 import styled from '@emotion/styled';
+import { Select } from 'components/common/Select';
+import { StyledSelect } from 'components/premade/StyledSelect';
 
 interface FormValues {
   email: string;
   username: string;
   password: string;
   confirmPassword: string;
+  language: string;
   avatar: FileList;
 }
 
@@ -35,7 +38,16 @@ const RegisterButton = () => {
     getValues,
     setError,
     clearErrors,
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      email: '',
+      username: '',
+      password: '',
+      confirmPassword: '',
+      language: '',
+      avatar: undefined,
+    },
+  });
   const { errors } = formState;
   // This function will be called when the form is submitted
 
@@ -58,6 +70,7 @@ const RegisterButton = () => {
     console.log('username', data.username);
     console.log('password', data.password);
     console.log('avatar', data.avatar);
+    console.log('language', data.language);
     // TODO: Send data to the backend
   };
 
@@ -149,6 +162,74 @@ const RegisterButton = () => {
                   {errors.username ? errors.username.message : null}
                 </div>
               </VStack>
+              {/* 언어 select box 들어갈곳 */}
+              {/* <Controller
+                name="language"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <VStack>
+                    <Select
+                      fontColor={theme.colors.mono.black}
+                      bgColor={theme.colors.mono.input_gray}
+                      paddingLeft="2.5rem"
+                      paddingRight="2.5rem"
+                      {...field}
+                      inputSize="lg"
+                    >
+                      <option value="" disabled selected>
+                        Select your first language
+                      </option>
+                      <option value="kor">Korean</option>
+                      <option value="eng">English</option>
+                      <option value="jap">Japanese</option>
+                    </Select>
+                    <div style={{ height: '30px', color: 'red' }}>
+                      {errors.language ? errors.language.message : null}
+                    </div>
+                  </VStack>
+                )}
+                rules={{ required: 'Language is required' }}
+              /> */}
+              {/* <StyledSelect
+                inputSize="lg"
+                placeholder="Select your first language"
+                {...register('language', {
+                  required: 'First language is required',
+                })}
+              >
+                <option value="kor">Korean</option>
+                <option value="eng">English</option>
+                <option value="jap">Japanese</option>
+              </StyledSelect> */}
+
+              <Controller
+                control={control}
+                name="language"
+                rules={{ required: 'First language is required' }}
+                render={({ field }) => (
+                  <StyledSelect
+                    inputSize="lg"
+                    placeholder="Select your first language"
+                    {...field}
+                  >
+                    <option value="" disabled>
+                      Select your first language
+                    </option>
+                    <option value="kor">Korean</option>
+                    <option value="eng">English</option>
+                    <option value="jap">Japanese</option>
+                  </StyledSelect>
+                )}
+              />
+              <div
+                style={{
+                  height: '30px',
+                  color: 'red',
+                }}
+              >
+                {errors.language ? errors.language.message : null}
+              </div>
               <VStack style={{ marginBottom: '2rem' }}>
                 <StyledInput
                   inputSize="lg"
