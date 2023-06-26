@@ -11,6 +11,7 @@ type FormValues = {
   username: string;
   password: string;
   confirmPassword: string;
+  language: string;
   avatar: FileList;
 };
 
