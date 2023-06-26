@@ -8,6 +8,7 @@ const AvatarWrapper = styled.div`
   width: 100px; //원하는 크기로 변경 가능
   height: 100px; //원하는 크기로 변경 가능
   position: relative;
+  background-color: #f3f3f3;
 `;
 
 interface AvatarProps {
@@ -15,15 +16,15 @@ interface AvatarProps {
   alt: string | undefined;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ src, alt }) => {
+const Avatar = ({ src, alt }: AvatarProps) => {
   const defaultAvatar = '/default-avatar.png'; // Default avatar image path
   return (
     <AvatarWrapper>
       <Image
+        width="100"
+        height="100"
         src={src || defaultAvatar}
         alt={alt || 'avatar'}
-        layout="fill"
-        objectFit="cover"
       />
     </AvatarWrapper>
   );
