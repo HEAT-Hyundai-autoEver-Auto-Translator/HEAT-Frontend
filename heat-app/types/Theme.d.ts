@@ -5,6 +5,7 @@ type Colors = {
     default: string;
     semi_light: string;
     light: string;
+    semi_dark: string;
   };
   semantic: {
     success_light: string;
@@ -61,11 +62,16 @@ type Radius = {
   circle: string;
 };
 
+type Media = {
+  mobile: string;
+};
+
 declare module '@emotion/react' {
   export interface Theme extends Theme {
     colors: Colors;
     fonts: Fonts;
     zIndex: ZIndex;
     radius: Radius;
+    Media: Media;
   }
 }

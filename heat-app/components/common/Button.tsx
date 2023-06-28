@@ -3,7 +3,7 @@ type ButtonProps = {
   bgColor?: string;
   fontColor?: string;
   hoverColor?: string;
-  size: 'lg' | 'sm' | 'xl' | 'xs';
+  size: 'lg' | 'sm' | 'xl' | 'xs' | 'xxs';
   fontWeight?: 'bold' | 'normal';
   onClick?: () => void;
   children: React.ReactNode;
@@ -25,6 +25,8 @@ export const Button = styled.button<ButtonProps>`
         return '60rem';
       case 'xs':
         return '7rem';
+      case 'xxs':
+        return '6.5rem';
       default:
         return '20rem';
     }
@@ -39,12 +41,14 @@ export const Button = styled.button<ButtonProps>`
         return '9rem';
       case 'xs':
         return '3rem';
+      case 'xxs':
+        return '2rem';
       default:
         return '3rem';
     }
   }};
   background-color: ${({ bgColor }) => bgColor || 'white'};
-  border-radius: 10px;
+  border-radius: ${({ size }) => (size === 'xxs' ? '7px' : '10px')};
   border: none;
   font-size: ${({ size }) => {
     switch (size) {
@@ -56,6 +60,8 @@ export const Button = styled.button<ButtonProps>`
         return '3rem';
       case 'xs':
         return '1.3rem';
+      case 'xxs':
+        return '1rem';
       default:
         return '1rem';
     }

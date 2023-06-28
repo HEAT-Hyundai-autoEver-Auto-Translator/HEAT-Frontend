@@ -1,4 +1,3 @@
-import { useTheme } from '@emotion/react';
 import { HStack, VStack } from 'components/common/Stack';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
@@ -8,21 +7,24 @@ import { isAuthenticatedAtom } from 'utils/atoms/isAuthenticatedAtom';
 import { userAtom } from 'utils/atoms/userAtom';
 import HeatLogo from '@/../public/HeatLogo.svg';
 import AutoEverLogo from '@/../public/AutoEverLogo.svg';
-import GoogleLogin from '@/../public/GoogleLogin.svg';
+import GoogleLogo from '@/../public/GoogleLogo.svg';
 import { Spacer } from 'components/common/Spacer';
 import { Button } from 'components/common/Button';
 import { Box } from 'components/common/Box';
 import { Divider } from 'components/common/Divider';
 import { Text } from 'components/common/Text';
-import RegisterButton from 'components/pages/login/RegisterButton';
 import { StyledInput } from 'components/premade/StyledInput';
+import { useTheme } from '@emotion/react';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import RegisterModal from 'components/pages/login/RegisterModal';
 
 const Login = () => {
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [user, setUser] = useAtom(userAtom);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.Media.mobile);
   const router = useRouter();
 
-  const theme = useTheme();
   useEffect(() => {
     if (isAuthenticated) {
       router.push(ROUTES.MAIN(user.id));
@@ -40,7 +42,11 @@ const Login = () => {
   return (
     <VStack w="100vw" h="100vh" spacing="5rem" padding="5rem 0 0 0">
       <Spacer />
-      <HeatLogo fill={theme.colors.primary.default} width="550" height="200" />
+      <HeatLogo
+        fill={theme.colors.primary.default}
+        width={isMobile ? '250' : '550'}
+        height={isMobile ? '100' : '200'}
+      />
       <VStack spacing="0.5rem">
         <Box
           spacing="2.5rem"
@@ -50,10 +56,13 @@ const Login = () => {
           borderStyle="solid"
           padding="3.5rem 3.5rem 3.5rem 3.5rem"
         >
-          <StyledInput inputSize="lg" placeholder="Email" />
-          <StyledInput inputSize="lg" placeholder="Password" />
+          <StyledInput inputSize={isMobile ? 'sm' : 'lg'} placeholder="Email" />
+          <StyledInput
+            inputSize={isMobile ? 'sm' : 'lg'}
+            placeholder="Password"
+          />
           <Button
-            size="lg"
+            size={isMobile ? 'sm' : 'lg'}
             fontColor={theme.colors.mono.white}
             bgColor={theme.colors.primary.semi_light}
             onClick={() => handleLogin('normal')}
@@ -62,7 +71,7 @@ const Login = () => {
           </Button>
 
           <Button
-            size="lg"
+            size={isMobile ? 'sm' : 'lg'}
             fontColor={theme.colors.mono.white}
             bgColor={theme.colors.primary.semi_light}
             onClick={() => handleLogin('admin')}
@@ -71,35 +80,50 @@ const Login = () => {
           </Button>
           <HStack w="100%" spacing="1rem">
             <Divider
-              width="30%"
+              width={isMobile ? '20%' : '30%'}
               color={theme.colors.primary.default}
               thickness="2px"
             />
-            <Text fontSize="2rem" color={theme.colors.primary.default}>
+            <Text
+              fontSize={isMobile ? '1.5rem' : ' 2rem'}
+              color={theme.colors.primary.default}
+            >
               Social Login
             </Text>
             <Divider
-              width="30%"
+              width={isMobile ? '20%' : '30%'}
               color={theme.colors.primary.default}
               thickness="2px"
             />
           </HStack>
           <Button
-            size="lg"
+            size={isMobile ? 'sm' : 'lg'}
             onClick={() => {}}
             bgColor="#FF8944"
             hoverColor="#BC5C24"
           >
-            <GoogleLogin width="450" height="60" fill="var(--fillColor)" />
+            <GoogleLogo
+              width={isMobile ? '20' : '30'}
+              height={isMobile ? '15' : '19'}
+              style={{ marginLeft: '3rem' }}
+            />
+            <Spacer />
+            <Text
+              style={{ marginRight: '3rem' }}
+              fontSize={isMobile ? '1.3rem' : theme.fonts.size.h2}
+            >
+              구글 로그인
+            </Text>
+            <Spacer />
           </Button>
         </Box>
-        <RegisterButton />
+        <RegisterModal />
       </VStack>
       <Spacer />
       <AutoEverLogo
         fill={theme.colors.primary.default}
-        width="150"
-        height="50"
+        width={isMobile ? '100' : '150'}
+        height={isMobile ? '30' : '50'}
         style={{ marginBottom: '2rem' }}
       />
     </VStack>

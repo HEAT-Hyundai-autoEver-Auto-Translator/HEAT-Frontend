@@ -2,9 +2,10 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import Avatar from 'components/common/Avatar';
 import { Button } from 'components/common/Button';
-import { HStack } from 'components/common/Stack';
+import { HStack, VStack } from 'components/common/Stack';
 import React, { useState } from 'react';
 import { Controller, Control } from 'react-hook-form';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 
 type FormValues = {
   email: string;
@@ -25,8 +26,9 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.Media.mobile);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files?.length !== 1) {
@@ -50,8 +52,12 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
 
   return (
     <div style={{ width: '100%' }}>
-      <HStack spacing="2rem" w="100%" style={{ marginBottom: '2rem' }}>
-        <Avatar src={selectedImage} alt={alt} />
+      <HStack
+        spacing="2rem"
+        w="100%"
+        style={{ marginBottom: isMobile ? '3rem' : '2rem' }}
+      >
+        <Avatar size={isMobile ? 'md' : 'lg'} src={selectedImage} alt={alt} />
         <Controller
           name="avatar"
           control={control}
@@ -69,26 +75,35 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
                   field.onChange(event);
                 }}
               />
-              <Button
-                size="xs"
-                bgColor={theme.colors.primary.semi_light}
-                hoverColor={theme.colors.primary.default}
-                fontColor={theme.colors.mono.white}
-                type="button"
-                onClick={() => {
-                  const elem = document.getElementById('fileInput');
-                  if (elem) elem.click();
-                }}
-              >
-                파일 선택
-              </Button>
+              <VStack style={{ alignItems: 'flex-start' }} spacing="1rem">
+                <Button
+                  size={isMobile ? 'xxs' : 'xs'}
+                  bgColor={theme.colors.primary.semi_light}
+                  hoverColor={theme.colors.primary.default}
+                  fontColor={theme.colors.mono.white}
+                  type="button"
+                  onClick={() => {
+                    const elem = document.getElementById('fileInput');
+                    if (elem) elem.click();
+                  }}
+                >
+                  파일 선택
+                </Button>
+                {isMobile ? (
+                  <FileNameBox isMobile={isMobile}>
+                    <FileName>{fileName}</FileName>
+                  </FileNameBox>
+                ) : null}
+              </VStack>
             </>
           )}
         />
         {/* 여기에 파일 이름 표시  */}
-        <FileNameBox>
-          <FileName>{fileName}</FileName>
-        </FileNameBox>
+        {isMobile ? null : (
+          <FileNameBox isMobile={isMobile}>
+            <FileName>{fileName}</FileName>
+          </FileNameBox>
+        )}
       </HStack>
     </div>
   );
@@ -96,9 +111,12 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
 
 export default AvatarUploader;
 
-const FileNameBox = styled.div`
-  width: 19rem;
-  height: 3rem;
+interface FileNameBoxProps {
+  isMobile: boolean;
+}
+const FileNameBox = styled.div<FileNameBoxProps>`
+  width: ${({ isMobile }) => (isMobile ? '10rem' : '19rem')};
+  height: ${({ isMobile }) => (isMobile ? '2rem' : '3rem')};
   border-radius: 1rem;
   overflow: hidden;
   background-color: ${({ theme }) => theme.colors.mono.input_gray};
