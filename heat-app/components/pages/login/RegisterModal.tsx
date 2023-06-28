@@ -12,8 +12,8 @@ import { Button } from 'components/common/Button';
 import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
 import styled from '@emotion/styled';
-import { Select } from 'components/common/Select';
-import { StyledSelect } from 'components/premade/StyledSelect';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import Dropdown from 'components/common/DropDown';
 
 interface FormValues {
   email: string;
@@ -24,9 +24,10 @@ interface FormValues {
   avatar: FileList;
 }
 
-const RegisterButton = () => {
+const RegisterModal = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.Media.mobile);
 
   // Initialize react-hook-form
   const {
@@ -101,7 +102,7 @@ const RegisterButton = () => {
   return (
     <>
       <Text
-        fontSize="2rem"
+        fontSize={isMobile ? '1.5rem' : '2rem'}
         color={theme.colors.primary.default}
         onClick={toggleModal}
         style={{ cursor: 'pointer' }}
@@ -109,8 +110,11 @@ const RegisterButton = () => {
         Register
       </Text>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
-        <VStack w="50rem" spacing="2.5rem">
-          <Text fontSize="3rem" fontWeight={theme.fonts.weight.bold}>
+        <VStack w={isMobile ? '25rem' : '50rem'} spacing="2.5rem">
+          <Text
+            fontSize={isMobile ? '2rem' : '3rem'}
+            fontWeight={theme.fonts.weight.bold}
+          >
             Register
           </Text>
           {/* Start of the form */}
@@ -118,7 +122,7 @@ const RegisterButton = () => {
             <VStack style={{ position: 'relative' }}>
               <VStack>
                 <StyledInput
-                  inputSize="lg"
+                  inputSize={isMobile ? 'sm' : 'lg'}
                   placeholder="Email"
                   {...register('email', {
                     required: 'Email is required',
@@ -128,18 +132,13 @@ const RegisterButton = () => {
                     },
                   })}
                 />
-                <div
-                  style={{
-                    height: '30px',
-                    color: 'red',
-                  }}
-                >
+                <ErrorPanel isMobile={isMobile}>
                   {errors.email ? errors.email.message : null}
-                </div>
+                </ErrorPanel>
               </VStack>
               <VStack>
                 <StyledInput
-                  inputSize="lg"
+                  inputSize={isMobile ? 'sm' : 'lg'}
                   placeholder="Username"
                   {...register('username', {
                     required: 'Username is required',
@@ -158,68 +157,30 @@ const RegisterButton = () => {
                     },
                   })}
                 />
-                <div style={{ height: '30px', color: 'red' }}>
+                <ErrorPanel isMobile={isMobile}>
                   {errors.username ? errors.username.message : null}
-                </div>
+                </ErrorPanel>
               </VStack>
-              {/* 언어 select box 들어갈곳 */}
-              {/* <Controller
-                name="language"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <VStack>
-                    <Select
-                      fontColor={theme.colors.mono.black}
-                      bgColor={theme.colors.mono.input_gray}
-                      paddingLeft="2.5rem"
-                      paddingRight="2.5rem"
-                      {...field}
-                      inputSize="lg"
-                    >
-                      <option value="" disabled selected>
-                        Select your first language
-                      </option>
-                      <option value="kor">Korean</option>
-                      <option value="eng">English</option>
-                      <option value="jap">Japanese</option>
-                    </Select>
-                    <div style={{ height: '30px', color: 'red' }}>
-                      {errors.language ? errors.language.message : null}
-                    </div>
-                  </VStack>
-                )}
-                rules={{ required: 'Language is required' }}
-              /> */}
-              {/* <StyledSelect
-                inputSize="lg"
-                placeholder="Select your first language"
-                {...register('language', {
-                  required: 'First language is required',
-                })}
-              >
-                <option value="kor">Korean</option>
-                <option value="eng">English</option>
-                <option value="jap">Japanese</option>
-              </StyledSelect> */}
-
+              {/* selectBox 부분 */}
               <Controller
                 control={control}
                 name="language"
                 rules={{ required: 'First language is required' }}
                 render={({ field }) => (
-                  <StyledSelect
-                    inputSize="lg"
-                    placeholder="Select your first language"
-                    {...field}
-                  >
-                    <option value="" disabled>
-                      Select your first language
-                    </option>
-                    <option value="kor">Korean</option>
-                    <option value="eng">English</option>
-                    <option value="jap">Japanese</option>
-                  </StyledSelect>
+                  <HStack>
+                    <Dropdown
+                      placeholder="Select your first language"
+                      size={isMobile ? 'sm' : 'lg'}
+                      options={[
+                        { label: 'Select your first language', value: '' },
+                        { label: 'Korean', value: 'kor' },
+                        { label: 'English', value: 'eng' },
+                        { label: 'Japanese', value: 'jap' },
+                      ]}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </HStack>
                 )}
               />
               <div
@@ -228,11 +189,13 @@ const RegisterButton = () => {
                   color: 'red',
                 }}
               >
-                {errors.language ? errors.language.message : null}
+                <ErrorPanel isMobile={isMobile}>
+                  {errors.language ? errors.language.message : null}
+                </ErrorPanel>
               </div>
               <VStack style={{ marginBottom: '2rem' }}>
                 <StyledInput
-                  inputSize="lg"
+                  inputSize={isMobile ? 'sm' : 'lg'}
                   type="password"
                   placeholder="Password"
                   {...register('password', {
@@ -258,7 +221,7 @@ const RegisterButton = () => {
                   }}
                 ></div>
                 <StyledInput
-                  inputSize="lg"
+                  inputSize={isMobile ? 'sm' : 'lg'}
                   type="password"
                   placeholder="Confirm Password"
                   {...register('confirmPassword', {
@@ -266,28 +229,29 @@ const RegisterButton = () => {
                     validate: validatePassword,
                   })}
                 />
-                <div
-                  style={{
-                    color: 'red',
-                    height: '30px',
-                    width: '400px',
-                    marginBottom: '1rem',
-                    textAlign: 'center', // Center the error message text
-                  }}
+
+                <ErrorPanel
+                  isMobile={isMobile}
+                  style={{ marginBottom: '1rem' }}
                 >
                   {errors.password ? errors.password.message : null}
                   {errors.confirmPassword && !errors.password
                     ? errors.confirmPassword.message
                     : null}
-                </div>
+                </ErrorPanel>
               </VStack>
+
               {/* Avatar image upload */}
 
               <AvatarUploader control={control} />
               <Spacer />
-              <HStack w="100%" spacing="1rem" justifyContent="flex-end">
+              <HStack
+                w={isMobile ? '70%' : '100%'}
+                spacing="1rem"
+                justifyContent="flex-end"
+              >
                 <Button
-                  size="xs"
+                  size={isMobile ? 'xxs' : 'xs'}
                   bgColor={theme.colors.primary.semi_light}
                   hoverColor={theme.colors.primary.default}
                   fontColor={theme.colors.mono.white}
@@ -296,7 +260,7 @@ const RegisterButton = () => {
                   Submit
                 </Button>
                 <Button
-                  size="xs"
+                  size={isMobile ? 'xxs' : 'xs'}
                   bgColor={theme.colors.mono.input_gray}
                   hoverColor={theme.colors.mono.gray200}
                   onClick={toggleModal}
@@ -313,8 +277,19 @@ const RegisterButton = () => {
   );
 };
 
-export default RegisterButton;
+export default RegisterModal;
 
+interface ErrorPanelProps {
+  isMobile: boolean;
+}
+
+const ErrorPanel = styled.div<ErrorPanelProps>`
+  width: ${({ isMobile }) => (isMobile ? '20rem' : '30rem')};
+  height: 30px;
+  color: red;
+  text-align: center;
+  font-size: ${({ isMobile }) => (isMobile ? '0.5rem' : '1.5rem')};
+`;
 /*
 6/26 정규 표현식
 
@@ -325,17 +300,3 @@ Username: /^[A-Za-z0-9]+$/i
 Password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 이 정규식은 비밀번호가 특정 요구사항을 충족하는지 검사합니다. ^는 문자열의 시작을, $는 문자열의 끝을 나타냅니다. 각각의 (?=.*[조건]) 부분은 문자열이 해당 조건을 충족해야 한다는 것을 의미합니다. 즉, 이 정규식은 문자열이 적어도 하나의 소문자([a-z]), 적어도 하나의 대문자([A-Z]), 적어도 하나의 숫자(\d), 적어도 하나의 특수 문자([@$!%*?&])를 포함하고 있어야 하며, 전체 길이는 8 이상이어야 한다는 의미입니다.
  */
-
-// const ErrorBubble = styled.div`
-//   position: absolute;
-//   bottom: -20px;
-//   left: 0;
-//   width: 100%;
-//   background-color: red;
-//   color: white;
-//   padding: 5px;
-//   border-radius: 5px;
-//   font-size: 0.8rem;
-//   text-align: center;
-//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-// `;

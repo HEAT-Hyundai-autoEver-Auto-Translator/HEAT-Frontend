@@ -3,6 +3,7 @@ const colors = {
     default: '#003F7F',
     semi_light: '#3182CE',
     light: '#EDF2F7',
+    semi_dark: '#3E72A3',
   },
   semantic: {
     success_light: '#C6F6D5',
@@ -59,9 +60,14 @@ const radius = {
   circle: '50%',
 };
 
+const Media = {
+  mobile: '(max-width: 768px)',
+};
+
 export const defaultTheme = {
   colors,
   fonts,
   zIndex,
   radius,
+  Media,
 };

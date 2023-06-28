@@ -1,28 +1,39 @@
-import React from 'react';
 import Image from 'next/image';
 import styled from '@emotion/styled';
 
-const AvatarWrapper = styled.div`
+const AvatarWrapper = styled.div<{ size: string }>`
   border-radius: 50%;
   overflow: hidden;
-  width: 100px; //원하는 크기로 변경 가능
-  height: 100px; //원하는 크기로 변경 가능
+  width: ${({ size }) => getSize(size)};
+  height: ${({ size }) => getSize(size)};
   position: relative;
-  background-color: #f3f3f3;
 `;
+
+const getSize = (size: string): number => {
+  switch (size) {
+    case 'sm':
+      return 50;
+    case 'md':
+      return 75;
+    case 'lg':
+    default:
+      return 100;
+  }
+};
 
 interface AvatarProps {
   src: string | null;
-  alt: string | undefined;
+  alt?: string;
+  size: 'sm' | 'md' | 'lg';
 }
 
-const Avatar = ({ src, alt }: AvatarProps) => {
+const Avatar = ({ src, alt, size }: AvatarProps) => {
   const defaultAvatar = '/default-avatar.png'; // Default avatar image path
   return (
-    <AvatarWrapper>
+    <AvatarWrapper size={size}>
       <Image
-        width="100"
-        height="100"
+        width={getSize(size)}
+        height={getSize(size)}
         src={src || defaultAvatar}
         alt={alt || 'avatar'}
       />
