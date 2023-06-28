@@ -18,7 +18,7 @@ type FormValues = {
 
 interface AvatarUploaderProps {
   alt?: string;
-  control: Control<FormValues>; // Add this line
+  control: Control<FormValues>;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

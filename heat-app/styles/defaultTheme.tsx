@@ -3,7 +3,7 @@ const colors = {
     default: '#003F7F',
     semi_light: '#3182CE',
     light: '#EDF2F7',
-    semi_dark: '#3E72A3',
+    semi_dark: '#2D679B',
   },
   semantic: {
     success_light: '#C6F6D5',

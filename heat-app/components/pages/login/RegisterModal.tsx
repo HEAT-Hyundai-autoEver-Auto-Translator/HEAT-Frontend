@@ -76,6 +76,13 @@ const RegisterModal = () => {
   };
 
   //TODO: 백엔드 통신 되면 이런 방식으로 바꾸기
+  // type CreateUserDTO = {
+  //   userId: string;
+  //   password: string;
+  //   userName: string;
+  //   imageUrl: string;
+  //   languageNo: string;
+  // }
   // const onSubmit = async (data :FormValues) => {
   //   const formData = new FormData();
 
