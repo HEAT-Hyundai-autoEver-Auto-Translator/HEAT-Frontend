@@ -64,6 +64,7 @@ type Radius = {
 
 type Media = {
   mobile: string;
+  mobile_query: string;
 };
 
 declare module '@emotion/react' {

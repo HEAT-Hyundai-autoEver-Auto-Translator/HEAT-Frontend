@@ -1,9 +1,9 @@
-import { Theme, useTheme } from '@emotion/react';
+import ArrowDownIcon from '@/../public/ArrowDownIcon.svg';
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { Text } from './Text';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import ArrowDownIcon from '@/../public/ArrowDownIcon.svg';
+import { Text } from './Text';
 const DropdownWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -43,6 +43,11 @@ const DropdownMenu = styled.ul<DropdownButtonProps>`
     background-color: ${({ theme }) => theme.colors.mono.input_gray};
     margin: 10px;
     border-radius: 10px;
+  }
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    border-radius: ${({ size }) => (size === 'xs' ? '5px' : '10px')};
+
+    width: ${({ size }) => (size === 'xs' ? '12rem' : '20rem')};
   }
 `;
 
@@ -111,6 +116,14 @@ const DropdownButton = styled.button<DropdownButtonProps>`
   font-weight: ${({ fontWeight }) => fontWeight || 'normal'};
   padding-left: ${({ paddingLeft }) => paddingLeft || '0px'};
   padding-right: ${({ paddingRight }) => paddingRight || '0px'};
+
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    padding: ${({ size }) => (size === 'xs' ? '2px' : '5px')};
+    width: ${({ size }) => (size === 'xs' ? '12rem' : '20rem')};
+    height: ${({ size }) => (size === 'xs' ? '2rem' : '3rem')};
+    font-size: 1.3rem;
+    border-radius: ${({ size }) => (size === 'xs' ? '5px' : '10px')};
+  }
 `;
 
 interface Option {
@@ -139,7 +152,7 @@ const Dropdown = ({
 }: DropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.Media.mobile);
+  const isMobile = useMediaQuery(theme.Media.mobile_query);
 
   const handleSelect = (option: Option) => {
     onChange(option.value);
@@ -161,14 +174,11 @@ const Dropdown = ({
         <Text
           fontSize={size === 'xs' ? '1.3rem' : isMobile ? '0.8rem' : '2rem'}
           color={displayValue === placeholder ? '#909090' : 'black'}
+          style={{ paddingLeft: isMobile ? '1rem' : 0 }}
         >
           {displayValue}
         </Text>
-        <StyledArrowDownIcon
-          open={showDropdown}
-          isMobile={isMobile}
-          size={size}
-        />
+        <StyledArrowDownIcon open={showDropdown} size={size} />
       </DropdownButton>
       <DropdownMenu className={showDropdown ? 'show' : ''} size={size}>
         {options
@@ -179,6 +189,7 @@ const Dropdown = ({
               onClick={() => handleSelect(option)}
             >
               <Text
+                color="black"
                 fontSize={
                   size === 'xs' ? '1.3rem' : isMobile ? '0.8rem' : '2rem'
                 }
@@ -196,20 +207,23 @@ export default Dropdown;
 
 interface StyledArrowDownIconProps {
   open: boolean;
-  isMobile?: boolean;
   size?: 'xl' | 'lg' | 'sm' | 'xs';
 }
 
-const StyledArrowDownIcon = styled(ArrowDownIcon, {
-  shouldForwardProp: prop => prop !== 'isMobile',
-})<StyledArrowDownIconProps>`
+const StyledArrowDownIcon = styled(ArrowDownIcon)<StyledArrowDownIconProps>`
   position: absolute;
   left: auto;
-  right: ${({ size, isMobile }) =>
-    isMobile || size === 'xs' ? '10px' : '15px'};
-  top: ${({ isMobile, size }) => (isMobile || size === 'xs' ? '38%' : '45%')};
-  width: ${({ isMobile }) => (isMobile ? '8.4px' : '12px')};
-  height: ${({ isMobile }) => (isMobile ? '5.6px' : '8px')};
+  right: ${({ size }) => (size === 'xs' ? '10px' : '15px')};
+  top: ${({ size }) => (size === 'xs' ? '38%' : '45%')};
+  width: 12px;
+  height: 8px;
   transform: ${({ open }) => (open ? 'rotate(180deg)' : 'none')};
   transition: transform 0.2s ease-in-out;
+
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    right: 10px;
+    top: 38%;
+    width: 8.4px;
+    height: 5.6px;
+  }
 `;

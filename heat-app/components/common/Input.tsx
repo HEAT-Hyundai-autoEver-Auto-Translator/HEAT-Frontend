@@ -39,4 +39,25 @@ export const Input = styled.input<InputProps>`
   &::placeholder {
     color: ${({ placeholderColor }) => placeholderColor || '#909090'};
   }
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    width: ${({ inputSize }) => {
+      if (inputSize === 'xl') return '30rem';
+      if (inputSize === 'lg') return '20rem';
+      return '10rem';
+    }};
+    height: ${({ inputSize }) => {
+      if (inputSize === 'xl') return '3.5rem';
+      if (inputSize === 'lg') return '3rem';
+      return '1.5rem';
+    }};
+    font-size: ${({ inputSize }) => {
+      if (inputSize === 'xl') return '1.25rem';
+      if (inputSize === 'lg') return '1rem';
+      if (inputSize === 'sm') return '0.4rem';
+      return '0.5rem';
+    }};
+    border-radius: 10px;
+    padding-left: ${({ paddingLeft }) => paddingLeft || '0px'};
+    padding-right: ${({ paddingRight }) => paddingRight || '0px'};
+  }
 }`;

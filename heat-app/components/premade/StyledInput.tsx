@@ -18,8 +18,8 @@ export const StyledInput = forwardRef<HTMLInputElement, StyledInputProps>(
         fontColor={theme.colors.mono.black}
         bgColor={theme.colors.mono.input_gray}
         placeholder={placeholder}
-        paddingLeft="2.5rem"
-        paddingRight="2.5rem"
+        paddingLeft="1.5rem"
+        paddingRight="1.5rem"
         {...rest}
       />
     );

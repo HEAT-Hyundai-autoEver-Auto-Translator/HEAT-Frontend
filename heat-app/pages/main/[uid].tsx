@@ -6,10 +6,10 @@ import Dropdown from 'components/common/DropDown';
 import { Hamburger } from 'components/common/Hamburger';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
-import { Text } from 'components/common/Text';
 import Sidebar from 'components/layout/Sidebar';
+import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
 import { useRouter } from 'next/router';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 
 const languageOptions = [
@@ -22,7 +22,7 @@ const MainPage = () => {
   const router = useRouter();
   const theme = useTheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isMobile = useMediaQuery(theme.Media.mobile);
+  const isMobile = useMediaQuery(theme.Media.mobile_query);
   const { uid } = router.query;
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,19 +62,13 @@ const MainPage = () => {
               style={{ padding: '3rem 2rem 1rem 2rem' }}
             >
               <Textarea
-                isMobile={isMobile}
                 textareaRef={textareaRef}
                 borderColor={theme.colors.primary.default}
                 value={inputText}
                 onChange={handleInputChange} // Update this
               />
               <HStack w="98%" spacing={isMobile ? '1rem' : '2rem'}>
-                <Text
-                  fontSize={isMobile ? 'xl' : '2rem'}
-                  fontWeight={theme.fonts.weight.bold}
-                >
-                  TO
-                </Text>
+                <StyledText>TO</StyledText>
                 <Dropdown
                   options={languageOptions}
                   value={selectedLanguage}
@@ -84,13 +78,7 @@ const MainPage = () => {
                   size="xs"
                 />
                 <Spacer />
-                <Button
-                  size={isMobile ? 'xxs' : 'xs'}
-                  bgColor={theme.colors.primary.semi_light}
-                  hoverColor={theme.colors.primary.default}
-                  fontColor={theme.colors.mono.white}
-                  onClick={handleSubmit}
-                >
+                <Button size={'xs'} onClick={handleSubmit}>
                   Submit
                 </Button>
               </HStack>
@@ -110,7 +98,7 @@ const MainPage = () => {
               <StyledTextarea
                 color={theme.colors.mono.white}
                 value={outputText}
-                readOnly // Add this
+                readOnly
               />
             </VStack>
           </VStack>
@@ -128,6 +116,14 @@ const MainPage = () => {
 
 export default MainPage;
 
+const StyledText = styled.p`
+  font-weight: ${({ theme }) => theme.fonts.weight.bold};
+  font-size: 2rem;
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    font-size: 1.5rem;
+  }
+`;
+
 const StyledButton = styled.button`
   unset: all;
   position: absolute;
@@ -143,76 +139,3 @@ const StyledButton = styled.button`
     background-color: gray;
   }
 `;
-
-const StyledTextarea = styled.textarea<TextareaProps>`
-  width: 100%;
-  height: 100%;
-  padding: ${({ isMobile }) =>
-    isMobile ? '12px' : '15px'}; // Adjust padding based on isMobile
-  font-size: ${({ isMobile }) =>
-    isMobile ? '14px' : '18px'}; // Adjust font size based on isMobile
-  border-radius: 20px;
-  border: 1px solid ${({ borderColor }) => borderColor || 'transparent'};
-  background-color: ${({ bgColor }) => bgColor || 'transparent'};
-  color: ${({ color }) => color || 'black'};
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: ${({ theme }) => theme.colors.mono.input_gray};
-    margin: 20px;
-    border-radius: 10px;
-  }
-
-  ::placeholder {
-    color: ${({ placeholderColor }) => placeholderColor || 'gray'};
-  }
-`;
-
-type TextareaProps = {
-  bgColor?: string;
-  borderColor?: string;
-  isMobile?: boolean;
-  color?: string;
-  placeholder?: string;
-  placeholderColor?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void; // Move this here
-};
-
-const Textarea = ({
-  bgColor,
-  borderColor,
-  color,
-  placeholder,
-  placeholderColor,
-  textareaRef,
-  isMobile,
-  value,
-  onChange,
-}: TextareaProps & {
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
-  isMobile: boolean;
-}) => {
-  return (
-    <StyledTextarea
-      ref={textareaRef}
-      bgColor={bgColor}
-      borderColor={borderColor}
-      color={color}
-      placeholder={placeholder}
-      placeholderColor={placeholderColor}
-      isMobile={isMobile}
-      value={value}
-      onChange={onChange}
-    />
-  );
-};

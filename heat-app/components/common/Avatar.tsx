@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import styled from '@emotion/styled';
+import Image from 'next/image';
 
 const AvatarWrapper = styled.div<{ size: string }>`
   border-radius: 50%;

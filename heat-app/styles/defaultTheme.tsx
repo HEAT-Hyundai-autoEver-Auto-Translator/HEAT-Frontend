@@ -61,7 +61,8 @@ const radius = {
 };
 
 const Media = {
-  mobile: '(max-width: 768px)',
+  mobile: '768px',
+  mobile_query: `(max-width : 768px)`,
 };
 
 export const defaultTheme = {
