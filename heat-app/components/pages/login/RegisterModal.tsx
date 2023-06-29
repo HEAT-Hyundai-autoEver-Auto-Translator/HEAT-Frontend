@@ -1,19 +1,16 @@
 import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
+import { Button } from 'components/common/Button';
+import Dropdown from 'components/common/DropDown';
+import { ErrorPanel } from 'components/common/ErrorPanel';
 import { Modal } from 'components/common/Modal';
+import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
-import { useState } from 'react';
-import { Spacer } from 'components/common/Spacer';
-
 import { StyledInput } from 'components/premade/StyledInput';
-import { Button } from 'components/common/Button';
-
-// Import react-hook-form and AvatarUploader
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
-import styled from '@emotion/styled';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import Dropdown from 'components/common/DropDown';
 
 interface FormValues {
   email: string;
@@ -27,7 +24,6 @@ interface FormValues {
 const RegisterModal = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.Media.mobile);
 
   // Initialize react-hook-form
   const {
@@ -108,28 +104,18 @@ const RegisterModal = () => {
 
   return (
     <>
-      <Text
-        fontSize={isMobile ? '1.5rem' : '2rem'}
-        color={theme.colors.primary.default}
-        onClick={toggleModal}
-        style={{ cursor: 'pointer' }}
-      >
+      <Text fontSize="2rem" onClick={toggleModal} style={{ cursor: 'pointer' }}>
         Register
       </Text>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
-        <VStack w={isMobile ? '25rem' : '50rem'} spacing="2.5rem">
-          <Text
-            fontSize={isMobile ? '2rem' : '3rem'}
-            fontWeight={theme.fonts.weight.bold}
-          >
-            Register
-          </Text>
+        <ModalContainer spacing="2.5rem">
+          <StyledText>Register</StyledText>
           {/* Start of the form */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack style={{ position: 'relative' }}>
               <VStack>
                 <StyledInput
-                  inputSize={isMobile ? 'sm' : 'lg'}
+                  inputSize="lg"
                   placeholder="Email"
                   {...register('email', {
                     required: 'Email is required',
@@ -139,13 +125,13 @@ const RegisterModal = () => {
                     },
                   })}
                 />
-                <ErrorPanel isMobile={isMobile}>
+                <ErrorPanel>
                   {errors.email ? errors.email.message : null}
                 </ErrorPanel>
               </VStack>
               <VStack>
                 <StyledInput
-                  inputSize={isMobile ? 'sm' : 'lg'}
+                  inputSize="lg"
                   placeholder="Username"
                   {...register('username', {
                     required: 'Username is required',
@@ -164,7 +150,7 @@ const RegisterModal = () => {
                     },
                   })}
                 />
-                <ErrorPanel isMobile={isMobile}>
+                <ErrorPanel>
                   {errors.username ? errors.username.message : null}
                 </ErrorPanel>
               </VStack>
@@ -177,7 +163,7 @@ const RegisterModal = () => {
                   <HStack>
                     <Dropdown
                       placeholder="Select your first language"
-                      size={isMobile ? 'sm' : 'lg'}
+                      size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
                         { label: 'Korean', value: 'kor' },
@@ -190,19 +176,12 @@ const RegisterModal = () => {
                   </HStack>
                 )}
               />
-              <div
-                style={{
-                  height: '30px',
-                  color: 'red',
-                }}
-              >
-                <ErrorPanel isMobile={isMobile}>
-                  {errors.language ? errors.language.message : null}
-                </ErrorPanel>
-              </div>
+              <ErrorPanel>
+                {errors.language ? errors.language.message : null}
+              </ErrorPanel>
               <VStack style={{ marginBottom: '2rem' }}>
                 <StyledInput
-                  inputSize={isMobile ? 'sm' : 'lg'}
+                  inputSize="lg"
                   type="password"
                   placeholder="Password"
                   {...register('password', {
@@ -219,16 +198,9 @@ const RegisterModal = () => {
                     },
                   })}
                 />
-                <div
-                  style={{
-                    color: 'red',
-                    height: '30px',
-                    marginBottom: '1rem',
-                    textAlign: 'center', // Center the error message text
-                  }}
-                ></div>
+                <ErrorPanel></ErrorPanel>
                 <StyledInput
-                  inputSize={isMobile ? 'sm' : 'lg'}
+                  inputSize="lg"
                   type="password"
                   placeholder="Confirm Password"
                   {...register('confirmPassword', {
@@ -237,10 +209,7 @@ const RegisterModal = () => {
                   })}
                 />
 
-                <ErrorPanel
-                  isMobile={isMobile}
-                  style={{ marginBottom: '1rem' }}
-                >
+                <ErrorPanel style={{ marginBottom: '1rem' }}>
                   {errors.password ? errors.password.message : null}
                   {errors.confirmPassword && !errors.password
                     ? errors.confirmPassword.message
@@ -252,24 +221,18 @@ const RegisterModal = () => {
 
               <AvatarUploader control={control} />
               <Spacer />
-              <HStack
-                w={isMobile ? '70%' : '100%'}
-                spacing="1rem"
-                justifyContent="flex-end"
-              >
+              <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button
-                  size={isMobile ? 'xxs' : 'xs'}
-                  bgColor={theme.colors.primary.semi_light}
-                  hoverColor={theme.colors.primary.default}
-                  fontColor={theme.colors.mono.white}
+                  size="xs"
                   type="submit" // Make this button submit the form
                 >
                   Submit
                 </Button>
                 <Button
-                  size={isMobile ? 'xxs' : 'xs'}
+                  size="xs"
                   bgColor={theme.colors.mono.input_gray}
                   hoverColor={theme.colors.mono.gray200}
+                  fontColor="black"
                   onClick={toggleModal}
                 >
                   Cancel
@@ -278,7 +241,7 @@ const RegisterModal = () => {
             </VStack>
           </form>
           {/* End of the form */}
-        </VStack>
+        </ModalContainer>
       </Modal>
     </>
   );
@@ -286,17 +249,22 @@ const RegisterModal = () => {
 
 export default RegisterModal;
 
-interface ErrorPanelProps {
-  isMobile: boolean;
-}
+const ModalContainer = styled(VStack)`
+  width: 50rem;
 
-const ErrorPanel = styled.div<ErrorPanelProps>`
-  width: ${({ isMobile }) => (isMobile ? '20rem' : '30rem')};
-  height: 30px;
-  color: red;
-  text-align: center;
-  font-size: ${({ isMobile }) => (isMobile ? '0.5rem' : '1.5rem')};
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    width: 25rem;
+  }
 `;
+
+const StyledText = styled.p`
+  font-size: 3rem;
+  font-weight: bold;
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    font-size: 2rem;
+  }
+`;
+
 /*
 6/26 정규 표현식
 

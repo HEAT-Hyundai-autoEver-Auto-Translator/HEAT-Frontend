@@ -1,15 +1,14 @@
 import { useTheme } from '@emotion/react';
+import { Button } from 'components/common/Button';
+import { Spacer } from 'components/common/Spacer';
 import { VStack } from 'components/common/Stack';
+import { StyledAutoEverLogo } from 'components/premade/StyledAutoEverLogo';
+import { StyledHeatLogo } from 'components/premade/StyledHeatLogo';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { ROUTES } from 'utils/ROUTES';
-import { isAuthenticatedAtom } from 'utils/atoms/isAuthenticatedAtom';
-import { userAtom } from 'utils/atoms/userAtom';
-import HeatLogo from '@/../public/HeatLogo.svg';
-import AutoEverLogo from '@/../public/AutoEverLogo.svg';
-import { Spacer } from 'components/common/Spacer';
-import { Button } from 'components/common/Button';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
 
 const HomePage = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
@@ -24,8 +23,6 @@ const HomePage = () => {
     }
   };
 
-  const isMobile = useMediaQuery(theme.Media.mobile);
-
   return (
     <VStack
       w="100vw"
@@ -34,27 +31,12 @@ const HomePage = () => {
       style={{ backgroundColor: theme.colors.primary.default }}
     >
       <Spacer />
-      <HeatLogo
-        fill={theme.colors.mono.white}
-        width={isMobile ? '250' : '550'}
-        height={isMobile ? '100' : '200'}
-      />
-      <Button
-        size={isMobile ? 'sm' : 'lg'}
-        fontColor={theme.colors.mono.white}
-        bgColor={theme.colors.primary.semi_light}
-        hoverColor={theme.colors.primary.semi_dark}
-        onClick={handleStart}
-      >
+      <StyledHeatLogo fill={theme.colors.mono.white} />
+      <Button size="lg" onClick={handleStart}>
         START
       </Button>
       <Spacer />
-      <AutoEverLogo
-        fill={theme.colors.mono.white}
-        width={isMobile ? '100' : '150'}
-        height={isMobile ? '30' : '50'}
-        style={{ marginBottom: '2rem' }}
-      />
+      <StyledAutoEverLogo fill={theme.colors.mono.white} />
     </VStack>
   );
 };

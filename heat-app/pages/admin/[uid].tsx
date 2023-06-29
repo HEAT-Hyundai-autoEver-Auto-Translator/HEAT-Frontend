@@ -1,9 +1,9 @@
-import AuthGuard from "components/auth/AuthGuard";
-import { useAtom } from "jotai";
-import { useRouter } from "next/router";
-import { ROUTES } from "utils/ROUTES";
-import { isAuthenticatedAtom } from "utils/atoms/isAuthenticatedAtom";
-import { userAtom } from "utils/atoms/userAtom";
+import AuthGuard from 'components/auth/AuthGuard';
+import { useAtom } from 'jotai';
+import { useRouter } from 'next/router';
+import { ROUTES } from 'utils/ROUTES';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);

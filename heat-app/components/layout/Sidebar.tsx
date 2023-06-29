@@ -5,20 +5,21 @@ import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ROUTES } from 'utils/ROUTES';
-import { isAuthenticatedAtom } from 'utils/atoms/isAuthenticatedAtom';
-import { defaultUser, userAtom } from 'utils/atoms/userAtom';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 type SidebarProps = {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSidebarOpen: boolean;
 };
+
 const Sidebar = ({ setIsSidebarOpen, isSidebarOpen }: SidebarProps) => {
   const [, setAuthenticated] = useAtom(isAuthenticatedAtom);
   const [user, setUser] = useAtom(userAtom);
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.Media.mobile);
+  const isMobile = useMediaQuery(theme.Media.mobile_query);
   const [isSidebarOpenOut, setIsSidebarOpenOut] = useState(isSidebarOpen);
   const logout = () => {
     setAuthenticated(false);

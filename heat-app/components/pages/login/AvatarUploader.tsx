@@ -4,7 +4,7 @@ import Avatar from 'components/common/Avatar';
 import { Button } from 'components/common/Button';
 import { HStack, VStack } from 'components/common/Stack';
 import React, { useState } from 'react';
-import { Controller, Control } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 
 type FormValues = {
@@ -27,7 +27,7 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.Media.mobile);
+  const isMobile = useMediaQuery(theme.Media.mobile_query);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -52,11 +52,7 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
 
   return (
     <div style={{ width: '100%' }}>
-      <HStack
-        spacing="2rem"
-        w="100%"
-        style={{ marginBottom: isMobile ? '3rem' : '2rem' }}
-      >
+      <HStack spacing="2rem" w="100%" style={{ marginBottom: '3rem' }}>
         <Avatar size={isMobile ? 'md' : 'lg'} src={selectedImage} alt={alt} />
         <Controller
           name="avatar"
@@ -87,23 +83,15 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
                     if (elem) elem.click();
                   }}
                 >
-                  파일 선택
+                  Select Image
                 </Button>
-                {isMobile ? (
-                  <FileNameBox isMobile={isMobile}>
-                    <FileName>{fileName}</FileName>
-                  </FileNameBox>
-                ) : null}
+                <FileNameBox>
+                  <FileName>{fileName}</FileName>
+                </FileNameBox>
               </VStack>
             </>
           )}
         />
-        {/* 여기에 파일 이름 표시  */}
-        {isMobile ? null : (
-          <FileNameBox isMobile={isMobile}>
-            <FileName>{fileName}</FileName>
-          </FileNameBox>
-        )}
       </HStack>
     </div>
   );
@@ -111,12 +99,9 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
 
 export default AvatarUploader;
 
-interface FileNameBoxProps {
-  isMobile: boolean;
-}
-const FileNameBox = styled.div<FileNameBoxProps>`
-  width: ${({ isMobile }) => (isMobile ? '10rem' : '19rem')};
-  height: ${({ isMobile }) => (isMobile ? '2rem' : '3rem')};
+const FileNameBox = styled.div`
+  width: 28rem;
+  height: 3rem;
   border-radius: 1rem;
   overflow: hidden;
   background-color: ${({ theme }) => theme.colors.mono.input_gray};
@@ -126,6 +111,11 @@ const FileNameBox = styled.div<FileNameBoxProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    width: 10rem;
+    height: 2rem;
+  }
 `;
 
 const FileName = styled.span`
