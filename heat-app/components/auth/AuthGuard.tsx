@@ -16,12 +16,12 @@ const AuthGuard = ({ children, adminOnly }: AuthGuardProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated || (adminOnly && user.role !== 'admin')) {
+    if (!isAuthenticated || (adminOnly && user.userRole !== 'admin')) {
       router.push(ROUTES.LOGIN);
     }
   }, [isAuthenticated, user, router, adminOnly]);
 
-  if (!isAuthenticated || (adminOnly && user.role !== 'admin')) {
+  if (!isAuthenticated || (adminOnly && user.userRole !== 'admin')) {
     return null;
   }
 

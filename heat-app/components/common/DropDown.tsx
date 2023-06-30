@@ -2,8 +2,8 @@ import ArrowDownIcon from '@/../public/ArrowDownIcon.svg';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { Text } from './Text';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 const DropdownWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -147,8 +147,8 @@ const Dropdown = ({
   onChange,
   size,
   placeholder = 'Select your first language',
-  paddingLeft = '2.5rem',
-  paddingRight = '2.5rem',
+  paddingLeft = '1.5rem',
+  paddingRight = '1.5rem',
 }: DropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const theme = useTheme();

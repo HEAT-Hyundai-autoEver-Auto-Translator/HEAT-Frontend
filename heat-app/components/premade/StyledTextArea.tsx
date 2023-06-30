@@ -1,15 +1,20 @@
 import styled from '@emotion/styled';
 
 export const StyledTextarea = styled.textarea<TextareaProps>`
+  resize: none;
   width: 100%;
   height: 100%;
   padding: 15px;
   font-size: 18px;
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid ${({ borderColor }) => borderColor || 'transparent'};
   background-color: ${({ bgColor }) => bgColor || 'transparent'};
   color: ${({ color }) => color || 'black'};
   overflow-y: auto;
+
+  &:focus {
+    outline: none;
+  }
 
   &::-webkit-scrollbar {
     width: 5px;
