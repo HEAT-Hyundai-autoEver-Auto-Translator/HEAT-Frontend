@@ -5,7 +5,7 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
   width: 100%;
   height: 100%;
   padding: 15px;
-  font-size: 18px;
+  font-size: ${({ fontSize }) => fontSize || '3rem'};
   border-radius: 10px;
   border: 1px solid ${({ borderColor }) => borderColor || 'transparent'};
   background-color: ${({ bgColor }) => bgColor || 'transparent'};
@@ -27,7 +27,7 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
 
   &::-webkit-scrollbar-track {
     background-color: ${({ theme }) => theme.colors.mono.input_gray};
-    margin: 20px;
+    margin: 10px;
     border-radius: 10px;
   }
 
@@ -36,7 +36,7 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
   }
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     padding: 12px;
-    font-size: 14px;
+    font-size: ${({ mobileFontSize }) => mobileFontSize || '1.5rem'};
   }
 `;
 
@@ -46,6 +46,8 @@ type TextareaProps = {
   color?: string;
   placeholder?: string;
   placeholderColor?: string;
+  fontSize?: string;
+  mobileFontSize?: string;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void; // Move this here
 };
@@ -58,6 +60,8 @@ export const Textarea = ({
   placeholderColor,
   textareaRef,
   value,
+  fontSize,
+  mobileFontSize,
   onChange,
 }: TextareaProps & {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
@@ -70,6 +74,8 @@ export const Textarea = ({
       color={color}
       placeholder={placeholder}
       placeholderColor={placeholderColor}
+      fontSize={fontSize}
+      mobileFontSize={mobileFontSize}
       value={value}
       onChange={onChange}
     />

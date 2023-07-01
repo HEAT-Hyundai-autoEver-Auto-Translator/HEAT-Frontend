@@ -66,7 +66,7 @@ export const ButtonBase = styled.button<ButtonProps>`
       case 'lg':
         return '2rem';
       case 'sm':
-        return '1.5rem';
+        return '2rem';
       case 'xl':
         return '3rem';
       case 'xs':

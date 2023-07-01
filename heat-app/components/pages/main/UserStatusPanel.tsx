@@ -44,12 +44,15 @@ export const UserStatusPanel = () => {
       </StyledText>
       <Spacer />
       {user && user.userRole === 'admin' && (
-        <StyledButton onClick={() => router.push(ROUTES.ADMIN(user.userId))}>
-          <Admin width="25px" height="25px" />
+        <StyledButton
+          onClick={() => router.push(ROUTES.ADMIN(user.userId))}
+          style={{ marginRight: '0.3rem' }}
+        >
+          <Admin width="26px" height="26px" />
         </StyledButton>
       )}
-      <StyledButton onClick={logout} style={{ backgroundColor: 'transparent' }}>
-        <Logout width="25px" height="25px" />
+      <StyledButton onClick={logout}>
+        <Logout width="24px" height="24px" />
       </StyledButton>
       <StyledButton>
         <Setting width="25px" height="25px" />

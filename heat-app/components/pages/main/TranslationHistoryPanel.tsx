@@ -16,8 +16,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 1,
     userId: 'user1',
-    requestLanguageName: 'eng',
-    resultLanguageName: 'kor',
+    requestLanguageName: 'english',
+    resultLanguageName: 'korean',
     createdDateTime: new Date(),
     requestText: 'Hello',
     resultText: '안녕',
@@ -25,8 +25,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 2,
     userId: 'user2',
-    requestLanguageName: 'eng',
-    resultLanguageName: 'jap',
+    requestLanguageName: 'english',
+    resultLanguageName: 'japanese',
     createdDateTime: new Date(),
     requestText: 'Good morning',
     resultText: 'おはようございます',
@@ -34,8 +34,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 3,
     userId: 'user3',
-    requestLanguageName: 'kor',
-    resultLanguageName: 'eng',
+    requestLanguageName: 'korean',
+    resultLanguageName: 'english',
     createdDateTime: new Date(),
     requestText: '안녕하세요',
     resultText: 'Hello',
@@ -43,8 +43,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 4,
     userId: 'user1',
-    requestLanguageName: 'kor',
-    resultLanguageName: 'jap',
+    requestLanguageName: 'korean',
+    resultLanguageName: 'japapnese',
     createdDateTime: new Date(),
     requestText: '안녕',
     resultText: 'こんにちは',
@@ -52,8 +52,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 5,
     userId: 'user2',
-    requestLanguageName: 'jap',
-    resultLanguageName: 'eng',
+    requestLanguageName: 'japapnese',
+    resultLanguageName: 'english',
     createdDateTime: new Date(),
     requestText: 'こんにちは',
     resultText: 'Hello',
@@ -61,8 +61,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 6,
     userId: 'user3',
-    requestLanguageName: 'jap',
-    resultLanguageName: 'kor',
+    requestLanguageName: 'japapnese',
+    resultLanguageName: 'korean',
     createdDateTime: new Date(),
     requestText: 'おはようございます',
     resultText: '안녕하세요',
@@ -70,8 +70,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 6,
     userId: 'user3',
-    requestLanguageName: 'jap',
-    resultLanguageName: 'kor',
+    requestLanguageName: 'japapnese',
+    resultLanguageName: 'korean',
     createdDateTime: new Date(),
     requestText: 'おはようございます',
     resultText: '안녕하세요',
@@ -79,8 +79,8 @@ const dummyData: Translation[] = [
   {
     translationNo: 6,
     userId: 'user3',
-    requestLanguageName: 'jap',
-    resultLanguageName: 'kor',
+    requestLanguageName: 'japapnese',
+    resultLanguageName: 'korean',
     createdDateTime: new Date(),
     requestText: 'おはようございます',
     resultText: '안녕하세요',
@@ -90,7 +90,6 @@ const dummyData: Translation[] = [
 export const TranslationHistoryPanel = () => {
   const [selecedOption, setSelectedOption] = useState('new');
 
-  console.log(dummyData.length);
   return (
     <HistoryContainer>
       <HStack w="100%" h="5rem" style={{ paddingRight: '0.5rem' }}>

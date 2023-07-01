@@ -4,9 +4,9 @@ import { User } from 'types/schema/User';
 export const defaultUser: User = {
   userId: 'defaultId',
   userName: 'defaultUserName',
-  userRole: 'normal',
+  userRole: 'admin',
   imageUrl: '',
-  languageNo: 'defaultLanguageNo',
+  languageName: 'defaultLanguageNo',
   signupDate: new Date(),
   lastAccessDate: new Date(),
 };

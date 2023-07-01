@@ -18,16 +18,21 @@ const Center = styled.div<CenterProps>`
 
 type ModalType = {
   isOpen: boolean;
+  padding?: string;
   toggle: () => void;
 };
 //children은 모달 안에 들어갈 내용
 type ModalProps = ModalType & React.PropsWithChildren;
 
-const ModalView = styled.div`
+interface ModalViewProps {
+  padding?: string;
+}
+const ModalView = styled.div<ModalViewProps>`
   display: flex;
-  padding: 4rem;
+  padding: ${({ padding }) => padding || '4rem'};
   border-radius: ${({ theme }) => theme.radius.md};
-  background-color: ${({ theme }) => theme.colors.mono.white};
+  // background-color: ${({ theme }) => theme.colors.mono.white};
+  background-color: white;
 `;
 
 // https://velog.io/@sunohvoiin/ReactCSS-%EB%AA%A8%EB%8B%AC%EC%B0%BD%EC%9D%B4-%EC%97%B4%EB%A0%A4%EC%9E%88%EC%9D%84-%EB%95%8C-body-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EB%B0%A9%EC%A7%80%ED%95%98%EA%B8%B0
@@ -56,7 +61,7 @@ const allowScroll = (prevScrollY: number) => {
  * @param toggle - 모달 상태를 전환하는 함수입니다.
  * @param children - 모달 내에서 표시될 내용입니다.
  */
-export const Modal = ({ isOpen, toggle, children }: ModalProps) => {
+export const Modal = ({ isOpen, toggle, padding, children }: ModalProps) => {
   useEffect(() => {
     if (isOpen) {
       const prevScrollY = preventScroll();
@@ -72,7 +77,11 @@ export const Modal = ({ isOpen, toggle, children }: ModalProps) => {
             <Overlay onClick={toggle}>
               <Center w="100%" h="100%">
                 {/* e.stopPropagation() 은 클릭 이벤트가 부모 요소로 전파되는 것을 막아준다. */}
-                <ModalView role="dialog" onClick={e => e.stopPropagation()}>
+                <ModalView
+                  role="dialog"
+                  padding={padding}
+                  onClick={e => e.stopPropagation()}
+                >
                   {children}
                 </ModalView>
               </Center>
