@@ -14,7 +14,6 @@ import Admin from '@/../public/Admin.svg';
 import Logout from '@/../public/Logout.svg';
 import Setting from '@/../public/Setting.svg';
 import { Spacer } from 'components/common/Spacer';
-import { Text } from 'components/common/Text';
 
 export const UserStatusPanel = () => {
   const theme = useTheme();
@@ -31,15 +30,17 @@ export const UserStatusPanel = () => {
     router.push('/login');
   };
   return (
-    <UserStatusPanelContainer w="90%" h="10%" spacing="0.5rem">
+    <UserStatusPanelContainer spacing="0.5rem">
       {isMobile ? (
         <SidebarCloseButton onClick={() => setIsSidebarOpen(false)}>
           <Divider width="80%" color="gray" thickness="2px" />
         </SidebarCloseButton>
       ) : null}
-      <Avatar src={null} size="sm" />
+      <div>
+        <Avatar src={null} size="sm" />
+      </div>
       <StyledText color="white" style={{ marginLeft: '0.5rem' }}>
-        {user.userName}
+        {user.userName + '1231233132313213121231'}
       </StyledText>
       <Spacer />
       {user && user.userRole === 'admin' && (
@@ -58,8 +59,15 @@ export const UserStatusPanel = () => {
 };
 
 const StyledText = styled.p`
+  text-overflow: ellipsis; // 텍스트가 넘칠 경우 말줄임표 표시
+  white-space: nowrap; // 줄바꿈 방지
+  overflow: hidden; // 넘치는 텍스트 숨기기
   font-size: 25px;
   color: ${({ theme }) => theme.colors.mono.white};
+  width: 22rem;
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    width: 20rem;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -92,6 +100,8 @@ export const SidebarCloseButton = styled.button`
 `;
 
 const UserStatusPanelContainer = styled(HStack)`
+  height: 8rem;
+  width: 86%;
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     margin-top: 0.5rem;
   }

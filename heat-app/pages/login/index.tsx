@@ -116,7 +116,9 @@ const Login = () => {
           </form>
           <HStack w="100%" spacing="1rem">
             <StyledDivider />
-            <Text fontSize={'2rem'}>Social Login</Text>
+            <Text fontSize="2rem" mobileFontSize="1rem">
+              Social Login
+            </Text>
             <StyledDivider />
           </HStack>
           <GoogleLoginButton />

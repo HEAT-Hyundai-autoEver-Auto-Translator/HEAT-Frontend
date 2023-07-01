@@ -42,7 +42,7 @@ const MainPage = () => {
 
   return (
     <AuthGuard>
-      <HStack h="100vh" w={isMobile ? '100vw' : '70vw'}>
+      <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
         <VStack w="100%" h="100%">
           <VStack w="100%" h="50%">
             <VStack

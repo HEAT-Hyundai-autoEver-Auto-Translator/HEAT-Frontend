@@ -5,7 +5,7 @@ export type User = {
   userName: string;
   userRole: UserRoleType;
   imageUrl: string;
-  languageNo: string;
+  languageName: string;
   signupDate: Date;
   lastAccessDate: Date;
 };

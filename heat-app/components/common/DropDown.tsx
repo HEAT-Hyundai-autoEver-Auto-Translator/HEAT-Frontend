@@ -4,10 +4,6 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Text } from './Text';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-const DropdownWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
 
 const DropdownMenu = styled.ul<DropdownButtonProps>`
   position: absolute;
@@ -21,6 +17,7 @@ const DropdownMenu = styled.ul<DropdownButtonProps>`
   overflow-y: auto;
   list-style: none;
   padding: 5px;
+  z-index: ${({ theme }) => theme.zIndex.modal};
 
   background-color: ${({ theme }) => theme.colors.mono.white};
   border-radius: 10px;
@@ -53,7 +50,7 @@ const DropdownMenu = styled.ul<DropdownButtonProps>`
 
 const DropdownItem = styled.li`
   padding: 10px;
-  padding-left: 20px;
+  padding-left: 10px;
   border-radius: 20px;
   cursor: pointer;
   &:hover {
@@ -163,7 +160,7 @@ const Dropdown = ({
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
   return (
-    <DropdownWrapper>
+    <div>
       <DropdownButton
         bgColor={theme.colors.mono.input_gray}
         paddingLeft={paddingLeft}
@@ -174,7 +171,7 @@ const Dropdown = ({
         <Text
           fontSize={size === 'xs' ? '1.3rem' : isMobile ? '0.8rem' : '2rem'}
           color={displayValue === placeholder ? '#909090' : 'black'}
-          style={{ paddingLeft: isMobile ? '1rem' : 0 }}
+          style={{ paddingLeft: isMobile ? '1rem' : '0rem' }}
         >
           {displayValue}
         </Text>
@@ -199,7 +196,7 @@ const Dropdown = ({
             </DropdownItem>
           ))}
       </DropdownMenu>
-    </DropdownWrapper>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Divider } from 'components/common/Divider';
+import { Spacer } from 'components/common/Spacer';
 import { VStack } from 'components/common/Stack';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
 import { UserStatusPanel } from 'components/pages/main/UserStatusPanel';
@@ -16,15 +17,14 @@ const Sidebar = () => {
   const theme = useTheme();
   return (
     <SidebarContainer isSidebarOpen={isSidebarOpen}>
-      {/* 여기에 다른 사이드바 요소를 추가할 수 있습니다. */}
-
       <UserStatusPanel />
       <Divider
-        width="90%"
+        width="87%"
         thickness="2px"
         color={theme.colors.primary.semi_light}
       />
       <TranslationHistoryPanel />
+      <Spacer />
     </SidebarContainer>
   );
 };
@@ -43,8 +43,9 @@ const SidebarContainer = styled(VStack)<SidebarContainerProps>`
   position: fixed;
   top: 0;
   right: 0;
-  width: 30%;
+  width: 25%;
   height: 100%;
+  overflow: hidden;
   background-color: ${({ theme }) => theme.colors.primary.default};
   @media ${({ theme }) => theme.Media.mobile_query} {
     transition: all 0.5s ease-in-out;
