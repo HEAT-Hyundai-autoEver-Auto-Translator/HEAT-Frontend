@@ -16,7 +16,7 @@ const Admin = () => {
     <AuthGuard adminOnly>
       관리 페이지 입니다. 관리기능이 제공됩니다
       <div>{uid}</div>
-      <button onClick={() => router.push(ROUTES.MAIN(user.id))}>
+      <button onClick={() => router.push(ROUTES.MAIN(user.userId))}>
         메인 페이지로
       </button>
     </AuthGuard>

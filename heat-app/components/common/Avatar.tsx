@@ -4,12 +4,24 @@ import Image from 'next/image';
 const AvatarWrapper = styled.div<{ size: string }>`
   border-radius: 50%;
   overflow: hidden;
-  width: ${({ size }) => getSize(size)};
-  height: ${({ size }) => getSize(size)};
+  width: ${({ size }) => getSizeWrapper(size)};
+  height: ${({ size }) => getSizeWrapper(size)};
   position: relative;
 `;
 
-const getSize = (size: string): number => {
+const getSizeWrapper = (size: string): string => {
+  switch (size) {
+    case 'sm':
+      return '50px';
+    case 'md':
+      return '75px';
+    case 'lg':
+    default:
+      return '100px';
+  }
+};
+
+const getSizeImage = (size: string): number => {
   switch (size) {
     case 'sm':
       return 50;
@@ -32,8 +44,8 @@ const Avatar = ({ src, alt, size }: AvatarProps) => {
   return (
     <AvatarWrapper size={size}>
       <Image
-        width={getSize(size)}
-        height={getSize(size)}
+        width={getSizeImage(size)}
+        height={getSizeImage(size)}
         src={src || defaultAvatar}
         alt={alt || 'avatar'}
       />

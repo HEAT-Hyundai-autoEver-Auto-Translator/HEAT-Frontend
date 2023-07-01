@@ -15,7 +15,7 @@ export const GoogleLoginButton = () => {
       bgColor="#FF8944"
       hoverColor="#BC5C24"
     >
-      <StyledGoogleLogo style={{ marginLeft: '3rem' }} />
+      <StyledGoogleLogo />
       <Spacer />
       <StyledText>Google Login</StyledText>
       <Spacer />
@@ -24,9 +24,10 @@ export const GoogleLoginButton = () => {
 };
 
 const StyledText = styled.p`
-  margin-right: 3rem;
+  margin-right: 6rem;
   font-size: 2rem;
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     font-size: 1rem;
+    margin-right: 3.5rem;
   }
 `;

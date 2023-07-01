@@ -2,15 +2,18 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import AuthGuard from 'components/auth/AuthGuard';
 import { Button } from 'components/common/Button';
+import { Divider } from 'components/common/Divider';
 import Dropdown from 'components/common/DropDown';
 import { Hamburger } from 'components/common/Hamburger';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import Sidebar from 'components/layout/Sidebar';
 import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
+import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 
 const languageOptions = [
   { label: 'Korean', value: 'Korean' },
@@ -21,21 +24,13 @@ const languageOptions = [
 const MainPage = () => {
   const router = useRouter();
   const theme = useTheme();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const isMobile = useMediaQuery(theme.Media.mobile_query);
   const { uid } = router.query;
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
-
-  useEffect(() => {
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    } else {
-      setIsSidebarOpen(true);
-    }
-  }, [isMobile]);
 
   const handleSubmit = () => {
     setOutputText(inputText);
@@ -47,19 +42,14 @@ const MainPage = () => {
 
   return (
     <AuthGuard>
-      <HStack h="100vh" w={isMobile ? '100vw' : '70vw'}>
+      <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
         <VStack w="100%" h="100%">
-          {isMobile && (
-            <StyledButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-              <Hamburger width="14" height="10" fill="gray" />
-            </StyledButton>
-          )}
           <VStack w="100%" h="50%">
             <VStack
-              w={isMobile ? '100%' : '98%'}
+              w={'100%'}
               h="100%"
               spacing="1rem"
-              style={{ padding: '3rem 2rem 1rem 2rem' }}
+              style={{ padding: '2rem 2rem 1rem 2rem' }}
             >
               <Textarea
                 textareaRef={textareaRef}
@@ -67,7 +57,7 @@ const MainPage = () => {
                 value={inputText}
                 onChange={handleInputChange} // Update this
               />
-              <HStack w="98%" spacing={isMobile ? '1rem' : '2rem'}>
+              <HStack w="100%" spacing={isMobile ? '1rem' : '2rem'}>
                 <StyledText>TO</StyledText>
                 <Dropdown
                   options={languageOptions}
@@ -90,7 +80,7 @@ const MainPage = () => {
             style={{ backgroundColor: theme.colors.primary.semi_dark }}
           >
             <VStack
-              w={isMobile ? '100%' : '98%'}
+              w={'100%'}
               h="100%"
               spacing="1rem"
               style={{ padding: '2.5rem 2rem 2.5rem 2rem' }}
@@ -101,14 +91,14 @@ const MainPage = () => {
                 readOnly
               />
             </VStack>
+            {isMobile && (
+              <SidebarOpenButton onClick={() => setIsSidebarOpen(true)}>
+                <Divider width="80%" color="gray" thickness="2px" />
+              </SidebarOpenButton>
+            )}
           </VStack>
         </VStack>
-        {isSidebarOpen ? (
-          <Sidebar
-            setIsSidebarOpen={setIsSidebarOpen}
-            isSidebarOpen={isSidebarOpen}
-          />
-        ) : null}
+        <Sidebar />
       </HStack>
     </AuthGuard>
   );
@@ -124,18 +114,23 @@ const StyledText = styled.p`
   }
 `;
 
-const StyledButton = styled.button`
+export const SidebarOpenButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   unset: all;
   position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
+  bottom: 0px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 150px;
+  height: 10px;
   pointer: cursor;
-  background-color: transparent;
-  border: 0px solid gray;
-  border-radius: 5px;
+  background-color: ${({ theme }) => theme.colors.mono.input_gray};
+  border: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   &:hover {
-    background-color: gray;
+    background-color: ${({ theme }) => theme.colors.primary.semi_light};
   }
 `;

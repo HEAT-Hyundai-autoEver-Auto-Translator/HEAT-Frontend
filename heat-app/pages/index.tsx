@@ -17,7 +17,7 @@ const HomePage = () => {
   const theme = useTheme();
   const handleStart = () => {
     if (isAuthenticated) {
-      router.push(ROUTES.MAIN(user.id));
+      router.push(ROUTES.MAIN(user.userId));
     } else {
       router.push(ROUTES.LOGIN);
     }

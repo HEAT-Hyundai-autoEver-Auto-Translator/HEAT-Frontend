@@ -1,70 +1,56 @@
 import { useTheme } from '@emotion/react';
-import { Hamburger } from 'components/common/Hamburger';
+import styled from '@emotion/styled';
+import { Divider } from 'components/common/Divider';
+import { Spacer } from 'components/common/Spacer';
 import { VStack } from 'components/common/Stack';
+import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
+import { UserStatusPanel } from 'components/pages/main/UserStatusPanel';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { ROUTES } from 'utils/ROUTES';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
-type SidebarProps = {
-  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isSidebarOpen: boolean;
-};
-
-const Sidebar = ({ setIsSidebarOpen, isSidebarOpen }: SidebarProps) => {
-  const [, setAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [user, setUser] = useAtom(userAtom);
-  const router = useRouter();
+const Sidebar = () => {
+  const [isSidebarOpen] = useAtom(isSidebarOpenAtom);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.Media.mobile_query);
-  const [isSidebarOpenOut, setIsSidebarOpenOut] = useState(isSidebarOpen);
-  const logout = () => {
-    setAuthenticated(false);
-    setUser(defaultUser);
-    router.push('/login');
-  };
-
-  useEffect(() => {
-    if (!isSidebarOpenOut) {
-      const timeoutId = setTimeout(() => {
-        setIsSidebarOpen(false);
-      }, 500);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isSidebarOpenOut, setIsSidebarOpen]);
-
   return (
-    <VStack
-      style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        transition: 'all 0.5s ease-in-out',
-        transform: isSidebarOpenOut ? 'translateX(0)' : 'translateX(100%)',
-        width: isMobile ? '100%' : '30%',
-        height: '100%',
-        backgroundColor: theme.colors.primary.default,
-      }}
-    >
-      {/* 여기에 다른 사이드바 요소를 추가할 수 있습니다. */}
-      {isMobile ? (
-        <button onClick={() => setIsSidebarOpenOut(prev => !prev)}>
-          <Hamburger width="14" height="10" fill="gray" />
-        </button>
-      ) : null}
-      사이드바 입니다
-      {user && user.role === 'admin' ? (
-        <button onClick={() => router.push(ROUTES.ADMIN(user.id))}>
-          관리자 페이지로
-        </button>
-      ) : null}
-      <button onClick={logout}>로그아웃</button>
-    </VStack>
+    <SidebarContainer isSidebarOpen={isSidebarOpen}>
+      <UserStatusPanel />
+      <Divider
+        width="87%"
+        thickness="2px"
+        color={theme.colors.primary.semi_light}
+      />
+      <TranslationHistoryPanel />
+      <Spacer />
+    </SidebarContainer>
   );
 };
 
 export default Sidebar;
+
+interface SidebarContainerProps {
+  isSidebarOpen: boolean;
+}
+/**
+ * @param isSidebarOpen 사이드바가 열려있는지 여부
+ * @description 사이드바 컨테이너
+ * true면 원위치 false면 오른쪽으로 100% 밀림
+ */
+const SidebarContainer = styled(VStack)<SidebarContainerProps>`
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 25%;
+  height: 100%;
+  overflow: hidden;
+  background-color: ${({ theme }) => theme.colors.primary.default};
+  @media ${({ theme }) => theme.Media.mobile_query} {
+    transition: all 0.5s ease-in-out;
+    transform: ${({ isSidebarOpen }) =>
+      isSidebarOpen ? 'translateY(0)' : 'translateY(100%)'};
+    width: 100%;
+  }
+`;

@@ -74,9 +74,6 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
               <VStack style={{ alignItems: 'flex-start' }} spacing="1rem">
                 <Button
                   size={isMobile ? 'xxs' : 'xs'}
-                  bgColor={theme.colors.primary.semi_light}
-                  hoverColor={theme.colors.primary.default}
-                  fontColor={theme.colors.mono.white}
                   type="button"
                   onClick={() => {
                     const elem = document.getElementById('fileInput');
