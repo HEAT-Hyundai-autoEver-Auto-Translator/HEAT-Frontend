@@ -1,4 +1,4 @@
-import AutoEverLogo from '@/../public/AutoEverLogo.svg';
+import AutoEverLogo from 'public/AutoEverLogo.svg';
 import styled from '@emotion/styled';
 
 export const StyledAutoEverLogo = styled(AutoEverLogo)`

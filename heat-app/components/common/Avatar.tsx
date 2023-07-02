@@ -1,9 +1,15 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
+import React from 'react';
 
-const AvatarWrapper = styled.div<{ size: string }>`
+interface AvatarWrapperProps {
+  size: string;
+  onClick?: (e: React.MouseEvent) => void;
+}
+const AvatarWrapper = styled.div<AvatarWrapperProps>`
   border-radius: 50%;
   overflow: hidden;
+  cursor: ${({ onClick }) => (onClick ? 'pointer' : 'default')};
   width: ${({ size }) => getSizeWrapper(size)};
   height: ${({ size }) => getSizeWrapper(size)};
   position: relative;
@@ -37,17 +43,23 @@ interface AvatarProps {
   src: string | null;
   alt?: string;
   size: 'sm' | 'md' | 'lg';
+  onClick?: (e: React.MouseEvent) => void;
 }
 
-const Avatar = ({ src, alt, size }: AvatarProps) => {
+const Avatar = ({ src, alt, size, onClick }: AvatarProps) => {
   const defaultAvatar = '/default-avatar.png'; // Default avatar image path
+  const handleDragStart = (e: React.DragEvent<HTMLImageElement>) => {
+    e.preventDefault();
+  };
+
   return (
-    <AvatarWrapper size={size}>
+    <AvatarWrapper size={size} onClick={onClick}>
       <Image
         width={getSizeImage(size)}
         height={getSizeImage(size)}
         src={src || defaultAvatar}
         alt={alt || 'avatar'}
+        onDragStart={handleDragStart}
       />
     </AvatarWrapper>
   );

@@ -9,7 +9,7 @@ import { StyledTextarea } from 'components/premade/StyledTextArea';
 import { useState } from 'react';
 import { Translation } from 'types/schema/Translation';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import CloseIcon from '@/../public/CloseIcon.svg';
+import CloseIcon from 'public/CloseIcon.svg';
 
 type HistoryCardProps = {
   data: Translation;

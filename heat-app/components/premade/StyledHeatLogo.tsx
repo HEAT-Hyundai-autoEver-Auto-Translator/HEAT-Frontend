@@ -1,4 +1,4 @@
-import HeatLogo from '@/../public/HeatLogo.svg';
+import HeatLogo from 'public/HeatLogo.svg';
 import styled from '@emotion/styled';
 
 export const StyledHeatLogo = styled(HeatLogo)`

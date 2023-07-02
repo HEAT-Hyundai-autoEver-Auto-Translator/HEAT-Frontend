@@ -1,3 +1,4 @@
+import { HistoryPanelContainer } from '@/admin/[uid]';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Divider } from 'components/common/Divider';
@@ -6,11 +7,8 @@ import { VStack } from 'components/common/Stack';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
 import { UserStatusPanel } from 'components/pages/main/UserStatusPanel';
 import { useAtom } from 'jotai';
-import { useRouter } from 'next/router';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
-import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 const Sidebar = () => {
   const [isSidebarOpen] = useAtom(isSidebarOpenAtom);
@@ -23,8 +21,9 @@ const Sidebar = () => {
         thickness="2px"
         color={theme.colors.primary.semi_light}
       />
-      <TranslationHistoryPanel />
-      <Spacer />
+      <VStack w="100%" h="92%">
+        <TranslationHistoryPanel />
+      </VStack>
     </SidebarContainer>
   );
 };
@@ -40,11 +39,12 @@ interface SidebarContainerProps {
  * true면 원위치 false면 오른쪽으로 100% 밀림
  */
 const SidebarContainer = styled(VStack)<SidebarContainerProps>`
+  justify-content: flex-start;
   position: fixed;
   top: 0;
   right: 0;
   width: 25%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   background-color: ${({ theme }) => theme.colors.primary.default};
   @media ${({ theme }) => theme.Media.mobile_query} {

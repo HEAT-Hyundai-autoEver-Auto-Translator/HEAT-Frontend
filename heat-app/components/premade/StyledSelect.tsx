@@ -2,7 +2,7 @@
 // import styled from '@emotion/styled';
 // import { Select } from 'components/common/Select';
 // import React, { SelectHTMLAttributes, forwardRef, useState } from 'react';
-// import ArrowDownIcon from '@/../public/ArrowDownIcon.svg';
+// import ArrowDownIcon from 'public/ArrowDownIcon.svg';
 // import { HStack } from 'components/common/Stack';
 
 // interface StyledSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

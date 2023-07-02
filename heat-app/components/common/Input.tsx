@@ -27,7 +27,7 @@ export const Input = styled.input<InputProps>`
   border: none;
   font-size: ${({ inputSize }) => {
     if (inputSize === 'xl') return '2.5rem';
-    if (inputSize === 'lg') return '2rem';
+    if (inputSize === 'lg') return '2.5rem';
     if (inputSize === 'sm') return '0.8rem';
     return '1rem';
   }};
@@ -52,7 +52,7 @@ export const Input = styled.input<InputProps>`
     }};
     font-size: ${({ inputSize }) => {
       if (inputSize === 'xl') return '1.25rem';
-      if (inputSize === 'lg') return '1rem';
+      if (inputSize === 'lg') return '1.5rem';
       if (inputSize === 'sm') return '0.4rem';
       return '0.5rem';
     }};

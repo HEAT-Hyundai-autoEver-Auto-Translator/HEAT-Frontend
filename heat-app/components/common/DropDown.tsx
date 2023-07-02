@@ -1,11 +1,11 @@
-import ArrowDownIcon from '@/../public/ArrowDownIcon.svg';
+import ArrowDownIcon from 'public/ArrowDownIcon.svg';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Text } from './Text';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 
-const DropdownMenu = styled.ul<DropdownButtonProps>`
+export const DropdownMenu = styled.ul<DropdownButtonProps>`
   position: absolute;
   width: ${({ size }) => {
     if (size === 'xl') return '60rem';
@@ -48,7 +48,7 @@ const DropdownMenu = styled.ul<DropdownButtonProps>`
   }
 `;
 
-const DropdownItem = styled.li`
+export const DropdownItem = styled.li`
   padding: 10px;
   padding-left: 10px;
   border-radius: 20px;

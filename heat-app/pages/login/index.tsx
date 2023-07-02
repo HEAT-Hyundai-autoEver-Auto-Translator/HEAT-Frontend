@@ -15,7 +15,7 @@ import { StyledHeatLogo } from 'components/premade/StyledHeatLogo';
 import { StyledInput } from 'components/premade/StyledInput';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ROUTES } from 'utils/ROUTES';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
@@ -31,6 +31,9 @@ const Login = () => {
   const [user, setUser] = useAtom(userAtom);
   const theme = useTheme();
   const router = useRouter();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const { register, handleSubmit, control, formState } = useForm({
     defaultValues: {
       email: '',
@@ -41,7 +44,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push(ROUTES.MAIN(user.userId));
+      router.push(ROUTES.MAIN(user.userAccountNo));
     }
   }, [isAuthenticated, user, router]);
 
@@ -51,11 +54,13 @@ const Login = () => {
   };
 
   const handleLogin = (role: string) => {
-    //로그인 로직 처리하는 부분
+    // 임시로 로그인 처리 중 나중에는 위의 onsubmit으로 바꿔야함
     setIsAuthenticated(true);
-    if (role === 'admin') {
-      setUser(prev => ({ ...prev, id: 1, role: 'admin' }));
-    }
+  };
+
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+    // console.log(isModalOpen);
   };
 
   return (
@@ -123,7 +128,14 @@ const Login = () => {
           </HStack>
           <GoogleLoginButton />
         </Box>
-        <RegisterModal />
+        <Text
+          fontSize="2rem"
+          onClick={toggleModal}
+          style={{ cursor: 'pointer' }}
+        >
+          Register
+        </Text>
+        <RegisterModal isModalOpen={isModalOpen} toggleModal={toggleModal} />
       </VStack>
       <Spacer />
       <StyledAutoEverLogo fill={theme.colors.primary.default} />

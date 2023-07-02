@@ -10,7 +10,9 @@ import { Text } from 'components/common/Text';
 import { StyledInput } from 'components/premade/StyledInput';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import AvatarUploader from './AvatarUploader';
+import AvatarUploader from '../login/AvatarUploader';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
+import { useAtom } from 'jotai';
 
 interface FormValues {
   email: string;
@@ -25,9 +27,9 @@ interface ModalContainerProps {
   isModalOpen: boolean;
   toggleModal: () => void;
 }
-const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
+const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const theme = useTheme();
-
+  const [user, setUser] = useAtom(userAtom);
   // Initialize react-hook-form
   const {
     register,
@@ -40,11 +42,11 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     clearErrors,
   } = useForm<FormValues>({
     defaultValues: {
-      email: '',
-      username: '',
+      email: user.userEmail,
+      username: user.userName,
       password: '',
       confirmPassword: '',
-      language: '',
+      language: user.languageName,
       avatar: undefined,
     },
   });
@@ -108,7 +110,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   useEffect(() => {
     if (!isModalOpen) {
       reset({
-        email: '',
+        email: user.userEmail,
         username: '',
         password: '',
         confirmPassword: '',
@@ -122,26 +124,10 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     <>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
         <ModalContainer spacing="2.5rem">
-          <StyledText>Register</StyledText>
+          <StyledText>Update</StyledText>
           {/* Start of the form */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack style={{ position: 'relative' }}>
-              <VStack>
-                <StyledInput
-                  inputSize="lg"
-                  placeholder="Email"
-                  {...register('email', {
-                    required: 'Email is required',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                      message: 'invalid email address',
-                    },
-                  })}
-                />
-                <ErrorPanel>
-                  {errors.email ? errors.email.message : null}
-                </ErrorPanel>
-              </VStack>
               <VStack>
                 <StyledInput
                   inputSize="lg"
@@ -192,7 +178,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               <ErrorPanel>
                 {errors.language ? errors.language.message : null}
               </ErrorPanel>
-              <VStack style={{ marginBottom: '2rem' }}>
+              {/* <VStack style={{ marginBottom: '2rem' }}>
                 <StyledInput
                   inputSize="lg"
                   type="password"
@@ -228,7 +214,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                     ? errors.confirmPassword.message
                     : null}
                 </ErrorPanel>
-              </VStack>
+              </VStack> */}
 
               {/* Avatar image upload */}
 
@@ -260,7 +246,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   );
 };
 
-export default RegisterModal;
+export default UpdateModal;
 
 const ModalContainer = styled(VStack)`
   width: 50rem;

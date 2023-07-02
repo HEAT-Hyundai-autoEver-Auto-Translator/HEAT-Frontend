@@ -1,4 +1,4 @@
-import GoogleLogo from '@/../public/GoogleLogo.svg';
+import GoogleLogo from 'public/GoogleLogo.svg';
 import styled from '@emotion/styled';
 
 export const StyledGoogleLogo = styled(GoogleLogo)`
