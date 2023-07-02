@@ -10,16 +10,19 @@ import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
-import Admin from '@/../public/Admin.svg';
-import Logout from '@/../public/Logout.svg';
-import Setting from '@/../public/Setting.svg';
+import Admin from 'public/Admin.svg';
+import Logout from 'public/Logout.svg';
+import Setting from 'public/Setting.svg';
 import { Spacer } from 'components/common/Spacer';
+import UpdateModal from './UpdateModal';
+import { useState } from 'react';
 
 export const UserStatusPanel = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.Media.mobile_query);
   const [, setAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const [user, setUser] = useAtom(userAtom);
   const router = useRouter();
@@ -29,6 +32,11 @@ export const UserStatusPanel = () => {
     setUser(defaultUser);
     router.push('/login');
   };
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+    // console.log(isModalOpen);
+  };
+
   return (
     <UserStatusPanelContainer spacing="0.5rem">
       {isMobile ? (
@@ -40,12 +48,12 @@ export const UserStatusPanel = () => {
         <Avatar src={null} size="sm" />
       </div>
       <StyledText color="white" style={{ marginLeft: '0.5rem' }}>
-        {user.userName + '1231233132313213121231'}
+        {user.userName}
       </StyledText>
       <Spacer />
       {user && user.userRole === 'admin' && (
         <StyledButton
-          onClick={() => router.push(ROUTES.ADMIN(user.userId))}
+          onClick={() => router.push(ROUTES.ADMIN(user.userAccountNo))}
           style={{ marginRight: '0.3rem' }}
         >
           <Admin width="26px" height="26px" />
@@ -54,9 +62,10 @@ export const UserStatusPanel = () => {
       <StyledButton onClick={logout}>
         <Logout width="24px" height="24px" />
       </StyledButton>
-      <StyledButton>
+      <StyledButton onClick={toggleModal}>
         <Setting width="25px" height="25px" />
       </StyledButton>
+      <UpdateModal isModalOpen={isModalOpen} toggleModal={toggleModal} />
     </UserStatusPanelContainer>
   );
 };
@@ -105,6 +114,7 @@ export const SidebarCloseButton = styled.button`
 const UserStatusPanelContainer = styled(HStack)`
   height: 8rem;
   width: 86%;
+
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     margin-top: 0.5rem;
   }

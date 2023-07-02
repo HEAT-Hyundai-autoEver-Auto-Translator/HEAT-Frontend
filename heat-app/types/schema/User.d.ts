@@ -1,7 +1,8 @@
 type UserRoleType = 'normal' | 'admin';
 
 export type User = {
-  userId: string;
+  userAccountNo: number;
+  userEmail: string;
   userName: string;
   userRole: UserRoleType;
   imageUrl: string;

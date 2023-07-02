@@ -12,7 +12,7 @@ const SortOptions = [
   { label: 'OLD', value: 'old' },
 ];
 
-const dummyData: Translation[] = [
+export const dummyData: Translation[] = [
   {
     translationNo: 1,
     userId: 'user1',
@@ -68,7 +68,7 @@ const dummyData: Translation[] = [
     resultText: '안녕하세요',
   },
   {
-    translationNo: 6,
+    translationNo: 7,
     userId: 'user3',
     requestLanguageName: 'japapnese',
     resultLanguageName: 'korean',
@@ -77,7 +77,7 @@ const dummyData: Translation[] = [
     resultText: '안녕하세요',
   },
   {
-    translationNo: 6,
+    translationNo: 8,
     userId: 'user3',
     requestLanguageName: 'japapnese',
     resultLanguageName: 'korean',
@@ -87,12 +87,26 @@ const dummyData: Translation[] = [
   },
 ];
 
-export const TranslationHistoryPanel = () => {
+interface TranslationHistoryPanelProps {
+  historyList?: Translation[];
+}
+
+export const TranslationHistoryPanel = ({
+  historyList = dummyData,
+}: TranslationHistoryPanelProps) => {
   const [selecedOption, setSelectedOption] = useState('new');
 
   return (
     <HistoryContainer>
-      <HStack w="100%" h="5rem" style={{ paddingRight: '0.5rem' }}>
+      <HStack
+        w="100%"
+        h="5rem"
+        style={{
+          paddingRight: '0.5rem',
+          marginTop: '1rem',
+          marginBottom: '1rem',
+        }}
+      >
         <Text fontSize="2rem" color="white" mobileFontSize="1.8rem">
           History
         </Text>
@@ -107,8 +121,10 @@ export const TranslationHistoryPanel = () => {
         />
       </HStack>
       <HistoryCardWrapper spacing="2rem">
-        {dummyData.map(data => {
-          return <HistoryCard data={data}></HistoryCard>;
+        {historyList.map(data => {
+          return (
+            <HistoryCard data={data} key={data.translationNo}></HistoryCard>
+          );
         })}
       </HistoryCardWrapper>
     </HistoryContainer>
@@ -118,12 +134,17 @@ export const TranslationHistoryPanel = () => {
 const HistoryContainer = styled(VStack)`
   width: 90%;
   padding-left: 0.5rem;
+  height: 100%;
+  justify-content: flex-start;
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    height: 100%;
+  }
 `;
 
 const HistoryCardWrapper = styled(VStack)`
   width: 100%;
   justify-content: flex-start;
-  height: 82vh;
+  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
   &::-webkit-scrollbar {
