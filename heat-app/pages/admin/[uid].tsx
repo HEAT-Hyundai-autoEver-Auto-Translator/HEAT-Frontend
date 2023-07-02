@@ -347,7 +347,7 @@ const InputDropDownMenu = styled(DropdownMenu)`
   top: 14.7rem;
   width: 40rem;
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
-    top: 5.5em;
+    top: 6.3em;
   }
 `;
 
