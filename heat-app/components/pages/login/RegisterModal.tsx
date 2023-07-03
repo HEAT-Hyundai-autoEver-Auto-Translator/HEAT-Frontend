@@ -11,6 +11,8 @@ import { StyledInput } from 'components/premade/StyledInput';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
+import { useAtom } from 'jotai';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 
 interface FormValues {
   email: string;
@@ -117,6 +119,18 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       });
     }
   }, [isModalOpen, reset]);
+
+  const [, setToast] = useAtom(toastAtom);
+
+  const toast = () => {
+    console.log('toast');
+    setToast({
+      type: 'success',
+      title: 'Warning',
+      message: 'Failed to fetch data',
+      isOpen: true,
+    });
+  };
 
   return (
     <>
@@ -238,6 +252,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                 <Button
                   size="xs"
                   type="submit" // Make this button submit the form
+                  // onClick={toast}
                 >
                   Submit
                 </Button>

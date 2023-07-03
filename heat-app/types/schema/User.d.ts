@@ -5,7 +5,7 @@ export type User = {
   userEmail: string;
   userName: string;
   userRole: UserRoleType;
-  imageUrl: string;
+  profileImageUrl: string;
   languageName: string;
   signupDate: Date;
   lastAccessDate: Date;

@@ -7,11 +7,11 @@ const colors = {
   },
   semantic: {
     success_light: '#C6F6D5',
-    success_default: 'green/500',
+    success_default: 'green',
     warning_light: '#FEEBCB',
-    warning_default: 'orange/500',
+    warning_default: 'orange',
     error_light: '#FED7D7',
-    error_default: 'red/500',
+    error_default: 'red',
   },
   mono: {
     black: '#161616',
@@ -51,6 +51,7 @@ const zIndex = {
   overlay: 300,
   navBar: 400,
   modal: 500,
+  toast: 600,
 };
 
 const radius = {
