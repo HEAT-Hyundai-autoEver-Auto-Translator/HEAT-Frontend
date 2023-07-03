@@ -28,7 +28,7 @@ const dummyUserList: User[] = [
     userEmail: 'user1@example.com',
     userName: 'User 1',
     userRole: 'normal',
-    imageUrl: 'https://example.com/user1.jpg',
+    profileImageUrl: 'https://example.com/user1.jpg',
     languageName: 'korean',
     signupDate: new Date(),
     lastAccessDate: new Date(),
@@ -38,7 +38,7 @@ const dummyUserList: User[] = [
     userEmail: 'user2@example.com',
     userName: 'User 2',
     userRole: 'normal',
-    imageUrl: 'https://example.com/user2.jpg',
+    profileImageUrl: 'https://example.com/user2.jpg',
     languageName: 'english',
     signupDate: new Date(),
     lastAccessDate: new Date(),
@@ -48,7 +48,7 @@ const dummyUserList: User[] = [
     userEmail: 'user3@example.com',
     userName: 'User 3',
     userRole: 'admin',
-    imageUrl: 'https://example.com/user3.jpg',
+    profileImageUrl: 'https://example.com/user3.jpg',
     languageName: 'japanese',
     signupDate: new Date(),
     lastAccessDate: new Date(),
@@ -245,7 +245,7 @@ const Admin = () => {
             )}
             <div>
               <Avatar
-                src={searchedUser?.imageUrl || null}
+                src={searchedUser?.profileImageUrl || null}
                 size="sm"
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();

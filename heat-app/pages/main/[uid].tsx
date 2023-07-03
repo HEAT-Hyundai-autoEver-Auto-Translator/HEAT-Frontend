@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 
 const languageOptions = [
   { label: 'Korean', value: 'Korean' },

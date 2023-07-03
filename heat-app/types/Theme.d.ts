@@ -53,6 +53,7 @@ type ZIndex = {
   overlay: number;
   navBar: number;
   modal: number;
+  toast: number;
 };
 
 type Radius = {
