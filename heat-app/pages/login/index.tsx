@@ -9,7 +9,6 @@ import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
 import { GoogleLoginButton } from 'components/pages/login/GoogleLoginButton';
 import RegisterModal from 'components/pages/login/RegisterModal';
-
 import { StyledAutoEverLogo } from 'components/premade/StyledAutoEverLogo';
 import { StyledHeatLogo } from 'components/premade/StyledHeatLogo';
 import { StyledInput } from 'components/premade/StyledInput';
@@ -62,6 +61,14 @@ const Login = () => {
     setModalOpen(!isModalOpen);
     // console.log(isModalOpen);
   };
+
+  // const { data, isLoading, isError, error, refetch } = useQuery(
+  //   'fetchData',
+  //   () => getData('/user'),
+  // );
+
+  // if (isLoading) return <LoadingComponent />;
+  // if (isError) return <ErrorComponent error={error} refetch={refetch} />;
 
   return (
     <VStack w="100vw" h="100vh" spacing="5rem" padding="5rem 0 0 0">

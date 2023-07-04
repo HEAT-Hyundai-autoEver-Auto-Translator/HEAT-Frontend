@@ -7,3 +7,9 @@ export type Translation = {
   requestText: string;
   resultText: string;
 };
+
+export type RequestTranslation = {
+  userAccountNo: number;
+  requestText: string;
+  resultLanguageNo: number;
+};

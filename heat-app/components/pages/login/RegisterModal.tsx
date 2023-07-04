@@ -13,6 +13,11 @@ import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
 import { useAtom } from 'jotai';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { useMutation } from 'react-query';
+import { CreateUser } from 'types/schema/User';
+import { postDataWithBody } from 'utils/api/api';
+import { LoadingComponent } from 'components/common/Loading';
+import { ErrorComponent } from 'components/common/Error';
 
 interface FormValues {
   email: string;
@@ -67,45 +72,35 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
-  const onSubmit = (data: FormValues) => {
+  const mutation = useMutation((userData: FormData) =>
+    postDataWithBody('/user', userData),
+  );
+
+  if (mutation.isLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (mutation.isError) {
+    return <ErrorComponent error={mutation.error} />;
+  }
+
+  const onSubmit = async (data: FormValues) => {
     console.log('email', data.email);
     console.log('username', data.username);
     console.log('password', data.password);
     console.log('avatar', data.avatar);
     console.log('language', data.language);
-    // TODO: Send data to the backend
+    const formData = new FormData();
+
+    // "avatar" is the name of the field for the file
+    formData.append('userEmail', data.email);
+    formData.append('password', data.password);
+    formData.append('userName', data.username);
+    formData.append('profileImageUrl', data.avatar[0]);
+    formData.append('languageNo', data.language);
+    // Append other form data
+    mutation.mutate(formData);
   };
-
-  //TODO: 백엔드 통신 되면 이런 방식으로 바꾸기
-  // type CreateUserDTO = {
-  //   userId: string;
-  //   password: string;
-  //   userName: string;
-  //   imageUrl: string;
-  //   languageNo: string;
-  // }
-  // const onSubmit = async (data :FormValues) => {
-  //   const formData = new FormData();
-
-  //   // "avatar" is the name of the field for the file
-  //   formData.append('avatar', data.avatar[0]);
-
-  //   // Append other form data
-  //   formData.append('email', data.email);
-  //   formData.append('username', data.username);
-  //   formData.append('password', data.password);
-
-  //   try {
-  //     const response = await axios.post('your-api-url', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     });
-  //     console.log(response.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -120,17 +115,17 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   }, [isModalOpen, reset]);
 
-  const [, setToast] = useAtom(toastAtom);
+  // const [, setToast] = useAtom(toastAtom);
 
-  const toast = () => {
-    console.log('toast');
-    setToast({
-      type: 'success',
-      title: 'Warning',
-      message: 'Failed to fetch data',
-      isOpen: true,
-    });
-  };
+  // const toast = () => {
+  //   console.log('toast');
+  //   setToast({
+  //     type: 'success',
+  //     title: 'Warning',
+  //     message: 'Failed to fetch data',
+  //     isOpen: true,
+  //   });
+  // };
 
   return (
     <>
@@ -193,9 +188,19 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                       size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
-                        { label: 'Korean', value: 'kor' },
-                        { label: 'English', value: 'eng' },
-                        { label: 'Japanese', value: 'jap' },
+                        { label: 'Korean', value: 'ko' },
+                        { label: 'English', value: 'en' },
+                        { label: 'Chinese', value: 'zh' },
+                        { label: 'Spanish', value: 'es' },
+                        { label: 'Portuguese', value: 'pt' },
+                        { label: 'German', value: 'de' },
+                        { label: 'Czech', value: 'cs' },
+                        { label: 'Slovak', value: 'sk' },
+                        { label: 'Russian', value: 'ru' },
+                        { label: 'Hindi', value: 'hi' },
+                        { label: 'Indonesian', value: 'id' },
+                        { label: 'Arabic', value: 'ar' },
+                        { label: 'Vietnamese', value: 'vi' },
                       ]}
                       value={field.value}
                       onChange={field.onChange}
