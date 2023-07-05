@@ -21,7 +21,7 @@ export type CreateUser = {
   password: string;
   userName: string;
   profileImageUrl: string;
-  languageNo: number;
+  languageName: string;
 };
 
 export type UpdateUser = {
@@ -29,5 +29,5 @@ export type UpdateUser = {
   password?: string;
   userName?: string;
   userRole?: string;
-  languageNo?: number;
+  languageName?: string;
 };

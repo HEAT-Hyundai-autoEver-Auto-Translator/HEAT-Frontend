@@ -4,7 +4,6 @@ import AuthGuard from 'components/auth/AuthGuard';
 import { Button } from 'components/common/Button';
 import { Divider } from 'components/common/Divider';
 import Dropdown from 'components/common/DropDown';
-import { Hamburger } from 'components/common/Hamburger';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import Sidebar from 'components/layout/Sidebar';
@@ -12,6 +11,7 @@ import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
+import { set } from 'react-hook-form';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
@@ -32,8 +32,9 @@ const MainPage = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = () => {
+    setIsLoading(true);
     setOutputText(inputText);
   };
 
@@ -88,7 +89,7 @@ const MainPage = () => {
             >
               <StyledTextarea
                 color={theme.colors.mono.white}
-                value={outputText}
+                value={isLoading ? 'loading...' : outputText}
                 readOnly
               />
             </VStack>

@@ -6,6 +6,7 @@ import { Spacer } from 'components/common/Spacer';
 import Dropdown from 'components/common/DropDown';
 import { useState } from 'react';
 import { Translation } from 'types/schema/Translation';
+import { Skeleton } from 'components/common/Skeleton';
 
 const SortOptions = [
   { label: 'NEW', value: 'new' },
@@ -95,7 +96,7 @@ export const TranslationHistoryPanel = ({
   historyList = dummyData,
 }: TranslationHistoryPanelProps) => {
   const [selecedOption, setSelectedOption] = useState('new');
-
+  const isLoading = !historyList || historyList.length === 0;
   return (
     <HistoryContainer>
       <HStack
@@ -121,11 +122,21 @@ export const TranslationHistoryPanel = ({
         />
       </HStack>
       <HistoryCardWrapper spacing="2rem">
-        {historyList.map(data => {
-          return (
-            <HistoryCard data={data} key={data.translationNo}></HistoryCard>
-          );
-        })}
+        {isLoading ? (
+          // 로딩 중일 때 스켈레톤 컴포넌트를 표시
+          <>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </>
+        ) : (
+          // 로딩이 완료되면 데이터를 표시
+          historyList.map(data => (
+            <HistoryCard data={data} key={data.translationNo} />
+          ))
+        )}
       </HistoryCardWrapper>
     </HistoryContainer>
   );

@@ -16,8 +16,8 @@ import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { useMutation } from 'react-query';
 import { CreateUser } from 'types/schema/User';
 import { postDataWithBody } from 'utils/api/api';
-import { LoadingComponent } from 'components/common/Loading';
-import { ErrorComponent } from 'components/common/Error';
+import { LoadingComponent } from 'components/common/LoadingComponent';
+import { ErrorComponent } from 'components/common/ErrorComponent';
 
 interface FormValues {
   email: string;
@@ -85,6 +85,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   }
 
   const onSubmit = async (data: FormValues) => {
+    console.log('!!');
     console.log('email', data.email);
     console.log('username', data.username);
     console.log('password', data.password);
@@ -96,8 +97,8 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     formData.append('userEmail', data.email);
     formData.append('password', data.password);
     formData.append('userName', data.username);
-    formData.append('profileImageUrl', data.avatar[0]);
-    formData.append('languageNo', data.language);
+    if (data.avatar) formData.append('profileImageUrl', data.avatar[0]);
+    formData.append('languageName', data.language);
     // Append other form data
     mutation.mutate(formData);
   };
@@ -188,19 +189,19 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                       size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
-                        { label: 'Korean', value: 'ko' },
-                        { label: 'English', value: 'en' },
-                        { label: 'Chinese', value: 'zh' },
-                        { label: 'Spanish', value: 'es' },
-                        { label: 'Portuguese', value: 'pt' },
-                        { label: 'German', value: 'de' },
-                        { label: 'Czech', value: 'cs' },
-                        { label: 'Slovak', value: 'sk' },
-                        { label: 'Russian', value: 'ru' },
-                        { label: 'Hindi', value: 'hi' },
-                        { label: 'Indonesian', value: 'id' },
-                        { label: 'Arabic', value: 'ar' },
-                        { label: 'Vietnamese', value: 'vi' },
+                        { label: 'Korean', value: 'Korean' },
+                        { label: 'English', value: 'English' },
+                        { label: 'Chinese', value: 'Chinese' },
+                        { label: 'Spanish', value: 'Spanish' },
+                        { label: 'Portuguese', value: 'Portuguese' },
+                        { label: 'German', value: 'German' },
+                        { label: 'Czech', value: 'Czech' },
+                        { label: 'Slovak', value: 'Slovak' },
+                        { label: 'Russian', value: 'Russian' },
+                        { label: 'Hindi', value: 'Hindi' },
+                        { label: 'Indonesian', value: 'Indonesian' },
+                        { label: 'Arabic', value: 'Arabic' },
+                        { label: 'Vietnamese', value: 'Vietnamese' },
                       ]}
                       value={field.value}
                       onChange={field.onChange}

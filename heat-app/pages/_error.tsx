@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Button } from 'components/common/Button';
 import { NextPageContext } from 'next';
 import Link from 'next/link';
 
@@ -9,17 +10,17 @@ const ErrorWrapper = styled.div`
   justify-content: center;
   min-height: 100vh;
   text-align: center;
+  background-color: ${({ theme }) => theme.colors.primary.default};
 `;
 
 const ErrorMessage = styled.h1`
-  color: red;
+  color: white;
   margin-bottom: 1rem;
 `;
 
 const HomeLink = styled.a`
-  color: blue;
+  color: white;
   cursor: pointer;
-  text-decoration: underline;
 `;
 
 type ErrorProps = {
@@ -39,9 +40,11 @@ const Error = ({ statusCode }: ErrorProps) => {
           ? `An error ${statusCode} occurred on server`
           : 'An error occurred on client'}
       </ErrorMessage>
-      <Link href="/" passHref>
-        <HomeLink>Go to Homepage</HomeLink>
-      </Link>
+      <Button size="lg">
+        <Link href="/" passHref>
+          <HomeLink>Go to Homepage</HomeLink>
+        </Link>
+      </Button>
     </ErrorWrapper>
   );
 };
