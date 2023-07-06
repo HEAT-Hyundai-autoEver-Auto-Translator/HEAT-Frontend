@@ -18,6 +18,7 @@ import { CreateUser } from 'types/schema/User';
 import { postDataWithBody } from 'utils/api/api';
 import { LoadingComponent } from 'components/common/LoadingComponent';
 import { ErrorComponent } from 'components/common/ErrorComponent';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 
 interface FormValues {
   email: string;
@@ -34,7 +35,7 @@ interface ModalContainerProps {
 }
 const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const theme = useTheme();
-
+  const [languageList] = useAtom(languageListAtom);
   // Initialize react-hook-form
   const {
     register,
@@ -100,7 +101,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     if (data.avatar) formData.append('profileImageUrl', data.avatar[0]);
     formData.append('languageName', data.language);
     // Append other form data
-    mutation.mutate(formData);
+    // mutation.mutate(formData);
   };
 
   useEffect(() => {
@@ -189,19 +190,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                       size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
-                        { label: 'Korean', value: 'Korean' },
-                        { label: 'English', value: 'English' },
-                        { label: 'Chinese', value: 'Chinese' },
-                        { label: 'Spanish', value: 'Spanish' },
-                        { label: 'Portuguese', value: 'Portuguese' },
-                        { label: 'German', value: 'German' },
-                        { label: 'Czech', value: 'Czech' },
-                        { label: 'Slovak', value: 'Slovak' },
-                        { label: 'Russian', value: 'Russian' },
-                        { label: 'Hindi', value: 'Hindi' },
-                        { label: 'Indonesian', value: 'Indonesian' },
-                        { label: 'Arabic', value: 'Arabic' },
-                        { label: 'Vietnamese', value: 'Vietnamese' },
+                        ...languageList,
                       ]}
                       value={field.value}
                       onChange={field.onChange}

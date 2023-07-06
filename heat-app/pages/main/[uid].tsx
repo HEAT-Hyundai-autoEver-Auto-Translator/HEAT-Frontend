@@ -4,23 +4,22 @@ import AuthGuard from 'components/auth/AuthGuard';
 import { Button } from 'components/common/Button';
 import { Divider } from 'components/common/Divider';
 import Dropdown from 'components/common/DropDown';
+import { ErrorComponent } from 'components/common/ErrorComponent';
+import { LoadingComponent } from 'components/common/LoadingComponent';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import Sidebar from 'components/layout/Sidebar';
 import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { set } from 'react-hook-form';
+import { useMutation, useQuery } from 'react-query';
+import { getData, getDataWithParams, postDataWithBody } from 'utils/api/api';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-
-const languageOptions = [
-  { label: 'Korean', value: 'Korean' },
-  { label: 'English', value: 'English' },
-  { label: 'Japanese', value: 'Japanese' },
-];
 
 const MainPage = () => {
   const router = useRouter();
@@ -33,15 +32,73 @@ const MainPage = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [translationNo, setTranslationNo] = useState<number | null>(null); // 번역 번호 상태 추가
+  const [languageList] = useAtom(languageListAtom);
+  const {
+    data: result,
+    isLoading: mutationIsLoading,
+    isError,
+    error,
+    mutate,
+  } = useMutation((userData: FormData) =>
+    postDataWithBody('/translation', userData),
+  );
+
+  // 번역 결과 요청을 위한 useQuery. 번역 번호 상태가 null이 아닐 때에만 실행됩니다.
+  const {
+    data: translationResult,
+    isLoading: translationIsLoading,
+    isError: translationIsError,
+    error: translationError,
+    refetch: refetchTranslation,
+  } = useQuery(
+    ['getTranslationResult', translationNo],
+    () =>
+      getDataWithParams(`/translation/translation-no`, {
+        'translation-no': translationNo,
+      }),
+    { enabled: translationNo !== null, retry: 10, retryDelay: 5000 },
+  );
+
   const handleSubmit = () => {
     setIsLoading(true);
-    setOutputText(inputText);
+    const formData = new FormData();
+    console.log(inputText);
+    console.log(selectedLanguage);
+    formData.append('userAccountNo', '1');
+    formData.append('requestText', inputText);
+    formData.append('resultLanguageName', selectedLanguage);
+    mutate(formData, {
+      onSuccess: data => {
+        console.log(data);
+        setTranslationNo(data);
+      },
+      onError: error => {
+        setIsLoading(false);
+        console.log(error);
+      },
+    });
   };
+
+  useEffect(() => {
+    if (translationResult) {
+      setIsLoading(false);
+      console.log(translationResult);
+      setOutputText(translationResult.resultText);
+    }
+  }, [translationResult]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value);
   };
 
+  if (mutationIsLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (isError) {
+    return <ErrorComponent error={error} />;
+  }
   return (
     <AuthGuard>
       <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
@@ -62,7 +119,7 @@ const MainPage = () => {
               <HStack w="100%" spacing={isMobile ? '1rem' : '2rem'}>
                 <StyledText>TO</StyledText>
                 <Dropdown
-                  options={languageOptions}
+                  options={languageList}
                   value={selectedLanguage}
                   onChange={setSelectedLanguage}
                   paddingLeft="1rem"

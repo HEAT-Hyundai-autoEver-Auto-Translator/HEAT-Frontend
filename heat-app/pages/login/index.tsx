@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 import { Box } from 'components/common/Box';
 import { Button } from 'components/common/Button';
 import { Divider } from 'components/common/Divider';
+import { ErrorComponent } from 'components/common/ErrorComponent';
 import { ErrorPanel } from 'components/common/ErrorPanel';
+import { LoadingComponent } from 'components/common/LoadingComponent';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
@@ -16,7 +18,9 @@ import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
 import { ROUTES } from 'utils/ROUTES';
+import { postDataWithBody } from 'utils/api/api';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { userAtom } from 'utils/jotai/atoms/userAtom';
 
@@ -50,7 +54,26 @@ const Login = () => {
   const onSubmit = (data: FormValues) => {
     // Log in logic goes here...
     console.log(data);
+    const formData = new FormData();
+    // formData.append('userEmail', data.email);
+    // formData.append('userPassword', data.password);
+    formData.append('userEmail', 'test5@example.com');
+    formData.append('userPassword', 'password5');
+    console.log(formData);
+
+    mutate(formData, { onError: error => console.log(error) });
+    console.log(result);
   };
+
+  const {
+    data: result,
+    isLoading,
+    isError,
+    error,
+    mutate,
+  } = useMutation((userData: FormData) =>
+    postDataWithBody('/user/login', userData),
+  );
 
   const handleLogin = (role: string) => {
     // 임시로 로그인 처리 중 나중에는 위의 onsubmit으로 바꿔야함
@@ -70,6 +93,29 @@ const Login = () => {
   // if (isLoading) return <LoadingComponent />;
   // if (isError) return <ErrorComponent error={error} refetch={refetch} />;
 
+  const getCookie = (name: string) => {
+    console.log('cookies', document.cookie);
+    const cookieArray = document.cookie.split('; ');
+    const cookieName = name + '=';
+    const cookie = cookieArray.find(cookie => cookie.includes(cookieName));
+    if (cookie) {
+      const cookieValue = cookie.split('=')[1];
+      console.log(`${name}: ${cookieValue}`);
+    } else {
+      console.log(`${name} does not exist`);
+    }
+  };
+
+  getCookie('accessToken');
+  getCookie('refreshToken');
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (isError) {
+    return <ErrorComponent error={error} />;
+  }
   return (
     <VStack w="100vw" h="100vh" spacing="5rem" padding="5rem 0 0 0">
       <Spacer />
@@ -116,7 +162,7 @@ const Login = () => {
               </ErrorPanel>
               <Button
                 size="lg"
-                onClick={() => handleLogin('normal')}
+                // onClick={() => handleLogin('normal')}
                 type="submit"
               >
                 Login
