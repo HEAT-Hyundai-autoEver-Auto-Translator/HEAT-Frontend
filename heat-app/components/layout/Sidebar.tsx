@@ -7,12 +7,51 @@ import { VStack } from 'components/common/Stack';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
 import { UserStatusPanel } from 'components/pages/main/UserStatusPanel';
 import { useAtom } from 'jotai';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { Translation } from 'types/schema/Translation';
+import { getDataWithParams } from 'utils/api/api';
 
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
 
-const Sidebar = () => {
+interface SidebarProps {
+  outputText: string | null;
+}
+const Sidebar = ({ outputText }: SidebarProps) => {
   const [isSidebarOpen] = useAtom(isSidebarOpenAtom);
   const theme = useTheme();
+  const [user, setUser] = useAtom(userAtom);
+  const [historyList, setHistoryList] = useState<Translation[]>([]);
+  const {
+    data: historyResult,
+    isLoading: historyIsLoading,
+    isError: historyIsError,
+    error: historyError,
+    refetch: historyRefetch,
+  } = useQuery(
+    ['getHistoryResult', user?.userEmail],
+    () =>
+      getDataWithParams(`/translation/user-email`, {
+        'user-email': user.userEmail,
+      }),
+    { enabled: user !== null, retry: 5, retryDelay: 5000 },
+  );
+
+  useEffect(() => {
+    if (historyResult) {
+      setHistoryList(historyResult);
+      console.log(historyResult);
+    }
+  }, [historyResult]);
+
+  // translationNo가 변화할 때마다 historyRefetch를 호출합니다.
+  useEffect(() => {
+    if (outputText !== null) {
+      historyRefetch();
+    }
+  }, [outputText]);
+
   return (
     <SidebarContainer isSidebarOpen={isSidebarOpen}>
       <UserStatusPanel />
@@ -22,7 +61,10 @@ const Sidebar = () => {
         color={theme.colors.primary.semi_light}
       />
       <VStack w="100%" h="92%">
-        <TranslationHistoryPanel />
+        <TranslationHistoryPanel
+          historyList={historyList}
+          isLoading={historyIsLoading}
+        />
       </VStack>
     </SidebarContainer>
   );

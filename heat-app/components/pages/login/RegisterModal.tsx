@@ -13,6 +13,14 @@ import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
 import { useAtom } from 'jotai';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { useMutation } from 'react-query';
+import { CreateUser } from 'types/schema/User';
+import { postDataWithBody } from 'utils/api/api';
+import { LoadingComponent } from 'components/common/LoadingComponent';
+import { ErrorComponent } from 'components/common/ErrorComponent';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import apiClient, { BACK_END_URL } from 'utils/api/apiClient';
+import axios from 'axios';
 
 interface FormValues {
   email: string;
@@ -29,7 +37,7 @@ interface ModalContainerProps {
 }
 const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const theme = useTheme();
-
+  const [languageList] = useAtom(languageListAtom);
   // Initialize react-hook-form
   const {
     register,
@@ -67,45 +75,44 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
-  const onSubmit = (data: FormValues) => {
+  const Axios = axios.create({
+    baseURL: BACK_END_URL,
+    withCredentials: true,
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  const mutation = useMutation((userData: FormData) =>
+    Axios.post('/user', userData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  );
+
+  const onSubmit = async (data: FormValues) => {
+    console.log('!!');
     console.log('email', data.email);
     console.log('username', data.username);
     console.log('password', data.password);
     console.log('avatar', data.avatar);
     console.log('language', data.language);
-    // TODO: Send data to the backend
+    const formData = new FormData();
+
+    // "avatar" is the name of the field for the file
+    const createUser: CreateUser = {
+      userEmail: data.email,
+      userName: data.username,
+      password: data.password,
+      languageName: data.language,
+    };
+    // append "createUserDto" field as a Blob containing the JSON string of createUser
+    formData.append(
+      'createUserDto',
+      new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
+    );
+
+    if (data.avatar) formData.append('userProfileImage', data.avatar[0]);
+    formData.append('languageName', data.language);
+    // Append other form data
+    mutation.mutate(formData);
   };
-
-  //TODO: 백엔드 통신 되면 이런 방식으로 바꾸기
-  // type CreateUserDTO = {
-  //   userId: string;
-  //   password: string;
-  //   userName: string;
-  //   imageUrl: string;
-  //   languageNo: string;
-  // }
-  // const onSubmit = async (data :FormValues) => {
-  //   const formData = new FormData();
-
-  //   // "avatar" is the name of the field for the file
-  //   formData.append('avatar', data.avatar[0]);
-
-  //   // Append other form data
-  //   formData.append('email', data.email);
-  //   formData.append('username', data.username);
-  //   formData.append('password', data.password);
-
-  //   try {
-  //     const response = await axios.post('your-api-url', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     });
-  //     console.log(response.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -120,17 +127,17 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   }, [isModalOpen, reset]);
 
-  const [, setToast] = useAtom(toastAtom);
+  // const [, setToast] = useAtom(toastAtom);
 
-  const toast = () => {
-    console.log('toast');
-    setToast({
-      type: 'success',
-      title: 'Warning',
-      message: 'Failed to fetch data',
-      isOpen: true,
-    });
-  };
+  // const toast = () => {
+  //   console.log('toast');
+  //   setToast({
+  //     type: 'success',
+  //     title: 'Warning',
+  //     message: 'Failed to fetch data',
+  //     isOpen: true,
+  //   });
+  // };
 
   return (
     <>
@@ -193,9 +200,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                       size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
-                        { label: 'Korean', value: 'kor' },
-                        { label: 'English', value: 'eng' },
-                        { label: 'Japanese', value: 'jap' },
+                        ...languageList,
                       ]}
                       value={field.value}
                       onChange={field.onChange}

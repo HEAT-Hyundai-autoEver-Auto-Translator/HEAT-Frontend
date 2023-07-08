@@ -34,6 +34,7 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
   ::placeholder {
     color: ${({ placeholderColor }) => placeholderColor || 'gray'};
   }
+
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     padding: 12px;
     font-size: ${({ mobileFontSize }) => mobileFontSize || '1.5rem'};
@@ -49,6 +50,7 @@ type TextareaProps = {
   fontSize?: string;
   mobileFontSize?: string;
   value?: string;
+
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void; // Move this here
 };
 

@@ -3,7 +3,13 @@ export type Translation = {
   userId: string;
   requestLanguageName: string;
   resultLanguageName: string;
-  createdDateTime: Date;
+  createDateTime: Date;
   requestText: string;
   resultText: string;
+};
+
+export type RequestTranslation = {
+  userAccountNo: number;
+  requestText: string;
+  resultLanguageNo: number;
 };

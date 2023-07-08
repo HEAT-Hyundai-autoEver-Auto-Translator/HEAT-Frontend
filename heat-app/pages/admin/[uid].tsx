@@ -12,7 +12,7 @@ import Dropdown, {
   DropdownItem,
   DropdownMenu,
 } from 'components/common/DropDown';
-import { User } from 'types/schema/User';
+import { User, UserRoleType } from 'types/schema/User';
 import { useDebounce } from 'utils/hooks/useDebounce';
 import { Text } from 'components/common/Text';
 import { useTheme } from '@emotion/react';
@@ -22,38 +22,14 @@ import Avatar from 'components/common/Avatar';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { Divider } from 'components/common/Divider';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
-const dummyUserList: User[] = [
-  {
-    userAccountNo: 1,
-    userEmail: 'user1@example.com',
-    userName: 'User 1',
-    userRole: 'normal',
-    profileImageUrl: 'https://example.com/user1.jpg',
-    languageName: 'korean',
-    signupDate: new Date(),
-    lastAccessDate: new Date(),
-  },
-  {
-    userAccountNo: 2,
-    userEmail: 'user2@example.com',
-    userName: 'User 2',
-    userRole: 'normal',
-    profileImageUrl: 'https://example.com/user2.jpg',
-    languageName: 'english',
-    signupDate: new Date(),
-    lastAccessDate: new Date(),
-  },
-  {
-    userAccountNo: 3,
-    userEmail: 'user3@example.com',
-    userName: 'User 3',
-    userRole: 'admin',
-    profileImageUrl: 'https://example.com/user3.jpg',
-    languageName: 'japanese',
-    signupDate: new Date(),
-    lastAccessDate: new Date(),
-  },
-];
+import {
+  deleteDataWithParams,
+  getDataWithParams,
+  patchDataWithBody,
+} from 'utils/api/api';
+import { useMutation, useQuery } from 'react-query';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import apiClient from 'utils/api/apiClient';
 
 const ControlOptions = [
   { label: 'GIVE ADMIN', value: 'admin' },
@@ -66,14 +42,16 @@ const SortOptions = [
 ];
 
 const Admin = () => {
-  const [usernameInput, setUsernameInput] = useState('test');
+  const [, setToast] = useAtom(toastAtom);
+
+  const [usernameInput, setUsernameInput] = useState('');
   const [user, setUser] = useAtom(userAtom);
   const theme = useTheme();
   const [showInputDropdown, setShowInputDropdown] = useState(false);
   const [showControlDropdown, setShowControlDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const debouncedSearchValue = useDebounce(usernameInput, 500);
-  const [searchedUser, setSearchedUser] = useState<User | null>(defaultUser);
+  const [searchedUser, setSearchedUser] = useState<User | null>(null);
   const [searchedHistory, setSearchedHistory] = useState<Translation | null>(
     null,
   );
@@ -81,18 +59,95 @@ const Admin = () => {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useMediaQuery(theme.Media.mobile_query);
+
   /**
    * @description username기반 쿼리 요청
-   * 실제 백엔드에 유저 리스트를 검색하는 함수
-   * @param username
+   * 실제 백엔드에 유저 리스트를 검색
+   * @param debouncedSearchValue
    */
-  const SearchUserList = async (username: string) => {
-    //TODO: 실제 api와 통신하도록 수정
-    // const response = await fetch(`/api/users?username=${username}`);
-    // const users = await response.json();
-    // return users;
-    // return dummyUserList.filter(user => user.userName.includes(username));
+  const {
+    data: debounceList,
+    isLoading: debounceIsLoading,
+    isError: debounceIsError,
+    error: debounceError,
+    refetch: debounceRefetch,
+  } = useQuery(
+    ['getDebounceList', debouncedSearchValue],
+    () =>
+      getDataWithParams(`/user/list/`, {
+        username: debouncedSearchValue,
+      }),
+    { enabled: debouncedSearchValue !== null && debouncedSearchValue !== '' },
+  );
+
+  /**
+   * @description username기반 쿼리 요청
+   * 실제 백엔드에 특정 유저를 검색
+   * @param usernameInput
+   */
+  const {
+    data: userDataResult,
+    isLoading: userDataIsLoading,
+    isError: userDataIsError,
+    error: useDataError,
+    refetch: userDataRefetch,
+  } = useQuery(
+    ['getSelectUser', usernameInput],
+    () =>
+      getDataWithParams(`/user/list/`, {
+        username: usernameInput,
+      }),
+    { enabled: false },
+  );
+
+  /**
+   * @description 드롭다운 메뉴에서 선택시 작동
+   * 1. 해당 값으로 input 값 변경
+   * 2. 드롭다운 닫기
+   * @param searchedUser
+   */
+  const {
+    data: searchedUserHistoryResult,
+    isLoading: searchedUserHistoryIsLoading,
+    isError: searchedUserHistoryIsError,
+    error: searchedUserHistoryError,
+    refetch: searchedUserHistoryRefetch,
+  } = useQuery(
+    ['getSearchedUserHistoryResult', searchedUser],
+    () =>
+      getDataWithParams(`/translation/user-email`, {
+        'user-email': searchedUser?.userEmail,
+      }),
+    { enabled: searchedUser !== null, retry: 5, retryDelay: 5000 },
+  );
+
+  const deleteUserGo = async (endpoint: string, userAccountNo: number) => {
+    const { data } = await apiClient.delete(
+      `${endpoint}/?uid=${userAccountNo}`,
+    );
+    return data;
   };
+  /**
+   * @description 해당 유저 삭제
+   * 해당 값으로 유저 권한 변경
+   * @param userRole
+   */
+  const deleteUser = useMutation((userAccountNo: number) =>
+    // deleteDataWithParams('/admin/user', userAccountNo),
+    deleteUserGo('/admin/user', userAccountNo),
+  );
+
+  /**
+   * @description 유저 권한 변경
+   * 해당 값으로 유저 권한 변경
+   * @param userRole
+   */
+  const patchUserRole = useMutation((userRole: UserRoleType) =>
+    patchDataWithBody('/admin/user', {
+      userAccountNo: searchedUser?.userAccountNo,
+      userRole: userRole,
+    }),
+  );
 
   /**
    * @description debounce 된 input 값이 변경되면 작동
@@ -101,15 +156,10 @@ const Admin = () => {
    * 3. 드롭다운 닫기 (결과 리스트 없으면)
    */
   useEffect(() => {
-    if (debouncedSearchValue !== '') {
-      // SearchUserList(usernameInput).then(users => {
-      //   setUserList(users);
-      //   setShowDropdown(users.length > 0);
-      // });
-    } else {
+    if (!debouncedSearchValue || debouncedSearchValue === '') {
       setShowInputDropdown(false);
     }
-  }, [SearchUserList, debouncedSearchValue]);
+  }, [debouncedSearchValue]);
 
   /**
    * @description input 값 변경시 작동
@@ -119,7 +169,8 @@ const Admin = () => {
    */
   const handleUsernameInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsernameInput(event.target.value);
-    setShowInputDropdown(!!event.target.value);
+    if (debounceList && debounceList.length > 0)
+      setShowInputDropdown(!!event.target.value);
   };
 
   /**
@@ -130,9 +181,12 @@ const Admin = () => {
    */
   const handleInputDropdownSelect = (userName: string) => {
     //TODO: 이부분도 실제데이터로 바꿔야됨 userList 로
-    const selectedUser = dummyUserList.find(user => user.userName === userName);
+    const selectedUser = debounceList.find(
+      (user: User) => user.userName === userName,
+    );
     if (selectedUser) {
       setUsernameInput(selectedUser.userName);
+      userDataRefetch();
     }
     if (showInputDropdown) {
       setShowInputDropdown(false);
@@ -140,7 +194,47 @@ const Admin = () => {
   };
 
   const handleControlDropdownSelect = (value: string) => {
-    console.log(value);
+    if (value === 'delete' && searchedUser) {
+      deleteUser.mutate(searchedUser?.userAccountNo, {
+        onSuccess: data => {
+          console.log(data);
+          setToast({
+            type: 'success',
+            title: 'Delete Success',
+            message: 'User deleted successfully',
+            isOpen: true,
+          });
+        },
+        onError: error => {
+          setToast({
+            type: 'error',
+            title: 'Delete Failed',
+            message: 'User Delete failed',
+            isOpen: true,
+          });
+        },
+      });
+    }
+    if (value === 'admin' || value === 'user') {
+      patchUserRole.mutate(value as UserRoleType, {
+        onSuccess: data => {
+          setToast({
+            type: 'success',
+            title: 'Update Success',
+            message: 'User role updated successfully',
+            isOpen: true,
+          });
+        },
+        onError: error => {
+          setToast({
+            type: 'error',
+            title: 'Update Failed',
+            message: 'User role update failed',
+            isOpen: true,
+          });
+        },
+      });
+    }
     if (showControlDropdown) {
       setShowControlDropdown(false);
     }
@@ -174,6 +268,7 @@ const Admin = () => {
     if (event.key === 'Enter') {
       event.preventDefault();
       console.log(usernameInput);
+      userDataRefetch();
       inputRef.current?.blur();
       setShowInputDropdown(false);
     }
@@ -184,6 +279,14 @@ const Admin = () => {
     setShowControlDropdown(false);
     setShowSortDropdown(false);
   };
+
+  useEffect(() => {
+    console.log('queryed user!!', userDataResult);
+    if (userDataResult && userDataResult.length > 0) {
+      setSearchedUser(userDataResult[0]);
+      console.log('Avatar', userDataResult[0].avatar);
+    }
+  }, [userDataResult]);
 
   return (
     <AuthGuard adminOnly>
@@ -204,22 +307,26 @@ const Admin = () => {
               style={{ backgroundColor: theme.colors.mono.white }}
             />
             <InputDropDownMenu
-              className={showInputDropdown ? 'show' : ''}
+              className={
+                showInputDropdown && debounceList?.length > 0 ? 'show' : ''
+              }
               size={'lg'}
             >
               {/* TODO: 더미 말고 실제 데이터로 바꿔야됨 userList 로 */}
-              {dummyUserList
-                .filter(user => user.userName !== 'Username')
-                .map(user => (
-                  <DropdownItem
-                    key={user.userAccountNo}
-                    onClick={() => handleInputDropdownSelect(user.userName)}
-                  >
-                    <Text color="black" fontSize="lg" mobileFontSize="sm">
-                      {user.userName}
-                    </Text>
-                  </DropdownItem>
-                ))}
+              {debounceList &&
+                debounceList.length > 0 &&
+                debounceList
+                  .filter((user: User) => user.userName !== 'Username')
+                  .map((user: User) => (
+                    <DropdownItem
+                      key={user.userAccountNo}
+                      onClick={() => handleInputDropdownSelect(user.userName)}
+                    >
+                      <Text color="black" fontSize="lg" mobileFontSize="sm">
+                        {user.userName}
+                      </Text>
+                    </DropdownItem>
+                  ))}
             </InputDropDownMenu>
           </VStack>
           <UserStatusWrapper>
@@ -244,29 +351,49 @@ const Admin = () => {
               </HStack>
             )}
             <div>
-              <Avatar
-                src={searchedUser?.profileImageUrl || null}
-                size="sm"
-                onClick={(e: React.MouseEvent) => {
-                  e.stopPropagation();
-                  clearDropdowns();
-                  setShowControlDropdown(true);
-                }}
-              />
+              {searchedUser && (
+                <Avatar
+                  src={searchedUser?.profileImageUrl || null}
+                  size="sm"
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    clearDropdowns();
+                    setShowControlDropdown(true);
+                  }}
+                />
+              )}
               <UserDropDownMenu
                 className={showControlDropdown ? 'show' : ''}
                 size="sm"
               >
-                {ControlOptions.map(option => (
+                {searchedUser?.userRole !== 'admin' ? (
+                  ControlOptions.map(option => {
+                    return (
+                      <DropdownItem
+                        key={option.label}
+                        onClick={() =>
+                          handleControlDropdownSelect(option.value)
+                        }
+                      >
+                        <Text
+                          color={'black'}
+                          fontSize="lg"
+                          mobileFontSize="1rem"
+                        >
+                          {option.label}
+                        </Text>
+                      </DropdownItem>
+                    );
+                  })
+                ) : (
                   <DropdownItem
-                    key={option.label}
-                    onClick={() => handleControlDropdownSelect(option.value)}
+                    onClick={() => handleControlDropdownSelect('remove')}
                   >
-                    <Text color="black" fontSize="lg" mobileFontSize="1rem">
-                      {option.label}
+                    <Text color={'black'} fontSize="lg" mobileFontSize="1rem">
+                      {'REMOVE ADMIN'}
                     </Text>
                   </DropdownItem>
-                ))}
+                )}
               </UserDropDownMenu>
             </div>
           </UserStatusWrapper>
@@ -276,7 +403,10 @@ const Admin = () => {
             color={theme.colors.primary.semi_light}
           />
           <HistoryPanelContainer>
-            <TranslationHistoryPanel />
+            <TranslationHistoryPanel
+              historyList={searchedUserHistoryResult}
+              isLoading={searchedUserHistoryIsLoading}
+            />
           </HistoryPanelContainer>
         </AdminPanelContainer>
       </AdminPageContainer>
@@ -353,7 +483,7 @@ const InputDropDownMenu = styled(DropdownMenu)`
 
 const UserDropDownMenu = styled(DropdownMenu)`
   top: 21.5rem;
-  width: 15rem;
+  width: 16rem;
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     top: 10em;
     width: 11rem;

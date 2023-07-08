@@ -8,11 +8,12 @@ import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
 import { StyledInput } from 'components/premade/StyledInput';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from '../login/AvatarUploader';
 import { userAtom } from 'utils/jotai/atoms/userAtom';
 import { useAtom } from 'jotai';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 
 interface FormValues {
   email: string;
@@ -28,6 +29,7 @@ interface ModalContainerProps {
   toggleModal: () => void;
 }
 const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
+  const [languageList] = useAtom(languageListAtom);
   const theme = useTheme();
   const [user, setUser] = useAtom(userAtom);
   // Initialize react-hook-form
@@ -165,9 +167,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                       size={'lg'}
                       options={[
                         { label: 'Select your first language', value: '' },
-                        { label: 'Korean', value: 'kor' },
-                        { label: 'English', value: 'eng' },
-                        { label: 'Japanese', value: 'jap' },
+                        ...languageList,
                       ]}
                       value={field.value}
                       onChange={field.onChange}

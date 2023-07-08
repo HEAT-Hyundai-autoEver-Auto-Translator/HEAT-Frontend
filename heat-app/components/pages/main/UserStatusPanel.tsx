@@ -16,6 +16,7 @@ import Setting from 'public/Setting.svg';
 import { Spacer } from 'components/common/Spacer';
 import UpdateModal from './UpdateModal';
 import { useState } from 'react';
+import { deleteCookie, getCookie, getCookies } from 'cookies-next';
 
 export const UserStatusPanel = () => {
   const theme = useTheme();
@@ -30,6 +31,10 @@ export const UserStatusPanel = () => {
     setAuthenticated(false);
     setIsSidebarOpen(false);
     setUser(defaultUser);
+    deleteCookie('accessToken');
+    deleteCookie('refreshToken');
+    const cookies = getCookies();
+    console.log('get cookies result after Logout', cookies);
     router.push('/login');
   };
   const toggleModal = () => {

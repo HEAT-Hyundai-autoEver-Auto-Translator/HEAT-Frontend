@@ -1,5 +1,5 @@
 import ArrowDownIcon from 'public/ArrowDownIcon.svg';
-import { useTheme } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Text } from './Text';
@@ -48,16 +48,32 @@ export const DropdownMenu = styled.ul<DropdownButtonProps>`
   }
 `;
 
-export const DropdownItem = styled.li`
+// export const DropdownItem = styled.li<{ disabled?: boolean }>`
+//   padding: 10px;
+//   padding-left: 10px;
+//   border-radius: 20px;
+//   cursor: pointer;
+//   &:hover {
+//     background-color: ${({ theme }) => theme.colors.mono.input_gray};
+//   }
+// `;
+
+export const DropdownItem = styled.li<{ disabled?: boolean }>`
   padding: 10px;
   padding-left: 10px;
   border-radius: 20px;
   cursor: pointer;
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.mono.input_gray};
-  }
+  ${({ disabled, theme }) =>
+    disabled
+      ? css`
+          cursor: not-allowed;
+        `
+      : css`
+          &:hover {
+            background-color: ${theme.colors.mono.input_gray};
+          }
+        `}
 `;
-
 export type DropdownButtonProps = {
   bgColor?: string;
   fontColor?: string;
