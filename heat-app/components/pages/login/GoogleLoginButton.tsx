@@ -4,14 +4,24 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { Button } from 'components/common/Button';
 import { Spacer } from 'components/common/Spacer';
 import { StyledGoogleLogo } from 'components/premade/StyledGoogleLogo';
-import { useEffect, useState } from 'react';
+import { setCookie } from 'cookies-next';
+import { useAtom } from 'jotai';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
+import { postDataWithBody } from 'utils/api/api';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 
-export const GoogleLoginButton = () => {
+interface GoogleLoginButtonProps {
+  setResultUserAccountNo: React.Dispatch<React.SetStateAction<number | null>>;
+}
+export const GoogleLoginButton = ({
+  setResultUserAccountNo,
+}: GoogleLoginButtonProps) => {
   const [token, setToken] = useState(null);
+  const [, setToast] = useAtom(toastAtom);
 
   const googleOnSuccess = (data: any) => {
     const access_token = data.access_token;
-    // await CheckAuth(access_token);
     setToken(access_token);
   };
   const googleOnError = (error: any) => {
@@ -23,27 +33,38 @@ export const GoogleLoginButton = () => {
     onError: googleOnError,
   });
 
-  const sendToken = async () => {
-    // const res = await Axios.post('member/login/google', {
-    //   accessToken: token,
-    // });
-    // if (res.status === 200) {
-    //   setIsAuthenticated(true);
-    //   setUserStatus({
-    //     email: res.data.memberEmail,
-    //     name: res.data.memberName,
-    //     point: res.data.memberPoint,
-    //     role: res.data.memberRole,
-    //   });
-    // } else {
-    //   console.log(res);
-    // }
+  const googleLoginMutation = useMutation((accessToken: string) =>
+    postDataWithBody('/user/login/google', { accessToken: accessToken }),
+  );
+
+  const sendToken = (token: string) => {
+    googleLoginMutation.mutate(token, {
+      onSuccess: data => {
+        setToast({
+          type: 'success',
+          title: 'Login Success',
+          message: 'Google Login successful',
+          isOpen: true,
+        });
+        setResultUserAccountNo(data.userAccountNo);
+        setCookie('accessToken', data.accessToken);
+        setCookie('refreshToken', data.refreshToken);
+      },
+      onError: error => {
+        setToast({
+          type: 'error',
+          title: 'Login Failed',
+          message: 'Google Login failed',
+          isOpen: true,
+        });
+      },
+    });
   };
 
   useEffect(() => {
     if (token) {
       console.log(token);
-      sendToken();
+      sendToken(token);
     }
   }, [token]);
   return (

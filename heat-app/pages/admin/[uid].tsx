@@ -30,6 +30,7 @@ import {
 import { useMutation, useQuery } from 'react-query';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import apiClient from 'utils/api/apiClient';
+import { set } from 'react-hook-form';
 
 const ControlOptions = [
   { label: 'GIVE ADMIN', value: 'admin' },
@@ -121,7 +122,7 @@ const Admin = () => {
     { enabled: searchedUser !== null, retry: 5, retryDelay: 5000 },
   );
 
-  const deleteUserGo = async (endpoint: string, userAccountNo: number) => {
+  const deleteUser = async (endpoint: string, userAccountNo: number) => {
     const { data } = await apiClient.delete(
       `${endpoint}/?uid=${userAccountNo}`,
     );
@@ -132,9 +133,9 @@ const Admin = () => {
    * 해당 값으로 유저 권한 변경
    * @param userRole
    */
-  const deleteUser = useMutation((userAccountNo: number) =>
+  const deleteUserMutation = useMutation((userAccountNo: number) =>
     // deleteDataWithParams('/admin/user', userAccountNo),
-    deleteUserGo('/admin/user', userAccountNo),
+    deleteUser('/admin/user', userAccountNo),
   );
 
   /**
@@ -195,7 +196,7 @@ const Admin = () => {
 
   const handleControlDropdownSelect = (value: string) => {
     if (value === 'delete' && searchedUser) {
-      deleteUser.mutate(searchedUser?.userAccountNo, {
+      deleteUserMutation.mutate(searchedUser?.userAccountNo, {
         onSuccess: data => {
           console.log(data);
           setToast({
@@ -204,6 +205,7 @@ const Admin = () => {
             message: 'User deleted successfully',
             isOpen: true,
           });
+          userDataRefetch();
         },
         onError: error => {
           setToast({
@@ -285,6 +287,9 @@ const Admin = () => {
     if (userDataResult && userDataResult.length > 0) {
       setSearchedUser(userDataResult[0]);
       console.log('Avatar', userDataResult[0].avatar);
+    } else {
+      setSearchedUser(null);
+      setUsernameInput('');
     }
   }, [userDataResult]);
 
@@ -406,6 +411,7 @@ const Admin = () => {
             <TranslationHistoryPanel
               historyList={searchedUserHistoryResult}
               isLoading={searchedUserHistoryIsLoading}
+              refetch={searchedUserHistoryRefetch}
             />
           </HistoryPanelContainer>
         </AdminPanelContainer>

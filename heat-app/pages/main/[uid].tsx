@@ -67,6 +67,7 @@ const MainPage = () => {
   }, []);
   const handleSubmit = () => {
     setIsLoading(true);
+
     const formData = new FormData();
     console.log(inputText);
     console.log(selectedLanguage);
@@ -97,6 +98,11 @@ const MainPage = () => {
     setInputText(e.target.value);
   };
 
+  const clearInputOutput = () => {
+    setInputText('');
+    setOutputText('');
+  };
+
   return (
     <AuthGuard>
       <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
@@ -125,6 +131,15 @@ const MainPage = () => {
                   size="xs"
                 />
                 <Spacer />
+                <Button
+                  size={'xs'}
+                  bgColor={theme.colors.mono.input_gray}
+                  hoverColor={theme.colors.mono.gray200}
+                  fontColor="black"
+                  onClick={clearInputOutput}
+                >
+                  Clear
+                </Button>
                 <Button size={'xs'} onClick={handleSubmit}>
                   Submit
                 </Button>

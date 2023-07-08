@@ -58,36 +58,60 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
           name="avatar"
           control={control}
           defaultValue={undefined}
-          render={({ field }) => (
-            <>
-              <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={event => {
-                  // 파일선택을 처리하고 field.onChange를 호출-> react-hook-form 에 알림
-                  handleImageUpload(event);
-                  field.onChange(event);
-                }}
-              />
-              <VStack style={{ alignItems: 'flex-start' }} spacing="1rem">
-                <Button
-                  size={isMobile ? 'xxs' : 'xs'}
-                  type="button"
-                  onClick={() => {
-                    const elem = document.getElementById('fileInput');
-                    if (elem) elem.click();
-                  }}
-                >
-                  Select Image
-                </Button>
-                <FileNameBox>
-                  <FileName>{fileName}</FileName>
-                </FileNameBox>
-              </VStack>
-            </>
-          )}
+          render={({ field }) => {
+            const handleImageUpload = (
+              event: React.ChangeEvent<HTMLInputElement>,
+            ) => {
+              const files = event.target.files;
+              if (files?.length !== 1) {
+                alert('You can only upload one file at a time.');
+                return;
+              }
+
+              const file = files[0];
+              if (file.size > MAX_FILE_SIZE) {
+                alert('File size should not exceed 5MB.');
+                return;
+              }
+
+              setFileName(file.name);
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                setSelectedImage(reader.result as string);
+              };
+              reader.readAsDataURL(file);
+
+              // Update the file field
+              field.onChange(event); // Here is the change
+            };
+
+            return (
+              <>
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImageUpload} // Call our custom handleImageUpload function
+                />
+                <VStack style={{ alignItems: 'flex-start' }} spacing="1rem">
+                  <Button
+                    size={isMobile ? 'xxs' : 'xs'}
+                    type="button"
+                    onClick={() => {
+                      const elem = document.getElementById('fileInput');
+                      if (elem) elem.click();
+                    }}
+                  >
+                    Select Image
+                  </Button>
+                  <FileNameBox>
+                    <FileName>{fileName}</FileName>
+                  </FileNameBox>
+                </VStack>
+              </>
+            );
+          }}
         />
       </HStack>
     </div>

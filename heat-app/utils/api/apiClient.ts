@@ -26,13 +26,12 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    console.log('!!', error.response);
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         // 쿠키가 있는 경우, 새로운 access token과 refresh token을 요청합.
         const res = await axios.post(
-          BACK_END_URL + '/refresh_token',
+          BACK_END_URL + '/refresh-token',
           {},
           { withCredentials: true },
         );

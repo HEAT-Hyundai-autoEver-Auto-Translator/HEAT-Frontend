@@ -36,6 +36,7 @@ interface ModalContainerProps {
   toggleModal: () => void;
 }
 const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
+  const [, setToast] = useAtom(toastAtom);
   const theme = useTheme();
   const [languageList] = useAtom(languageListAtom);
   // Initialize react-hook-form
@@ -78,21 +79,12 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const Axios = axios.create({
     baseURL: BACK_END_URL,
     withCredentials: true,
-    headers: { 'Content-Type': 'multipart/form-data' },
   });
   const mutation = useMutation((userData: FormData) =>
-    Axios.post('/user', userData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    Axios.post('/user', userData),
   );
 
   const onSubmit = async (data: FormValues) => {
-    console.log('!!');
-    console.log('email', data.email);
-    console.log('username', data.username);
-    console.log('password', data.password);
-    console.log('avatar', data.avatar);
-    console.log('language', data.language);
     const formData = new FormData();
 
     // "avatar" is the name of the field for the file
@@ -107,11 +99,33 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       'createUserDto',
       new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
     );
-
-    if (data.avatar) formData.append('userProfileImage', data.avatar[0]);
-    formData.append('languageName', data.language);
+    console.log('data.avatar', data.avatar);
+    if (data.avatar && data.avatar.length > 0) {
+      // formData.append('userProfileImage', data.avatar[0] as File);
+      formData.append('userProfileImage', new Blob([data.avatar[0]]));
+    }
+    console.log('userProgileImage', formData.get('userProfileImage'));
     // Append other form data
-    mutation.mutate(formData);
+    mutation.mutate(formData, {
+      onSuccess: data => {
+        setToast({
+          type: 'success',
+          title: 'Register Success',
+          message: 'User Register successful',
+          isOpen: true,
+        });
+        toggleModal();
+        reset();
+      },
+      onError: error => {
+        setToast({
+          type: 'error',
+          title: 'Register Failed',
+          message: 'User Register failed',
+          isOpen: true,
+        });
+      },
+    });
   };
 
   useEffect(() => {

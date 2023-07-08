@@ -64,6 +64,7 @@ const Sidebar = ({ outputText }: SidebarProps) => {
         <TranslationHistoryPanel
           historyList={historyList}
           isLoading={historyIsLoading}
+          refetch={historyRefetch}
         />
       </VStack>
     </SidebarContainer>
