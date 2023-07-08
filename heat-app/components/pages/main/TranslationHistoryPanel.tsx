@@ -4,7 +4,7 @@ import { HistoryCard } from './HistoryCard';
 import { Text } from 'components/common/Text';
 import { Spacer } from 'components/common/Spacer';
 import Dropdown from 'components/common/DropDown';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Translation } from 'types/schema/Translation';
 import { Skeleton } from 'components/common/Skeleton';
 
@@ -12,91 +12,30 @@ const SortOptions = [
   { label: 'NEW', value: 'new' },
   { label: 'OLD', value: 'old' },
 ];
-
-export const dummyData: Translation[] = [
-  {
-    translationNo: 1,
-    userId: 'user1',
-    requestLanguageName: 'english',
-    resultLanguageName: 'korean',
-    createdDateTime: new Date(),
-    requestText: 'Hello',
-    resultText: '안녕',
-  },
-  {
-    translationNo: 2,
-    userId: 'user2',
-    requestLanguageName: 'english',
-    resultLanguageName: 'japanese',
-    createdDateTime: new Date(),
-    requestText: 'Good morning',
-    resultText: 'おはようございます',
-  },
-  {
-    translationNo: 3,
-    userId: 'user3',
-    requestLanguageName: 'korean',
-    resultLanguageName: 'english',
-    createdDateTime: new Date(),
-    requestText: '안녕하세요',
-    resultText: 'Hello',
-  },
-  {
-    translationNo: 4,
-    userId: 'user1',
-    requestLanguageName: 'korean',
-    resultLanguageName: 'japapnese',
-    createdDateTime: new Date(),
-    requestText: '안녕',
-    resultText: 'こんにちは',
-  },
-  {
-    translationNo: 5,
-    userId: 'user2',
-    requestLanguageName: 'japapnese',
-    resultLanguageName: 'english',
-    createdDateTime: new Date(),
-    requestText: 'こんにちは',
-    resultText: 'Hello',
-  },
-  {
-    translationNo: 6,
-    userId: 'user3',
-    requestLanguageName: 'japapnese',
-    resultLanguageName: 'korean',
-    createdDateTime: new Date(),
-    requestText: 'おはようございます',
-    resultText: '안녕하세요',
-  },
-  {
-    translationNo: 7,
-    userId: 'user3',
-    requestLanguageName: 'japapnese',
-    resultLanguageName: 'korean',
-    createdDateTime: new Date(),
-    requestText: 'おはようございます',
-    resultText: '안녕하세요',
-  },
-  {
-    translationNo: 8,
-    userId: 'user3',
-    requestLanguageName: 'japapnese',
-    resultLanguageName: 'korean',
-    createdDateTime: new Date(),
-    requestText: 'おはようございます',
-    resultText: '안녕하세요',
-  },
-];
-
 interface TranslationHistoryPanelProps {
   historyList?: Translation[];
+  isLoading?: boolean;
 }
 
 export const TranslationHistoryPanel = ({
-  historyList = dummyData,
+  historyList,
+  isLoading,
 }: TranslationHistoryPanelProps) => {
-  const [selecedOption, setSelectedOption] = useState('new');
-  const isLoading = !historyList || historyList.length === 0;
+  const [selectedOption, setSelectedOption] = useState('new');
+
+  const sortedHistory = useMemo(() => {
+    return historyList?.slice().sort((a, b) => {
+      let aDate = new Date(a.createDateTime);
+      let bDate = new Date(b.createDateTime);
+
+      if (selectedOption === 'new') {
+        return bDate.getTime() - aDate.getTime();
+      } else {
+        return aDate.getTime() - bDate.getTime();
+      }
+    });
+  }, [historyList, selectedOption]);
+
   return (
     <HistoryContainer>
       <HStack
@@ -115,7 +54,7 @@ export const TranslationHistoryPanel = ({
         <Dropdown
           size="xs"
           options={SortOptions}
-          value={selecedOption}
+          value={selectedOption}
           onChange={setSelectedOption}
           paddingLeft="1rem"
           paddingRight="1rem"
@@ -133,9 +72,16 @@ export const TranslationHistoryPanel = ({
           </>
         ) : (
           // 로딩이 완료되면 데이터를 표시
-          historyList.map(data => (
+          sortedHistory &&
+          sortedHistory.map(data => (
             <HistoryCard data={data} key={data.translationNo} />
           ))
+        )}
+        {/* 데이터가 없을 때 표시 */}
+        {sortedHistory && sortedHistory.length === 0 && (
+          <Text fontSize="2rem" color="white" mobileFontSize="1.3rem">
+            No history
+          </Text>
         )}
       </HistoryCardWrapper>
     </HistoryContainer>

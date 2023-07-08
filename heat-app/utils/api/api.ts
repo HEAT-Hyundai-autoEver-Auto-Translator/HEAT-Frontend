@@ -48,5 +48,6 @@ export const deleteDataWithBody = async (endpoint: string, body: any) => {
 
 export const deleteDataWithParams = async (endpoint: string, params: any) => {
   const { data } = await apiClient.delete(endpoint, { params });
+
   return data;
 };

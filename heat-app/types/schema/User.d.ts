@@ -1,4 +1,4 @@
-type UserRoleType = 'normal' | 'admin';
+type UserRoleType = 'user' | 'admin';
 
 export type UserLogin = {
   userEmail: string;
@@ -20,7 +20,7 @@ export type CreateUser = {
   userEmail: string;
   password: string;
   userName: string;
-  profileImageUrl: string;
+  userProfileImage?: string;
   languageName: string;
 };
 

@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-const BACK_END_URL = process.env.NEXT_PUBLIC_BACK_END_URL;
+export const BACK_END_URL = process.env.NEXT_PUBLIC_BACK_END_URL;
+
+const headers = {
+  // 기본 헤더 설정 (옵션)
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+};
 
 const apiClient = axios.create({
   baseURL: BACK_END_URL,
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: headers,
 });
 
 // Request interceptor
@@ -22,6 +26,7 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
+    console.log('!!', error.response);
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {

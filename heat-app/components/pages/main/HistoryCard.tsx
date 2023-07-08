@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Translation } from 'types/schema/Translation';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import CloseIcon from 'public/CloseIcon.svg';
+import { formatDate, formatDateTime } from 'utils/function/formatTime';
 
 type HistoryCardProps = {
   data: Translation;
@@ -24,7 +25,7 @@ export const HistoryCard = ({ data }: HistoryCardProps) => {
     userId,
     requestLanguageName,
     resultLanguageName,
-    createdDateTime,
+    createDateTime,
     requestText,
     resultText,
   } = data;
@@ -59,9 +60,10 @@ export const HistoryCard = ({ data }: HistoryCardProps) => {
               <StyledText>FROM : {requestLanguageName}</StyledText>
               <Spacer />
               <StyledText>
-                {createdDateTime.toDateString()}{' '}
-                {!isMobile &&
-                  createdDateTime.toLocaleTimeString().split(' ')[1]}
+                {createDateTime &&
+                  (isMobile
+                    ? formatDate(createDateTime)
+                    : formatDateTime(createDateTime))}
               </StyledText>
             </HStack>
             <StyledTextarea

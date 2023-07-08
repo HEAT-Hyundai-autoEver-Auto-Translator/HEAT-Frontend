@@ -19,6 +19,8 @@ import { postDataWithBody } from 'utils/api/api';
 import { LoadingComponent } from 'components/common/LoadingComponent';
 import { ErrorComponent } from 'components/common/ErrorComponent';
 import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import apiClient, { BACK_END_URL } from 'utils/api/apiClient';
+import axios from 'axios';
 
 interface FormValues {
   email: string;
@@ -73,17 +75,16 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
+  const Axios = axios.create({
+    baseURL: BACK_END_URL,
+    withCredentials: true,
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   const mutation = useMutation((userData: FormData) =>
-    postDataWithBody('/user', userData),
+    Axios.post('/user', userData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   );
-
-  if (mutation.isLoading) {
-    return <LoadingComponent />;
-  }
-
-  if (mutation.isError) {
-    return <ErrorComponent error={mutation.error} />;
-  }
 
   const onSubmit = async (data: FormValues) => {
     console.log('!!');
@@ -95,13 +96,22 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     const formData = new FormData();
 
     // "avatar" is the name of the field for the file
-    formData.append('userEmail', data.email);
-    formData.append('password', data.password);
-    formData.append('userName', data.username);
-    if (data.avatar) formData.append('profileImageUrl', data.avatar[0]);
+    const createUser: CreateUser = {
+      userEmail: data.email,
+      userName: data.username,
+      password: data.password,
+      languageName: data.language,
+    };
+    // append "createUserDto" field as a Blob containing the JSON string of createUser
+    formData.append(
+      'createUserDto',
+      new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
+    );
+
+    if (data.avatar) formData.append('userProfileImage', data.avatar[0]);
     formData.append('languageName', data.language);
     // Append other form data
-    // mutation.mutate(formData);
+    mutation.mutate(formData);
   };
 
   useEffect(() => {

@@ -8,6 +8,8 @@ import WarningIcon from 'public/WarningIcon.svg';
 import SuccessIcon from 'public/SuccessIcon.svg';
 import { HStack, VStack } from './Stack';
 import { Spacer } from './Spacer';
+import Image, { StaticImageData } from 'next/image';
+import { FC } from 'react';
 
 interface ToastContainerProps {
   type: 'success' | 'warning' | 'error';
@@ -137,3 +139,28 @@ const StyledWarningIcon = styled(WarningIcon)`
 const StyledSuccessIcon = styled(SuccessIcon)`
   ${iconStyles}
 `;
+
+/*
+
+interface ImageIconProps {
+  src: StaticImageData;
+  alt?: string;
+  width: number;
+  height: number;
+}
+
+const ImageIcon: FC<ImageIconProps> = ({ src, alt, width, height }) => {
+  return <Image src={src} alt={alt || ''} width={width} height={height} />;
+};
+
+export default ImageIcon;
+  const StyledSuccessIcon = () => (
+    <ImageIcon src={SuccessIcon} alt="Success" width={24} height={24} />
+  );
+  const StyledWarningIcon = () => (
+    <ImageIcon src={WarningIcon} alt="Warning" width={24} height={24} />
+  );
+  const StyledErrorIcon = () => (
+    <ImageIcon src={ErrorIcon} alt="Error" width={24} height={24} />
+  );
+*/

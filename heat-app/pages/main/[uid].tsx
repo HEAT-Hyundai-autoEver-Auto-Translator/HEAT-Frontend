@@ -10,9 +10,10 @@ import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import Sidebar from 'components/layout/Sidebar';
 import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
+import { getCookies } from 'cookies-next';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { set } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { getData, getDataWithParams, postDataWithBody } from 'utils/api/api';
@@ -60,12 +61,16 @@ const MainPage = () => {
     { enabled: translationNo !== null, retry: 10, retryDelay: 5000 },
   );
 
+  useEffect(() => {
+    const cookies = getCookies();
+    console.log('get cookies result after Login', cookies);
+  }, []);
   const handleSubmit = () => {
     setIsLoading(true);
     const formData = new FormData();
     console.log(inputText);
     console.log(selectedLanguage);
-    formData.append('userAccountNo', '1');
+    formData.append('userAccountNo', uid as string);
     formData.append('requestText', inputText);
     formData.append('resultLanguageName', selectedLanguage);
     mutate(formData, {
@@ -92,13 +97,6 @@ const MainPage = () => {
     setInputText(e.target.value);
   };
 
-  if (mutationIsLoading) {
-    return <LoadingComponent />;
-  }
-
-  if (isError) {
-    return <ErrorComponent error={error} />;
-  }
   return (
     <AuthGuard>
       <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
@@ -157,7 +155,7 @@ const MainPage = () => {
             )}
           </VStack>
         </VStack>
-        <Sidebar />
+        <Sidebar outputText={outputText} />
       </HStack>
     </AuthGuard>
   );
