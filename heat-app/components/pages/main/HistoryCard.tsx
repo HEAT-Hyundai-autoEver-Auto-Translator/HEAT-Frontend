@@ -11,11 +11,19 @@ import { Translation } from 'types/schema/Translation';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import CloseIcon from 'public/CloseIcon.svg';
 import { formatDate, formatDateTime } from 'utils/function/formatTime';
+import { useMutation } from 'react-query';
+import { deleteDataWithParams } from 'utils/api/api';
+import apiClient from 'utils/api/apiClient';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { useAtom } from 'jotai';
 
 type HistoryCardProps = {
   data: Translation;
+  refetch: () => void;
 };
-export const HistoryCard = ({ data }: HistoryCardProps) => {
+export const HistoryCard = ({ data, refetch }: HistoryCardProps) => {
+  const [, setToast] = useAtom(toastAtom);
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const theme = useTheme();
@@ -39,11 +47,54 @@ export const HistoryCard = ({ data }: HistoryCardProps) => {
     setModalOpen(!isModalOpen);
   };
 
+  const handleDelete = () => {
+    deleteHistoryMutation.mutate(translationNo, {
+      onSuccess: data => {
+        console.log(data);
+        setToast({
+          type: 'success',
+          title: 'Delete Success',
+          message: 'History deleted successfully',
+          isOpen: true,
+        });
+        toggleModal();
+        refetch();
+      },
+      onError: error => {
+        setToast({
+          type: 'error',
+          title: 'Delete Failed',
+          message: 'History Delete failed',
+          isOpen: true,
+        });
+      },
+    });
+  };
   /**
    * @description 히스토리 삭제 요청
    */
-  const deleteHistory = () => {};
+  const deleteHistory = async (endpoint: string, translationNo: number) => {
+    const { data } = await apiClient.delete(
+      `${endpoint}/?translation-no=${translationNo}`,
+    );
+    return data;
+  };
 
+  // const deleteUserGo = async (endpoint: string, userAccountNo: number) => {
+  //   const { data } = await apiClient.delete(
+  //     `${endpoint}/?uid=${userAccountNo}`,
+  //   );
+  //   return data;
+  // };
+  /**
+   * @description 해당 유저 삭제
+   * 해당 값으로 유저 권한 변경
+   * @param userRole
+   */
+  const deleteHistoryMutation = useMutation((translationNo: number) =>
+    // deleteDataWithParams('/translation/translation-no', translationNo),
+    deleteHistory('/translation/translation-no', translationNo),
+  );
   return (
     <>
       <HistoryCardContainer isClicked={isClicked} onClick={handleClick}>
@@ -81,7 +132,7 @@ export const HistoryCard = ({ data }: HistoryCardProps) => {
             />
           </ModalContainer>
           <div style={{ marginBottom: '2rem' }}>
-            <Button size="sm" onClick={deleteHistory}>
+            <Button size="sm" onClick={handleDelete}>
               Delete History
             </Button>
           </div>

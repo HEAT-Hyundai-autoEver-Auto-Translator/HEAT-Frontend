@@ -15,11 +15,13 @@ const SortOptions = [
 interface TranslationHistoryPanelProps {
   historyList?: Translation[];
   isLoading?: boolean;
+  refetch: () => void;
 }
 
 export const TranslationHistoryPanel = ({
   historyList,
   isLoading,
+  refetch,
 }: TranslationHistoryPanelProps) => {
   const [selectedOption, setSelectedOption] = useState('new');
 
@@ -74,7 +76,11 @@ export const TranslationHistoryPanel = ({
           // 로딩이 완료되면 데이터를 표시
           sortedHistory &&
           sortedHistory.map(data => (
-            <HistoryCard data={data} key={data.translationNo} />
+            <HistoryCard
+              data={data}
+              key={data.translationNo}
+              refetch={refetch}
+            />
           ))
         )}
         {/* 데이터가 없을 때 표시 */}

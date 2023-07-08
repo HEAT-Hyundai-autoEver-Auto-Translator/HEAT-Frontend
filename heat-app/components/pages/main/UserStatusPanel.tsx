@@ -42,6 +42,7 @@ export const UserStatusPanel = () => {
     // console.log(isModalOpen);
   };
 
+  console.log('user', user);
   return (
     <UserStatusPanelContainer spacing="0.5rem">
       {isMobile ? (
@@ -50,7 +51,7 @@ export const UserStatusPanel = () => {
         </SidebarCloseButton>
       ) : null}
       <div>
-        <Avatar src={null} size="sm" />
+        <Avatar src={user.profileImageUrl || null} size="sm" />
       </div>
       <StyledText color="white" style={{ marginLeft: '0.5rem' }}>
         {user.userName}

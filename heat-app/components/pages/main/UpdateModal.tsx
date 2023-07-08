@@ -14,6 +14,11 @@ import AvatarUploader from '../login/AvatarUploader';
 import { userAtom } from 'utils/jotai/atoms/userAtom';
 import { useAtom } from 'jotai';
 import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import { useMutation, useQuery } from 'react-query';
+import { getDataWithParams, patchDataWithBody } from 'utils/api/api';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import axios from 'axios';
+import { BACK_END_URL } from 'utils/api/apiClient';
 
 interface FormValues {
   email: string;
@@ -32,8 +37,30 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const [languageList] = useAtom(languageListAtom);
   const theme = useTheme();
   const [user, setUser] = useAtom(userAtom);
+  const [, setToast] = useAtom(toastAtom);
+  const [changePassword, setChangePassword] = useState(false);
+
+  /**
+   * @description 유저정보 요청을 위한 useQuery. 번역 번호 상태가 null이 아닐 때에만 실행.
+   */
+  const {
+    data: userResultData,
+    isLoading: userResultIsLoading,
+    isError: userResultIsError,
+    error: userResultError,
+    refetch: refetchUserResult,
+  } = useQuery(
+    ['getUserDataResults', user.userAccountNo],
+    () =>
+      getDataWithParams(`/user/uid`, {
+        uid: user.userAccountNo,
+      }),
+    { enabled: false },
+  );
+
   // Initialize react-hook-form
   const {
+    watch,
     register,
     handleSubmit,
     control,
@@ -69,45 +96,63 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
+  const Axios = axios.create({
+    baseURL: BACK_END_URL,
+    withCredentials: true,
+  });
+  const mutation = useMutation((userData: FormData) =>
+    Axios.patch('/user', userData),
+  );
+
   const onSubmit = (data: FormValues) => {
     console.log('email', data.email);
     console.log('username', data.username);
     console.log('password', data.password);
     console.log('avatar', data.avatar);
     console.log('language', data.language);
+    const formData = new FormData();
+
+    const updateUserDto = {
+      userAccountNo: user.userAccountNo,
+      password: data.password,
+      userName: data.username,
+      languageName: data.language,
+    };
+    formData.append(
+      'updateUserDto',
+      new Blob([JSON.stringify(updateUserDto)], { type: 'application/json' }),
+    );
+    console.log('data.avatar', data.avatar);
+
+    if (data.avatar && data.avatar.length > 0) {
+      formData.append('userProfileImage', new Blob([data.avatar[0]]));
+    }
+    console.log('userProgileImage', formData.get('userProfileImage'));
+
+    mutation.mutate(formData, {
+      onSuccess: data => {
+        setToast({
+          type: 'success',
+          title: 'Update Success',
+          message: 'User Updated successfully',
+          isOpen: true,
+        });
+        toggleModal();
+        reset();
+        refetchUserResult();
+      },
+      onError: error => {
+        setToast({
+          type: 'error',
+          title: 'Update Failed',
+          message: 'User Update failed',
+          isOpen: true,
+        });
+      },
+    });
+
     // TODO: Send data to the backend
   };
-
-  //TODO: 백엔드 통신 되면 이런 방식으로 바꾸기
-  // type CreateUserDTO = {
-  //   userId: string;
-  //   password: string;
-  //   userName: string;
-  //   imageUrl: string;
-  //   languageNo: string;
-  // }
-  // const onSubmit = async (data :FormValues) => {
-  //   const formData = new FormData();
-
-  //   // "avatar" is the name of the field for the file
-  //   formData.append('avatar', data.avatar[0]);
-
-  //   // Append other form data
-  //   formData.append('email', data.email);
-  //   formData.append('username', data.username);
-  //   formData.append('password', data.password);
-
-  //   try {
-  //     const response = await axios.post('your-api-url', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     });
-  //     console.log(response.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -121,6 +166,19 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       });
     }
   }, [isModalOpen, reset]);
+
+  useEffect(() => {
+    if (userResultData) {
+      console.log('userResultData', userResultData);
+      setUser(userResultData);
+      setToast({
+        type: 'success',
+        title: 'Status Updated',
+        message: 'Status Updated successfully',
+        isOpen: true,
+      });
+    }
+  }, [userResultData]);
 
   return (
     <>
@@ -178,43 +236,55 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               <ErrorPanel>
                 {errors.language ? errors.language.message : null}
               </ErrorPanel>
-              {/* <VStack style={{ marginBottom: '2rem' }}>
-                <StyledInput
-                  inputSize="lg"
-                  type="password"
-                  placeholder="Password"
-                  {...register('password', {
-                    required: 'Password is required',
-                    minLength: {
-                      value: 8,
-                      message: 'Password must have at least 8 characters',
-                    },
-                    pattern: {
-                      value:
-                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                      message:
-                        'Must have one uppercase, one lowercase, one number and one special character',
-                    },
-                  })}
+              {/* 패스워드 부분 */}
+              <CheckboxContainer>
+                Change password
+                <input
+                  type="checkbox"
+                  checked={changePassword}
+                  onChange={() => setChangePassword(!changePassword)}
                 />
-                <ErrorPanel></ErrorPanel>
-                <StyledInput
-                  inputSize="lg"
-                  type="password"
-                  placeholder="Confirm Password"
-                  {...register('confirmPassword', {
-                    required: 'Please confirm your password',
-                    validate: validatePassword,
-                  })}
-                />
+                <span className="checkmark"></span>
+              </CheckboxContainer>
+              {changePassword && (
+                <VStack style={{ marginBottom: '2rem' }}>
+                  <StyledInput
+                    inputSize="lg"
+                    type="password"
+                    placeholder="Password"
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 8,
+                        message: 'Password must have at least 8 characters',
+                      },
+                      pattern: {
+                        value:
+                          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                        message:
+                          'Must have one uppercase, one lowercase, one number and one special character',
+                      },
+                    })}
+                  />
+                  <ErrorPanel></ErrorPanel>
+                  <StyledInput
+                    inputSize="lg"
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...register('confirmPassword', {
+                      required: 'Please confirm your password',
+                      validate: validatePassword,
+                    })}
+                  />
 
-                <ErrorPanel style={{ marginBottom: '1rem' }}>
-                  {errors.password ? errors.password.message : null}
-                  {errors.confirmPassword && !errors.password
-                    ? errors.confirmPassword.message
-                    : null}
-                </ErrorPanel>
-              </VStack> */}
+                  <ErrorPanel style={{ marginBottom: '1rem' }}>
+                    {errors.password ? errors.password.message : null}
+                    {errors.confirmPassword && !errors.password
+                      ? errors.confirmPassword.message
+                      : null}
+                  </ErrorPanel>
+                </VStack>
+              )}
 
               {/* Avatar image upload */}
 
@@ -261,6 +331,73 @@ const StyledText = styled.p`
   font-weight: bold;
   @media (max-width: ${({ theme }) => theme.Media.mobile}) {
     font-size: 2rem;
+  }
+`;
+
+export const CheckboxContainer = styled.label`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+  margin-bottom: 2rem;
+
+  @media (max-width: ${({ theme }) => theme.Media.mobile}) {
+    font-size: 14px;
+
+    .checkmark {
+      height: 15px;
+      width: 15px;
+    }
+
+    .checkmark:after {
+      top: 6px;
+      left: 6px;
+      width: 4px;
+      height: 4px;
+    }
+  }
+
+  input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+    margin-right: 10px;
+  }
+
+  .checkmark {
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  &:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  & input:checked ~ .checkmark {
+    background-color: #2196f3;
+  }
+
+  .checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  & input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  & .checkmark:after {
+    top: 9px;
+    left: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
   }
 `;
 

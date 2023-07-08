@@ -15,6 +15,7 @@ import { StyledAutoEverLogo } from 'components/premade/StyledAutoEverLogo';
 import { StyledHeatLogo } from 'components/premade/StyledHeatLogo';
 import { StyledInput } from 'components/premade/StyledInput';
 import { getCookie, getCookies, setCookie } from 'cookies-next';
+import { on } from 'events';
 import { useAtom } from 'jotai';
 
 import { useRouter } from 'next/router';
@@ -105,8 +106,6 @@ const Login = () => {
         });
       },
     });
-    // const cookies = getCookies();
-    // console.log('get cookies result', cookies);
   };
 
   /**
@@ -225,7 +224,7 @@ const Login = () => {
             </Text>
             <StyledDivider />
           </HStack>
-          <GoogleLoginButton />
+          <GoogleLoginButton setResultUserAccountNo={setResultUserAccountNo} />
         </Box>
         <Text
           fontSize="2rem"
