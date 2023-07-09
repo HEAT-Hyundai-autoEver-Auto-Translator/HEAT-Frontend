@@ -20,23 +20,28 @@ export const GoogleLoginButton = ({
   const [token, setToken] = useState(null);
   const [, setToast] = useAtom(toastAtom);
 
+  // 구글 로그인 성공 시 실행되는 함수
   const googleOnSuccess = (data: any) => {
     const access_token = data.access_token;
     setToken(access_token);
   };
+  // 구글 로그인 실패 시 실행되는 함수
   const googleOnError = (error: any) => {
     console.log(error);
   };
 
+  // 구글 로그인을 위한 useGoogleLogin
   const handleLogin = useGoogleLogin({
     onSuccess: googleOnSuccess,
     onError: googleOnError,
   });
 
+  // 구글 로그인을 위한 useMutation
   const googleLoginMutation = useMutation((accessToken: string) =>
     postDataWithBody('/user/login/google', { accessToken: accessToken }),
   );
 
+  // 구글 로그인 성공 시 서버로 토큰을 보내는 함수->성공시 유저 번호를 받아옴
   const sendToken = (token: string) => {
     googleLoginMutation.mutate(token, {
       onSuccess: data => {

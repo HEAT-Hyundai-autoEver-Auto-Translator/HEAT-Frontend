@@ -19,6 +19,10 @@ import { getDataWithParams, patchDataWithBody } from 'utils/api/api';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import axios from 'axios';
 import { BACK_END_URL } from 'utils/api/apiClient';
+import {
+  getUserDataResultsUpdate,
+  postFormToUpdate,
+} from 'utils/api/user/userAPI';
 
 interface FormValues {
   email: string;
@@ -40,25 +44,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const [, setToast] = useAtom(toastAtom);
   const [changePassword, setChangePassword] = useState(false);
 
-  /**
-   * @description 유저정보 요청을 위한 useQuery. 번역 번호 상태가 null이 아닐 때에만 실행.
-   */
-  const {
-    data: userResultData,
-    isLoading: userResultIsLoading,
-    isError: userResultIsError,
-    error: userResultError,
-    refetch: refetchUserResult,
-  } = useQuery(
-    ['getUserDataResults', user.userAccountNo],
-    () =>
-      getDataWithParams(`/user/uid`, {
-        uid: user.userAccountNo,
-      }),
-    { enabled: false },
-  );
-
-  // Initialize react-hook-form
+  //제출 폼 관련
   const {
     register,
     handleSubmit,
@@ -78,11 +64,8 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       avatar: user.profileImageUrl,
     },
   });
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Add this line
-
   const { errors } = formState;
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Add this line
   const validatePassword = (value: string) => {
     if (value === getValues().password) {
       return true;
@@ -92,14 +75,12 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
-  const Axios = axios.create({
-    baseURL: BACK_END_URL,
-    withCredentials: true,
-  });
-  const mutation = useMutation((userData: FormData) =>
-    Axios.patch('/user', userData),
-  );
+  // 업데이트 후 유저 정보 다시 불러오기
+  const { data: userResultData, refetch: refetchUserResult } =
+    getUserDataResultsUpdate(user.userAccountNo);
 
+  // 정보 수정 요청하는 부분
+  const updateMutation = postFormToUpdate();
   const onSubmit = (data: FormValues) => {
     console.log('email', data.email);
     console.log('username', data.username);
@@ -122,7 +103,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     if (selectedFile) {
       formData.append('userProfileImage', selectedFile);
     }
-    mutation.mutate(formData, {
+    updateMutation.mutate(formData, {
       onSuccess: data => {
         setToast({
           type: 'success',
@@ -143,10 +124,9 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
         });
       },
     });
-
-    // TODO: Send data to the backend
   };
 
+  // 모달이 닫힐 때마다 폼을 리셋해준다.
   useEffect(() => {
     if (!isModalOpen) {
       reset({
@@ -158,8 +138,9 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
         avatar: user.profileImageUrl,
       });
     }
-  }, [isModalOpen, reset]);
+  }, [isModalOpen]);
 
+  // refetch를 통해 유저 정보 업데이트 되면 상태저장하기
   useEffect(() => {
     if (userResultData) {
       console.log('userResultData', userResultData);
@@ -173,6 +154,11 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   }, [userResultData]);
 
+  const uploaderProps = {
+    control: control,
+    selectedFile: selectedFile,
+    setSelectedFile: setSelectedFile,
+  };
   return (
     <>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
@@ -281,11 +267,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
               {/* Avatar image upload */}
 
-              <AvatarUploader
-                control={control}
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-              />
+              <AvatarUploader {...uploaderProps} />
               <Spacer />
               <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button

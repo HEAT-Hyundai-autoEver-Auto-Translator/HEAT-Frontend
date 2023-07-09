@@ -1,7 +1,7 @@
 import ArrowDownIcon from 'public/ArrowDownIcon.svg';
 import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text } from './Text';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 
@@ -47,16 +47,6 @@ export const DropdownMenu = styled.ul<DropdownButtonProps>`
     width: ${({ size }) => (size === 'xs' ? '12rem' : '20rem')};
   }
 `;
-
-// export const DropdownItem = styled.li<{ disabled?: boolean }>`
-//   padding: 10px;
-//   padding-left: 10px;
-//   border-radius: 20px;
-//   cursor: pointer;
-//   &:hover {
-//     background-color: ${({ theme }) => theme.colors.mono.input_gray};
-//   }
-// `;
 
 export const DropdownItem = styled.li<{ disabled?: boolean }>`
   padding: 10px;
@@ -182,7 +172,10 @@ const Dropdown = ({
         paddingLeft={paddingLeft}
         paddingRight={paddingRight}
         size={size}
-        onClick={() => setShowDropdown(!showDropdown)}
+        type="button"
+        onClick={() => {
+          setShowDropdown(prev => !prev);
+        }}
       >
         <Text
           fontSize={size === 'xs' ? '1.3rem' : isMobile ? '0.8rem' : '2rem'}

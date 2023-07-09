@@ -16,6 +16,7 @@ import { deleteDataWithParams } from 'utils/api/api';
 import apiClient from 'utils/api/apiClient';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { useAtom } from 'jotai';
+import { deleteHistory } from 'utils/api/translation/translationAPI';
 
 type HistoryCardProps = {
   data: Translation;
@@ -23,7 +24,6 @@ type HistoryCardProps = {
 };
 export const HistoryCard = ({ data, refetch }: HistoryCardProps) => {
   const [, setToast] = useAtom(toastAtom);
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const theme = useTheme();
@@ -46,6 +46,9 @@ export const HistoryCard = ({ data, refetch }: HistoryCardProps) => {
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
   };
+
+  //history 삭제하는 mutation hook
+  const deleteHistoryMutation = deleteHistory();
 
   const handleDelete = () => {
     deleteHistoryMutation.mutate(translationNo, {
@@ -70,31 +73,7 @@ export const HistoryCard = ({ data, refetch }: HistoryCardProps) => {
       },
     });
   };
-  /**
-   * @description 히스토리 삭제 요청
-   */
-  const deleteHistory = async (endpoint: string, translationNo: number) => {
-    const { data } = await apiClient.delete(
-      `${endpoint}/?translation-no=${translationNo}`,
-    );
-    return data;
-  };
 
-  // const deleteUserGo = async (endpoint: string, userAccountNo: number) => {
-  //   const { data } = await apiClient.delete(
-  //     `${endpoint}/?uid=${userAccountNo}`,
-  //   );
-  //   return data;
-  // };
-  /**
-   * @description 해당 유저 삭제
-   * 해당 값으로 유저 권한 변경
-   * @param userRole
-   */
-  const deleteHistoryMutation = useMutation((translationNo: number) =>
-    // deleteDataWithParams('/translation/translation-no', translationNo),
-    deleteHistory('/translation/translation-no', translationNo),
-  );
   return (
     <>
       <HistoryCardContainer isClicked={isClicked} onClick={handleClick}>
