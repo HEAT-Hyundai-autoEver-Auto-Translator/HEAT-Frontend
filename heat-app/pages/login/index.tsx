@@ -3,9 +3,7 @@ import styled from '@emotion/styled';
 import { Box } from 'components/common/Box';
 import { Button } from 'components/common/Button';
 import { Divider } from 'components/common/Divider';
-import { ErrorComponent } from 'components/common/ErrorComponent';
 import { ErrorPanel } from 'components/common/ErrorPanel';
-import { LoadingComponent } from 'components/common/LoadingComponent';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
@@ -14,16 +12,16 @@ import RegisterModal from 'components/pages/login/RegisterModal';
 import { StyledAutoEverLogo } from 'components/premade/StyledAutoEverLogo';
 import { StyledHeatLogo } from 'components/premade/StyledHeatLogo';
 import { StyledInput } from 'components/premade/StyledInput';
-import { getCookie, getCookies, setCookie } from 'cookies-next';
-import { on } from 'events';
+import { setCookie } from 'cookies-next';
 import { useAtom } from 'jotai';
-
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
 import { ROUTES } from 'utils/ROUTES';
-import { getDataWithParams, postDataWithBody } from 'utils/api/api';
+import {
+  getUserDataResultsLogin,
+  postFormToLogin,
+} from 'utils/api/user/userAPI';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { userAtom } from 'utils/jotai/atoms/userAtom';
@@ -43,6 +41,8 @@ const Login = () => {
   const [resultUserAccountNo, setResultUserAccountNo] = useState<number | null>(
     null,
   );
+
+  //제출 폼 관련
   const { register, handleSubmit, control, formState } = useForm({
     defaultValues: {
       email: '',
@@ -50,30 +50,6 @@ const Login = () => {
     },
   });
   const { errors } = formState;
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push(ROUTES.MAIN(user.userAccountNo));
-    }
-  }, [isAuthenticated, user, router]);
-
-  /**
-   * @description 유저정보 요청을 위한 useQuery. 번역 번호 상태가 null이 아닐 때에만 실행.
-   */
-  const {
-    data: userResultData,
-    isLoading: userResultIsLoading,
-    isError: userResultIsError,
-    error: userResultError,
-    refetch: refetchUserResult,
-  } = useQuery(
-    ['getUserDataResults', resultUserAccountNo],
-    () =>
-      getDataWithParams(`/user/uid`, {
-        uid: resultUserAccountNo,
-      }),
-    { enabled: resultUserAccountNo !== null, retry: 3, retryDelay: 3000 },
-  );
 
   /**
    * @description 로그인 폼 제출 시 실행되는 함수
@@ -87,7 +63,7 @@ const Login = () => {
     formData.append('userPassword', data.password);
     console.log(formData.get('userPassword'));
 
-    mutate(formData, {
+    loginMutate(formData, {
       onSuccess: data => {
         console.log('data', data);
         setResultUserAccountNo(data.userAccountNo);
@@ -105,6 +81,15 @@ const Login = () => {
       },
     });
   };
+
+  //모달창 관련
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
+
+  //axios 요청 관련
+  const { data: userResultData } = getUserDataResultsLogin(resultUserAccountNo);
+  const { mutate: loginMutate } = postFormToLogin();
 
   /**
    * @description userResultData가 존재하면 userAtom에 저장하고 로그인 성공 후 메인으로 이동
@@ -124,41 +109,14 @@ const Login = () => {
   }, [userResultData]);
 
   /**
-   * @description 로그인 요청을 위한 useMutation
-   * @param FormData
-   * @returns tokens + userAccountNo
+   * @description 이미 로그인 된 상태이면 바로 메인 페이지로 이동
    */
-  const {
-    data: result,
-    isLoading,
-    isError,
-    error,
-    mutate,
-  } = useMutation(
-    (userData: FormData) => postDataWithBody('/user/login', userData),
-    { retry: 3, retryDelay: 1000 },
-  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(ROUTES.MAIN(user.userAccountNo));
+    }
+  }, [isAuthenticated, user, router]);
 
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen);
-    // console.log(isModalOpen);
-  };
-
-  // const { data, isLoading, isError, error, refetch } = useQuery(
-  //   'fetchData',
-  //   () => getData('/user'),
-  // );
-
-  // if (isLoading) return <LoadingComponent />;
-  // if (isError) return <ErrorComponent error={error} refetch={refetch} />;
-
-  // if (isLoading) {
-  //   return <LoadingComponent />;
-  // }
-
-  // if (isError) {
-  //   return <ErrorComponent error={error} />;
-  // }
   return (
     <VStack w="100vw" h="100vh" spacing="5rem" padding="5rem 0 0 0">
       <Spacer />
@@ -203,16 +161,9 @@ const Login = () => {
               <ErrorPanel>
                 {errors.password ? errors.password.message : null}
               </ErrorPanel>
-              <Button
-                size="lg"
-                // onClick={() => handleLogin('normal')}
-                type="submit"
-              >
+              <Button size="lg" type="submit">
                 Login
               </Button>
-              {/* <Button size="lg" onClick={() => handleLogin('admin')}>
-                관리자 로그인 버튼
-              </Button> */}
             </VStack>
           </form>
           <HStack w="100%" spacing="1rem">

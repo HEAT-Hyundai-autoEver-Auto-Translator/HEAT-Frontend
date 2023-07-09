@@ -13,6 +13,7 @@ export const getDataWithParams = async (endpoint: string, params: any) => {
   return data;
 };
 
+// GET
 export const getData = async (endpoint: string) => {
   const { data } = await apiClient.get(endpoint);
   return data;

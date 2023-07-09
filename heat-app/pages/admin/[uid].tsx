@@ -4,139 +4,61 @@ import { HStack, VStack } from 'components/common/Stack';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { ROUTES } from 'utils/ROUTES';
-import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
 import BackIcon from 'public/BackIcon.svg';
 import { StyledInput } from 'components/premade/StyledInput';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import Dropdown, {
-  DropdownItem,
-  DropdownMenu,
-} from 'components/common/DropDown';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { DropdownItem, DropdownMenu } from 'components/common/DropDown';
 import { User, UserRoleType } from 'types/schema/User';
 import { useDebounce } from 'utils/hooks/useDebounce';
 import { Text } from 'components/common/Text';
 import { useTheme } from '@emotion/react';
-import { Translation } from 'types/schema/Translation';
-import DotMenu from 'public/DotMenu.svg';
 import Avatar from 'components/common/Avatar';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { Divider } from 'components/common/Divider';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
-import {
-  deleteDataWithParams,
-  getDataWithParams,
-  patchDataWithBody,
-} from 'utils/api/api';
+import { patchDataWithBody } from 'utils/api/api';
 import { useMutation, useQuery } from 'react-query';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import apiClient from 'utils/api/apiClient';
-import { set } from 'react-hook-form';
+import {
+  deleteUserMutation,
+  getDebounceList,
+  getSelectedUserData,
+} from 'utils/api/user/userAPI';
+import { getSearchedUserHistoryResult } from 'utils/api/translation/translationAPI';
 
 const ControlOptions = [
   { label: 'GIVE ADMIN', value: 'admin' },
   { label: 'DELETE USER', value: 'delete' },
 ];
 
-const SortOptions = [
-  { label: 'NEW', value: 'new' },
-  { label: 'OLD', value: 'old' },
-];
-
 const Admin = () => {
   const [, setToast] = useAtom(toastAtom);
-
   const [usernameInput, setUsernameInput] = useState('');
-  const [user, setUser] = useAtom(userAtom);
+  const [user] = useAtom(userAtom);
   const theme = useTheme();
   const [showInputDropdown, setShowInputDropdown] = useState(false);
   const [showControlDropdown, setShowControlDropdown] = useState(false);
-  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [, setShowSortDropdown] = useState(false);
   const debouncedSearchValue = useDebounce(usernameInput, 500);
   const [searchedUser, setSearchedUser] = useState<User | null>(null);
-  const [searchedHistory, setSearchedHistory] = useState<Translation | null>(
-    null,
-  );
-  const [userList, setUserList] = useState<User[]>([]);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useMediaQuery(theme.Media.mobile_query);
 
-  /**
-   * @description username기반 쿼리 요청
-   * 실제 백엔드에 유저 리스트를 검색
-   * @param debouncedSearchValue
-   */
-  const {
-    data: debounceList,
-    isLoading: debounceIsLoading,
-    isError: debounceIsError,
-    error: debounceError,
-    refetch: debounceRefetch,
-  } = useQuery(
-    ['getDebounceList', debouncedSearchValue],
-    () =>
-      getDataWithParams(`/user/list/`, {
-        username: debouncedSearchValue,
-      }),
-    { enabled: debouncedSearchValue !== null && debouncedSearchValue !== '' },
-  );
+  //debounce 된 input 값에 따라 유저 리스트 검색 쿼리 요청
+  const { data: debounceList } = getDebounceList(debouncedSearchValue);
 
-  /**
-   * @description username기반 쿼리 요청
-   * 실제 백엔드에 특정 유저를 검색
-   * @param usernameInput
-   */
-  const {
-    data: userDataResult,
-    isLoading: userDataIsLoading,
-    isError: userDataIsError,
-    error: useDataError,
-    refetch: userDataRefetch,
-  } = useQuery(
-    ['getSelectUser', usernameInput],
-    () =>
-      getDataWithParams(`/user/list/`, {
-        username: usernameInput,
-      }),
-    { enabled: false },
-  );
+  //debounce 된 input 값에 따라 특정 유저 검색 쿼리 요청 (리스트중 최상위 유저가 특정됨)
+  const { data: userDataResult, refetch: userDataRefetch } =
+    getSelectedUserData(usernameInput);
 
-  /**
-   * @description 드롭다운 메뉴에서 선택시 작동
-   * 1. 해당 값으로 input 값 변경
-   * 2. 드롭다운 닫기
-   * @param searchedUser
-   */
+  // 특정 유저의 번역 히스토리 검색 쿼리 요청
   const {
     data: searchedUserHistoryResult,
     isLoading: searchedUserHistoryIsLoading,
-    isError: searchedUserHistoryIsError,
-    error: searchedUserHistoryError,
     refetch: searchedUserHistoryRefetch,
-  } = useQuery(
-    ['getSearchedUserHistoryResult', searchedUser],
-    () =>
-      getDataWithParams(`/translation/user-email`, {
-        'user-email': searchedUser?.userEmail,
-      }),
-    { enabled: searchedUser !== null, retry: 5, retryDelay: 5000 },
-  );
-
-  const deleteUser = async (endpoint: string, userAccountNo: number) => {
-    const { data } = await apiClient.delete(
-      `${endpoint}/?uid=${userAccountNo}`,
-    );
-    return data;
-  };
-  /**
-   * @description 해당 유저 삭제
-   * 해당 값으로 유저 권한 변경
-   * @param userRole
-   */
-  const deleteUserMutation = useMutation((userAccountNo: number) =>
-    // deleteDataWithParams('/admin/user', userAccountNo),
-    deleteUser('/admin/user', userAccountNo),
-  );
+  } = getSearchedUserHistoryResult(searchedUser);
 
   /**
    * @description 유저 권한 변경
@@ -181,24 +103,27 @@ const Admin = () => {
    * @param userName
    */
   const handleInputDropdownSelect = (userName: string) => {
-    //TODO: 이부분도 실제데이터로 바꿔야됨 userList 로
     const selectedUser = debounceList.find(
       (user: User) => user.userName === userName,
     );
     if (selectedUser) {
+      console.log('@@!@', selectedUser);
       setUsernameInput(selectedUser.userName);
-      userDataRefetch();
     }
     if (showInputDropdown) {
       setShowInputDropdown(false);
     }
   };
 
+  // 유저 삭제를 위한 mutation
+  const deleteUser = deleteUserMutation();
+
+  // 드롭다운 메뉴에서 선택시 작동하는 함수 (유저 권한 변경, 유저 삭제)
   const handleControlDropdownSelect = (value: string) => {
     console.log(value);
     if (!searchedUser) return;
     if (value === 'delete') {
-      deleteUserMutation.mutate(searchedUser?.userAccountNo, {
+      deleteUser.mutate(searchedUser?.userAccountNo, {
         onSuccess: data => {
           console.log(data);
           setToast({
@@ -245,13 +170,6 @@ const Admin = () => {
     }
   };
 
-  const handleSortDropdownSelect = (value: string) => {
-    console.log(value);
-    if (showSortDropdown) {
-      setShowSortDropdown(false);
-    }
-  };
-
   /**
    * @description input focus
    * 입력 값이 있었으면 focus 유지
@@ -279,20 +197,19 @@ const Admin = () => {
     }
   };
 
+  // 모든 드롭다운 닫기 (다른 곳 클릭시)
   const clearDropdowns = () => {
     setShowInputDropdown(false);
     setShowControlDropdown(false);
     setShowSortDropdown(false);
   };
 
+  // 유저 검색 쿼리 결과가 있으면 searchedUser에 저장
   useEffect(() => {
-    console.log('queryed user!!', userDataResult);
     if (userDataResult && userDataResult.length > 0) {
-      setSearchedUser(userDataResult[0]);
-      console.log('Avatar', userDataResult[0].avatar);
-    } else {
-      setSearchedUser(null);
-      setUsernameInput('');
+      if (userDataResult[0].userName === usernameInput) {
+        setSearchedUser(userDataResult[0]);
+      }
     }
   }, [userDataResult]);
 

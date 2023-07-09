@@ -6,21 +6,15 @@ import { ErrorPanel } from 'components/common/ErrorPanel';
 import { Modal } from 'components/common/Modal';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
-import { Text } from 'components/common/Text';
 import { StyledInput } from 'components/premade/StyledInput';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import AvatarUploader from './AvatarUploader';
 import { useAtom } from 'jotai';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import { useMutation } from 'react-query';
 import { CreateUser } from 'types/schema/User';
-import { postDataWithBody } from 'utils/api/api';
-import { LoadingComponent } from 'components/common/LoadingComponent';
-import { ErrorComponent } from 'components/common/ErrorComponent';
 import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
-import apiClient, { BACK_END_URL } from 'utils/api/apiClient';
-import axios from 'axios';
+import { postFormToRegister } from 'utils/api/user/userAPI';
 
 interface FormValues {
   email: string;
@@ -39,7 +33,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const [, setToast] = useAtom(toastAtom);
   const theme = useTheme();
   const [languageList] = useAtom(languageListAtom);
-  // Initialize react-hook-form
+  // 제출 폼 관련
   const {
     register,
     handleSubmit,
@@ -59,12 +53,15 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       avatar: undefined,
     },
   });
-
-  // const watchedAvatar = watch('avatar'); // Add this line
+  const { errors } = formState;
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // Add this line
 
-  const { errors } = formState;
-
+  /**
+   * @description 비밀번호 두개 일치하는지 확인 하는 함수
+   * 일치하지 않을 경우 에러 메시지를 출력한다.
+   * @param value
+   * @returns boolean
+   */
   const validatePassword = (value: string) => {
     if (value === getValues().password) {
       return true;
@@ -74,34 +71,29 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   };
 
-  const Axios = axios.create({
-    baseURL: BACK_END_URL,
-    withCredentials: true,
-  });
-  const mutation = useMutation((userData: FormData) =>
-    Axios.post('/user', userData),
-  );
-
+  //회원가입 요청 보내주는 부분
+  const registerMutation = postFormToRegister(); // 쿼리 요청을 위한 useMutation hook
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
 
-    // "avatar" is the name of the field for the file
     const createUser: CreateUser = {
       userEmail: data.email,
       userName: data.username,
       password: data.password,
       languageName: data.language,
     };
-    // append "createUserDto" field as a Blob containing the JSON string of createUser
+
+    //기본 정보 추가
     formData.append(
       'createUserDto',
       new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
     );
     console.log('data.avatar', data.avatar);
+    // 이미지 파일 정보 추가
     if (selectedFile) {
       formData.append('userProfileImage', selectedFile);
     }
-    mutation.mutate(formData, {
+    registerMutation.mutate(formData, {
       onSuccess: data => {
         setToast({
           type: 'success',
@@ -123,6 +115,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     });
   };
 
+  // 모달이 닫힐 때마다 폼을 리셋해준다.
   useEffect(() => {
     if (!isModalOpen) {
       reset({
@@ -136,6 +129,11 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     }
   }, [isModalOpen, reset]);
 
+  const uploaderProps = {
+    control: control,
+    selectedFile: selectedFile,
+    setSelectedFile: setSelectedFile,
+  };
   return (
     <>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
@@ -247,12 +245,8 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               </VStack>
 
               {/* Avatar image upload */}
+              <AvatarUploader {...uploaderProps} />
 
-              <AvatarUploader
-                control={control}
-                selectedFile={selectedFile}
-                setSelectedFile={setSelectedFile}
-              />
               <Spacer />
               <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button

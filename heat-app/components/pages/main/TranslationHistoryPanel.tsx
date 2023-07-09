@@ -4,7 +4,7 @@ import { HistoryCard } from './HistoryCard';
 import { Text } from 'components/common/Text';
 import { Spacer } from 'components/common/Spacer';
 import Dropdown from 'components/common/DropDown';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Translation } from 'types/schema/Translation';
 import { Skeleton } from 'components/common/Skeleton';
 
@@ -20,11 +20,11 @@ interface TranslationHistoryPanelProps {
 
 export const TranslationHistoryPanel = ({
   historyList,
-  isLoading,
+  isLoading: isDataLoading,
   refetch,
 }: TranslationHistoryPanelProps) => {
   const [selectedOption, setSelectedOption] = useState('new');
-
+  const [isLoading, setIsLoading] = useState(false);
   const sortedHistory = useMemo(() => {
     return historyList?.slice().sort((a, b) => {
       let aDate = new Date(a.createDateTime);
@@ -37,6 +37,22 @@ export const TranslationHistoryPanel = ({
       }
     });
   }, [historyList, selectedOption]);
+
+  useEffect(() => {
+    // 데이터가 로딩 중일 경우 0.5초 후에 로딩 상태를 표시.
+    if (isDataLoading) {
+      const timeoutId = setTimeout(() => {
+        setIsLoading(true);
+      }, 500); //로딩 지연시간 설정
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    } else {
+      // 데이터가 로딩완료되면, isLoading을 즉시 false로 설정.
+      setIsLoading(false);
+    }
+  }, [isDataLoading]);
 
   return (
     <HistoryContainer>

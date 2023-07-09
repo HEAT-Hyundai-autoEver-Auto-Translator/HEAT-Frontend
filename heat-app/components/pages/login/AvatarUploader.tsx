@@ -16,7 +16,7 @@ type FormValues = {
   avatar: FileList | string;
 };
 
-interface AvatarUploaderProps {
+export interface AvatarUploaderProps {
   alt?: string;
   control: Control<FormValues>;
   selectedFile: File | null;
