@@ -85,9 +85,7 @@ const Login = () => {
     const formData = new FormData();
     formData.append('userEmail', data.email);
     formData.append('userPassword', data.password);
-    // formData.append('userEmail', 'test5@example.com');
-    // formData.append('userPassword', 'password5');
-    console.log(formData);
+    console.log(formData.get('userPassword'));
 
     mutate(formData, {
       onSuccess: data => {

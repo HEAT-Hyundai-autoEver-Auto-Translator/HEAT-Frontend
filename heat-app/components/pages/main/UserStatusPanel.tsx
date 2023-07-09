@@ -42,7 +42,6 @@ export const UserStatusPanel = () => {
     // console.log(isModalOpen);
   };
 
-  console.log('user', user);
   return (
     <UserStatusPanelContainer spacing="0.5rem">
       {isMobile ? (

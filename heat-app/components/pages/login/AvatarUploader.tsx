@@ -13,42 +13,28 @@ type FormValues = {
   password: string;
   confirmPassword: string;
   language: string;
-  avatar: FileList;
+  avatar: FileList | string;
 };
 
 interface AvatarUploaderProps {
   alt?: string;
   control: Control<FormValues>;
+  selectedFile: File | null;
+  setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
+const AvatarUploader = ({
+  control,
+  alt,
+  selectedFile,
+  setSelectedFile,
+}: AvatarUploaderProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.Media.mobile_query);
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files?.length !== 1) {
-      alert('You can only upload one file at a time.');
-      return;
-    }
-
-    const file = files[0];
-    if (file.size > MAX_FILE_SIZE) {
-      alert('File size should not exceed 5MB.');
-      return;
-    }
-
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSelectedImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div style={{ width: '100%' }}>
@@ -74,17 +60,19 @@ const AvatarUploader = ({ control, alt }: AvatarUploaderProps) => {
                 return;
               }
 
+              //미리보기 부분
               setFileName(file.name);
               const reader = new FileReader();
               reader.onloadend = () => {
                 setSelectedImage(reader.result as string);
               };
               reader.readAsDataURL(file);
-
               // Update the file field
-              field.onChange(event); // Here is the change
-            };
+              field.onChange(event);
 
+              //업로드 부분
+              setSelectedFile(file);
+            };
             return (
               <>
                 <input

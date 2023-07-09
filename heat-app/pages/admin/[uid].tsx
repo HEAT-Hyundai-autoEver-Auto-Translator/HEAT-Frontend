@@ -195,7 +195,9 @@ const Admin = () => {
   };
 
   const handleControlDropdownSelect = (value: string) => {
-    if (value === 'delete' && searchedUser) {
+    console.log(value);
+    if (!searchedUser) return;
+    if (value === 'delete') {
       deleteUserMutation.mutate(searchedUser?.userAccountNo, {
         onSuccess: data => {
           console.log(data);
@@ -226,6 +228,7 @@ const Admin = () => {
             message: 'User role updated successfully',
             isOpen: true,
           });
+          userDataRefetch();
         },
         onError: error => {
           setToast({
@@ -311,13 +314,13 @@ const Admin = () => {
               value={usernameInput}
               style={{ backgroundColor: theme.colors.mono.white }}
             />
+            {/* 자동완성 뜨는 부분 */}
             <InputDropDownMenu
               className={
                 showInputDropdown && debounceList?.length > 0 ? 'show' : ''
               }
               size={'lg'}
             >
-              {/* TODO: 더미 말고 실제 데이터로 바꿔야됨 userList 로 */}
               {debounceList &&
                 debounceList.length > 0 &&
                 debounceList
@@ -363,10 +366,16 @@ const Admin = () => {
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     clearDropdowns();
-                    setShowControlDropdown(true);
+                    if (
+                      searchedUser &&
+                      user.userAccountNo !== searchedUser.userAccountNo
+                    ) {
+                      setShowControlDropdown(true);
+                    }
                   }}
                 />
               )}
+              {/* 컨트롤메뉴 뜨는 부분  */}
               <UserDropDownMenu
                 className={showControlDropdown ? 'show' : ''}
                 size="sm"
@@ -392,7 +401,7 @@ const Admin = () => {
                   })
                 ) : (
                   <DropdownItem
-                    onClick={() => handleControlDropdownSelect('remove')}
+                    onClick={() => handleControlDropdownSelect('user')}
                   >
                     <Text color={'black'} fontSize="lg" mobileFontSize="1rem">
                       {'REMOVE ADMIN'}

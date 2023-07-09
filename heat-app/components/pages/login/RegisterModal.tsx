@@ -28,7 +28,7 @@ interface FormValues {
   password: string;
   confirmPassword: string;
   language: string;
-  avatar: FileList;
+  avatar: FileList | string;
 }
 
 interface ModalContainerProps {
@@ -59,13 +59,11 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       avatar: undefined,
     },
   });
-  const { errors } = formState;
-  // This function will be called when the form is submitted
 
-  // const toggleModal = () => {
-  //   setModalOpen(!isModalOpen);
-  //   reset();
-  // };
+  // const watchedAvatar = watch('avatar'); // Add this line
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Add this line
+
+  const { errors } = formState;
 
   const validatePassword = (value: string) => {
     if (value === getValues().password) {
@@ -100,12 +98,9 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
     );
     console.log('data.avatar', data.avatar);
-    if (data.avatar && data.avatar.length > 0) {
-      // formData.append('userProfileImage', data.avatar[0] as File);
-      formData.append('userProfileImage', new Blob([data.avatar[0]]));
+    if (selectedFile) {
+      formData.append('userProfileImage', selectedFile);
     }
-    console.log('userProgileImage', formData.get('userProfileImage'));
-    // Append other form data
     mutation.mutate(formData, {
       onSuccess: data => {
         setToast({
@@ -140,18 +135,6 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       });
     }
   }, [isModalOpen, reset]);
-
-  // const [, setToast] = useAtom(toastAtom);
-
-  // const toast = () => {
-  //   console.log('toast');
-  //   setToast({
-  //     type: 'success',
-  //     title: 'Warning',
-  //     message: 'Failed to fetch data',
-  //     isOpen: true,
-  //   });
-  // };
 
   return (
     <>
@@ -265,7 +248,11 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
               {/* Avatar image upload */}
 
-              <AvatarUploader control={control} />
+              <AvatarUploader
+                control={control}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+              />
               <Spacer />
               <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button

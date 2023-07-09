@@ -26,7 +26,7 @@ interface FormValues {
   password: string;
   confirmPassword: string;
   language: string;
-  avatar: FileList;
+  avatar: FileList | string;
 }
 
 interface ModalContainerProps {
@@ -60,7 +60,6 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
   // Initialize react-hook-form
   const {
-    watch,
     register,
     handleSubmit,
     control,
@@ -76,16 +75,13 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       password: '',
       confirmPassword: '',
       language: user.languageName,
-      avatar: undefined,
+      avatar: user.profileImageUrl,
     },
   });
-  const { errors } = formState;
-  // This function will be called when the form is submitted
 
-  // const toggleModal = () => {
-  //   setModalOpen(!isModalOpen);
-  //   reset();
-  // };
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Add this line
+
+  const { errors } = formState;
 
   const validatePassword = (value: string) => {
     if (value === getValues().password) {
@@ -123,12 +119,9 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       new Blob([JSON.stringify(updateUserDto)], { type: 'application/json' }),
     );
     console.log('data.avatar', data.avatar);
-
-    if (data.avatar && data.avatar.length > 0) {
-      formData.append('userProfileImage', new Blob([data.avatar[0]]));
+    if (selectedFile) {
+      formData.append('userProfileImage', selectedFile);
     }
-    console.log('userProgileImage', formData.get('userProfileImage'));
-
     mutation.mutate(formData, {
       onSuccess: data => {
         setToast({
@@ -158,11 +151,11 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     if (!isModalOpen) {
       reset({
         email: user.userEmail,
-        username: '',
+        username: user.userName,
         password: '',
         confirmPassword: '',
-        language: '',
-        avatar: undefined,
+        language: user.languageName,
+        avatar: user.profileImageUrl,
       });
     }
   }, [isModalOpen, reset]);
@@ -288,7 +281,11 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
               {/* Avatar image upload */}
 
-              <AvatarUploader control={control} />
+              <AvatarUploader
+                control={control}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+              />
               <Spacer />
               <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button
