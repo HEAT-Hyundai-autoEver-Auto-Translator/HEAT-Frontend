@@ -35,6 +35,7 @@ const MainPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [translationNo, setTranslationNo] = useState<number | null>(null); // 번역 번호 상태 추가
   const [languageList] = useAtom(languageListAtom);
+  const [loadingText, setLoadingText] = useState('loading');
   const {
     data: result,
     isLoading: mutationIsLoading,
@@ -103,6 +104,28 @@ const MainPage = () => {
     setOutputText('');
   };
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+
+    // isLoading이 참일 때에만 작동.
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingText(prev => (prev.length < 10 ? prev + '.' : 'loading'));
+      }, 500);
+    } else {
+      // isLoading이 거짓이 되었을 때, setInterval을 정지.
+      if (interval) {
+        clearInterval(interval);
+        interval = undefined;
+      }
+    }
+
+    // 컴포넌트가 언마운트 될 때 혹은 이후의 useEffect 호출 전에 실행됨.
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading]);
+
   return (
     <AuthGuard>
       <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
@@ -159,7 +182,7 @@ const MainPage = () => {
             >
               <StyledTextarea
                 color={theme.colors.mono.white}
-                value={isLoading ? 'loading...' : outputText}
+                value={isLoading ? loadingText : outputText}
                 readOnly
               />
             </VStack>
