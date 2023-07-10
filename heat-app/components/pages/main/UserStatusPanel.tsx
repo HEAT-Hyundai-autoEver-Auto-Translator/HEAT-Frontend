@@ -2,21 +2,21 @@ import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import Avatar from 'components/common/Avatar';
 import { Divider } from 'components/common/Divider';
-import { HStack, VStack } from 'components/common/Stack';
+import { Spacer } from 'components/common/Spacer';
+import { HStack } from 'components/common/Stack';
+import { deleteCookie, getCookies } from 'cookies-next';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
+import Admin from 'public/Admin.svg';
+import Logout from 'public/Logout.svg';
+import Setting from 'public/Setting.svg';
+import { useState } from 'react';
 import { ROUTES } from 'utils/ROUTES';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
-import Admin from 'public/Admin.svg';
-import Logout from 'public/Logout.svg';
-import Setting from 'public/Setting.svg';
-import { Spacer } from 'components/common/Spacer';
 import UpdateModal from './UpdateModal';
-import { useState } from 'react';
-import { deleteCookie, getCookie, getCookies } from 'cookies-next';
 
 export const UserStatusPanel = () => {
   const theme = useTheme();

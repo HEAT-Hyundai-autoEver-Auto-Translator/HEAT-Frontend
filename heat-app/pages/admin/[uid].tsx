@@ -1,31 +1,30 @@
+import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import AuthGuard from 'components/auth/AuthGuard';
+import Avatar from 'components/common/Avatar';
+import { Divider } from 'components/common/Divider';
+import { DropdownItem, DropdownMenu } from 'components/common/DropDown';
 import { HStack, VStack } from 'components/common/Stack';
+import { Text } from 'components/common/Text';
+import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
+import { StyledInput } from 'components/premade/StyledInput';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { ROUTES } from 'utils/ROUTES';
-import { userAtom } from 'utils/jotai/atoms/userAtom';
 import BackIcon from 'public/BackIcon.svg';
-import { StyledInput } from 'components/premade/StyledInput';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { DropdownItem, DropdownMenu } from 'components/common/DropDown';
 import { User, UserRoleType } from 'types/schema/User';
-import { useDebounce } from 'utils/hooks/useDebounce';
-import { Text } from 'components/common/Text';
-import { useTheme } from '@emotion/react';
-import Avatar from 'components/common/Avatar';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import { Divider } from 'components/common/Divider';
-import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
-import { patchDataWithBody } from 'utils/api/api';
-import { useMutation, useQuery } from 'react-query';
-import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { ROUTES } from 'utils/ROUTES';
+import { getSearchedUserHistoryResult } from 'utils/api/translation/translationAPI';
 import {
   deleteUserMutation,
   getDebounceList,
   getSelectedUserData,
+  patchUserRole,
 } from 'utils/api/user/userAPI';
-import { getSearchedUserHistoryResult } from 'utils/api/translation/translationAPI';
+import { useDebounce } from 'utils/hooks/useDebounce';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
 
 const ControlOptions = [
   { label: 'GIVE ADMIN', value: 'admin' },
@@ -65,12 +64,7 @@ const Admin = () => {
    * 해당 값으로 유저 권한 변경
    * @param userRole
    */
-  const patchUserRole = useMutation((userRole: UserRoleType) =>
-    patchDataWithBody('/admin/user', {
-      userAccountNo: searchedUser?.userAccountNo,
-      userRole: userRole,
-    }),
-  );
+  const patchUserRoleMutation = patchUserRole(searchedUser?.userAccountNo);
 
   /**
    * @description debounce 된 input 값이 변경되면 작동
@@ -145,7 +139,7 @@ const Admin = () => {
       });
     }
     if (value === 'admin' || value === 'user') {
-      patchUserRole.mutate(value as UserRoleType, {
+      patchUserRoleMutation.mutate(value as UserRoleType, {
         onSuccess: data => {
           setToast({
             type: 'success',

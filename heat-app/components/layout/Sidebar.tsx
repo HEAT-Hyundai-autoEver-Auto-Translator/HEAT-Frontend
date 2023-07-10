@@ -1,8 +1,6 @@
-import { HistoryPanelContainer } from '@/admin/[uid]';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Divider } from 'components/common/Divider';
-import { Spacer } from 'components/common/Spacer';
 import { VStack } from 'components/common/Stack';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
 import { UserStatusPanel } from 'components/pages/main/UserStatusPanel';
@@ -11,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Translation } from 'types/schema/Translation';
 import { getDataWithParams } from 'utils/api/api';
-
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { userAtom } from 'utils/jotai/atoms/userAtom';
 

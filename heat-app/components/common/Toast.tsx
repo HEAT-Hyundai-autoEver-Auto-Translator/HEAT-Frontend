@@ -1,15 +1,13 @@
-import { Theme, css, keyframes, useTheme } from '@emotion/react';
+import { Theme, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
-import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import { useEffect } from 'react';
 import ErrorIcon from 'public/ErrorIcon.svg';
-import WarningIcon from 'public/WarningIcon.svg';
 import SuccessIcon from 'public/SuccessIcon.svg';
-import { HStack, VStack } from './Stack';
+import WarningIcon from 'public/WarningIcon.svg';
+import { useEffect } from 'react';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { Spacer } from './Spacer';
-import Image, { StaticImageData } from 'next/image';
-import { FC } from 'react';
+import { HStack, VStack } from './Stack';
 
 interface ToastContainerProps {
   type: 'success' | 'warning' | 'error';

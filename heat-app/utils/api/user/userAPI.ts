@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from 'react-query';
-import { getDataWithParams, postDataWithBody } from '../api';
-import formClient from '../formClient';
+import { UserRoleType } from 'types/schema/User';
+import { getDataWithParams, patchDataWithBody, postDataWithBody } from '../api';
 import apiClient from '../apiClient';
+import formClient from '../formClient';
 
 /**
  * @description 유저정보 요청을 위한 useQuery. 번역 번호 상태가 null이 아닐 때에만 실행.
@@ -77,6 +78,20 @@ export const postFormToUpdate = () => {
 };
 
 /**
+ * @description 유저 권한 변경
+ * 해당 값으로 유저 권한 변경
+ * @param userRole
+ */
+export const patchUserRole = (userAccountNo: number | undefined) => {
+  const data = useMutation((userRole: UserRoleType) =>
+    patchDataWithBody('/admin/user', {
+      userAccountNo: userAccountNo,
+      userRole: userRole,
+    }),
+  );
+  return data;
+};
+/**
  * @description username기반 쿼리 요청
  * 실제 백엔드에 유저 리스트를 검색
  * @param debouncedSearchValue
@@ -112,7 +127,6 @@ export const getSelectedUserData = (usernameInput: string) => {
 
 /**
  * @description 해당 유저 삭제
- * 해당 값으로 유저 권한 변경
  * @param userRole
  */
 export const deleteUserMutation = () => {

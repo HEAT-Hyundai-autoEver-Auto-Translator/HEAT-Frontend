@@ -6,17 +6,14 @@ import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
 import { StyledTextarea } from 'components/premade/StyledTextArea';
+import { useAtom } from 'jotai';
+import CloseIcon from 'public/CloseIcon.svg';
 import { useState } from 'react';
 import { Translation } from 'types/schema/Translation';
-import { useMediaQuery } from 'utils/hooks/useMediaQuery';
-import CloseIcon from 'public/CloseIcon.svg';
-import { formatDate, formatDateTime } from 'utils/function/formatTime';
-import { useMutation } from 'react-query';
-import { deleteDataWithParams } from 'utils/api/api';
-import apiClient from 'utils/api/apiClient';
-import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import { useAtom } from 'jotai';
 import { deleteHistory } from 'utils/api/translation/translationAPI';
+import { formatDate, formatDateTime } from 'utils/function/formatTime';
+import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 
 type HistoryCardProps = {
   data: Translation;
