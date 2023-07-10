@@ -16,6 +16,7 @@ import {
   postFormToTranslation,
 } from 'utils/api/translation/translationAPI';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 
@@ -33,6 +34,8 @@ const MainPage = () => {
   const [translationNo, setTranslationNo] = useState<number | null>(null); // 번역 번호 상태 추가
   const [languageList] = useAtom(languageListAtom);
   const [loadingText, setLoadingText] = useState('loading');
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  console.log('is auth main', isAuthenticated);
 
   // 번역 요청을 위한 useMutation
   const translationMutaion = postFormToTranslation();

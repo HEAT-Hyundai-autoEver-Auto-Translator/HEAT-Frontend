@@ -7,14 +7,14 @@ import { Modal } from 'components/common/Modal';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import { StyledInput } from 'components/premade/StyledInput';
+import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import AvatarUploader from './AvatarUploader';
-import { useAtom } from 'jotai';
-import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { CreateUser } from 'types/schema/User';
-import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 import { postFormToRegister } from 'utils/api/user/userAPI';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import AvatarUploader from './AvatarUploader';
 
 interface FormValues {
   email: string;
