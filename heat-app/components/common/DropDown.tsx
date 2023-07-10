@@ -1,9 +1,9 @@
-import ArrowDownIcon from 'public/ArrowDownIcon.svg';
 import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useEffect, useRef, useState } from 'react';
-import { Text } from './Text';
+import ArrowDownIcon from 'public/ArrowDownIcon.svg';
+import { useState } from 'react';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { Text } from './Text';
 
 export const DropdownMenu = styled.ul<DropdownButtonProps>`
   position: absolute;

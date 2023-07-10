@@ -6,23 +6,18 @@ import { ErrorPanel } from 'components/common/ErrorPanel';
 import { Modal } from 'components/common/Modal';
 import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
-import { Text } from 'components/common/Text';
 import { StyledInput } from 'components/premade/StyledInput';
-import { use, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import AvatarUploader from '../login/AvatarUploader';
-import { userAtom } from 'utils/jotai/atoms/userAtom';
 import { useAtom } from 'jotai';
-import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
-import { useMutation, useQuery } from 'react-query';
-import { getDataWithParams, patchDataWithBody } from 'utils/api/api';
-import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import axios from 'axios';
-import { BACK_END_URL } from 'utils/api/apiClient';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   getUserDataResultsUpdate,
   postFormToUpdate,
 } from 'utils/api/user/userAPI';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import { toastAtom } from 'utils/jotai/atoms/toastAtom';
+import { userAtom } from 'utils/jotai/atoms/userAtom';
+import AvatarUploader from '../login/AvatarUploader';
 
 interface FormValues {
   email: string;

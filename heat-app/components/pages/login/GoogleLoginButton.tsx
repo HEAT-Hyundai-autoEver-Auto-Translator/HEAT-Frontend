@@ -1,4 +1,3 @@
-import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useGoogleLogin } from '@react-oauth/google';
 import { Button } from 'components/common/Button';
@@ -6,7 +5,7 @@ import { Spacer } from 'components/common/Spacer';
 import { StyledGoogleLogo } from 'components/premade/StyledGoogleLogo';
 import { setCookie } from 'cookies-next';
 import { useAtom } from 'jotai';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { postDataWithBody } from 'utils/api/api';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';

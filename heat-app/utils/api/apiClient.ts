@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getCookie, setCookie } from 'cookies-next';
 
 export const BACK_END_URL = process.env.NEXT_PUBLIC_BACK_END_URL;
 
@@ -14,8 +15,14 @@ const apiClient = axios.create({
   headers: headers,
 });
 
+// 서버와 클라이언트 모두에서 사용할 수 있는 useCookies 훅을 가져옵니다.
+
 // Request interceptor
 apiClient.interceptors.request.use(config => {
+  const accessToken = getCookie('accessToken');
+  if (accessToken) {
+    config.headers['Authorization'] = 'Bearer ' + accessToken;
+  }
   return config;
 });
 
@@ -30,12 +37,18 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // 쿠키가 있는 경우, 새로운 access token과 refresh token을 요청합.
+        const refreshToken = getCookie('refreshToken');
         const res = await axios.post(
           BACK_END_URL + '/refresh-token',
-          {},
+          { refreshToken },
           { withCredentials: true },
         );
-        // 새로운 accessToken을 이용해 원래의 요청을 다시 수행.
+
+        // 응답으로 받은 새로운 accessToken과 refreshToken을 쿠키에 저장합니다.
+        setCookie('accessToken', res.data.accessToken);
+        setCookie('refreshToken', res.data.refreshToken);
+
+        // 새로운 accessToken을 이용해 원래의 요청을다시 수행.
         originalRequest.headers['Authorization'] =
           'Bearer ' + res.data.accessToken;
         return apiClient(originalRequest);
