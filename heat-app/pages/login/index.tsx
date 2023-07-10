@@ -67,6 +67,8 @@ const Login = () => {
       onSuccess: data => {
         console.log('data', data);
         setResultUserAccountNo(data.userAccountNo);
+        setIsAuthenticated(true);
+        console.log('changed auth to true', isAuthenticated);
         setCookie('accessToken', data.accessToken);
         setCookie('refreshToken', data.refreshToken);
       },
@@ -99,12 +101,14 @@ const Login = () => {
       console.log('userResultData', userResultData);
       setUser(userResultData);
       setIsAuthenticated(true);
+
       setToast({
         type: 'success',
         title: 'Login Success',
         message: 'Login Success',
         isOpen: true,
       });
+      console.log('changed auth to true', isAuthenticated);
     }
   }, [userResultData]);
 
@@ -112,7 +116,7 @@ const Login = () => {
    * @description 이미 로그인 된 상태이면 바로 메인 페이지로 이동
    */
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user && user.userAccountNo) {
       router.push(ROUTES.MAIN(user.userAccountNo));
     }
   }, [isAuthenticated, user, router]);

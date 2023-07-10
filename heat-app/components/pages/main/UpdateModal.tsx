@@ -151,6 +151,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
   const uploaderProps = {
     control: control,
+    defaultAvatar: user.profileImageUrl,
     selectedFile: selectedFile,
     setSelectedFile: setSelectedFile,
   };

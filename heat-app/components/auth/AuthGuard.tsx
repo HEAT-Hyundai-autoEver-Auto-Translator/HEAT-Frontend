@@ -15,8 +15,14 @@ const AuthGuard = ({ children, adminOnly }: AuthGuardProps) => {
   const [user] = useAtom(userAtom);
   const router = useRouter();
 
+  console.log('guard isAuthenticated', isAuthenticated);
+
   useEffect(() => {
     if (!isAuthenticated || (adminOnly && user.userRole !== 'admin')) {
+      console.log('!@#@here');
+      console.log('isAuthenticated', isAuthenticated);
+      console.log('adminOnly', adminOnly);
+      console.log('user.userRole', user.userRole);
       router.push(ROUTES.LOGIN);
     }
   }, [isAuthenticated, user, router, adminOnly]);

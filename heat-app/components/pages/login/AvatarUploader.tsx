@@ -19,6 +19,7 @@ type FormValues = {
 export interface AvatarUploaderProps {
   alt?: string;
   control: Control<FormValues>;
+  defaultAvatar?: string;
   selectedFile: File | null;
   setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
 }
@@ -29,13 +30,16 @@ const AvatarUploader = ({
   control,
   alt,
   selectedFile,
+  defaultAvatar,
   setSelectedFile,
 }: AvatarUploaderProps) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(
+    defaultAvatar || null,
+  );
   const [fileName, setFileName] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.Media.mobile_query);
-
+  console.log(defaultAvatar);
   return (
     <div style={{ width: '100%' }}>
       <HStack spacing="2rem" w="100%" style={{ marginBottom: '3rem' }}>

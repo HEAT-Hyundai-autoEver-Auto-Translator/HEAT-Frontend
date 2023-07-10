@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from 'react-query';
-import { getDataWithParams, postDataWithBody } from '../api';
 import { User } from 'types/schema/User';
+import { getDataWithParams, postDataWithBody } from '../api';
 import apiClient from '../apiClient';
 
 /**
@@ -27,7 +27,12 @@ export const getTranslationResult = (translationNo: number | null) => {
       getDataWithParams(`/translation/translation-no`, {
         'translation-no': translationNo,
       }),
-    { enabled: translationNo !== null, retry: 10, retryDelay: 5000 },
+    {
+      enabled: translationNo !== null,
+      retry: 10,
+      retryDelay: attemptIndex =>
+        attemptIndex < 5 ? 1000 : (attemptIndex - 4) * 1000,
+    },
   );
   return data;
 };
