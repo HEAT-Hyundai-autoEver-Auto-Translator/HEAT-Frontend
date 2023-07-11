@@ -40,7 +40,8 @@ const MainPage = () => {
   const translationMutaion = postFormToTranslation();
 
   // 번역 결과 요청을 위한 useQuery. translationNo가 null이 아닐 때에만 실행
-  const { data: translationResult } = getTranslationResult(translationNo);
+  const { data: translationResult, isFetched } =
+    getTranslationResult(translationNo);
 
   // 제출 버튼 눌렀을 때 실행되는 함수
   const handleSubmit = () => {
@@ -95,7 +96,7 @@ const MainPage = () => {
 
   // 번역 결과가 있을 때 실행되는 useEffect (번역 결과가 있으면 isLoading을 false로 바꾸고, outputText를 설정)
   useEffect(() => {
-    if (translationResult) {
+    if (isFetched && translationResult?.resultText) {
       setIsLoading(false);
       setOutputText(translationResult.resultText);
     }
