@@ -4,7 +4,7 @@ import Avatar from 'components/common/Avatar';
 import { Divider } from 'components/common/Divider';
 import { Spacer } from 'components/common/Spacer';
 import { HStack } from 'components/common/Stack';
-import { deleteCookie, getCookies } from 'cookies-next';
+import { deleteCookie } from 'cookies-next';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import Admin from 'public/Admin.svg';
@@ -33,13 +33,10 @@ export const UserStatusPanel = () => {
     setUser(defaultUser);
     deleteCookie('accessToken');
     deleteCookie('refreshToken');
-    const cookies = getCookies();
-    console.log('get cookies result after Logout', cookies);
     router.push('/login');
   };
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
-    // console.log(isModalOpen);
   };
 
   return (

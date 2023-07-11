@@ -35,7 +35,6 @@ const MainPage = () => {
   const [languageList] = useAtom(languageListAtom);
   const [loadingText, setLoadingText] = useState('loading');
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  console.log('is auth main', isAuthenticated);
 
   // 번역 요청을 위한 useMutation
   const translationMutaion = postFormToTranslation();
@@ -47,19 +46,15 @@ const MainPage = () => {
   const handleSubmit = () => {
     setIsLoading(true);
     const formData = new FormData();
-    console.log(inputText);
-    console.log(selectedLanguage);
     formData.append('userAccountNo', uid as string);
     formData.append('requestText', inputText);
     formData.append('resultLanguageName', selectedLanguage);
     translationMutaion.mutate(formData, {
       onSuccess: data => {
-        console.log(data);
         setTranslationNo(data);
       },
       onError: error => {
         setIsLoading(false);
-        console.log(error);
       },
     });
   };
@@ -102,7 +97,6 @@ const MainPage = () => {
   useEffect(() => {
     if (translationResult) {
       setIsLoading(false);
-      console.log(translationResult);
       setOutputText(translationResult.resultText);
     }
   }, [translationResult]);

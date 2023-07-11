@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { getCookie, setCookie } from 'cookies-next';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { useAtom } from 'jotai';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
+import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 export const BACK_END_URL = process.env.NEXT_PUBLIC_BACK_END_URL;
 
@@ -55,6 +59,14 @@ apiClient.interceptors.response.use(
       } catch (err) {
         // Refresh token이 만료되었거나, 서버에서 refreshToken을 확인할 수 없는 경우, 로그아웃하거나 에러 페이지로 리다이렉트.
         console.error('Refresh token is invalid. Please log in again.', err);
+        const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+        const [, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
+        const [, setUser] = useAtom(userAtom);
+        setIsAuthenticated(false);
+        setIsSidebarOpen(false);
+        setUser(defaultUser);
+        deleteCookie('accessToken');
+        deleteCookie('refreshToken');
       }
     }
     // 다른 에러의 경우 axios로 에러를 전달.

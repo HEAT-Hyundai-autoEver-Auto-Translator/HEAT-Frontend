@@ -39,7 +39,6 @@ const AvatarUploader = ({
   const [fileName, setFileName] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.Media.mobile_query);
-  console.log(defaultAvatar);
   return (
     <div style={{ width: '100%' }}>
       <HStack spacing="2rem" w="100%" style={{ marginBottom: '3rem' }}>

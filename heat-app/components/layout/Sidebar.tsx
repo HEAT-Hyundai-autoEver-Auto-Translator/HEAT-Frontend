@@ -38,7 +38,6 @@ const Sidebar = ({ outputText }: SidebarProps) => {
   useEffect(() => {
     if (historyResult) {
       setHistoryList(historyResult);
-      console.log(historyResult);
     }
   }, [historyResult]);
 

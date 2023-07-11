@@ -77,11 +77,6 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   // 정보 수정 요청하는 부분
   const updateMutation = postFormToUpdate();
   const onSubmit = (data: FormValues) => {
-    console.log('email', data.email);
-    console.log('username', data.username);
-    console.log('password', data.password);
-    console.log('avatar', data.avatar);
-    console.log('language', data.language);
     const formData = new FormData();
 
     const updateUserDto = {
@@ -94,7 +89,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       'updateUserDto',
       new Blob([JSON.stringify(updateUserDto)], { type: 'application/json' }),
     );
-    console.log('data.avatar', data.avatar);
+
     if (selectedFile) {
       formData.append('userProfileImage', selectedFile);
     }
@@ -138,7 +133,6 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   // refetch를 통해 유저 정보 업데이트 되면 상태저장하기
   useEffect(() => {
     if (userResultData) {
-      console.log('userResultData', userResultData);
       setUser(userResultData);
       setToast({
         type: 'success',

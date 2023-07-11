@@ -50,7 +50,6 @@ export const HistoryCard = ({ data, refetch }: HistoryCardProps) => {
   const handleDelete = () => {
     deleteHistoryMutation.mutate(translationNo, {
       onSuccess: data => {
-        console.log(data);
         setToast({
           type: 'success',
           title: 'Delete Success',
