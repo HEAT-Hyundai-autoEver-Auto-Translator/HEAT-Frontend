@@ -22,6 +22,7 @@ const Sidebar = ({ outputText }: SidebarProps) => {
   const [historyList, setHistoryList] = useState<Translation[]>([]);
   const {
     data: historyResult,
+    isFetched: historyIsFetched,
     isLoading: historyIsLoading,
     isError: historyIsError,
     error: historyError,
@@ -36,7 +37,7 @@ const Sidebar = ({ outputText }: SidebarProps) => {
   );
 
   useEffect(() => {
-    if (historyResult) {
+    if (historyIsFetched && historyResult) {
       setHistoryList(historyResult);
     }
   }, [historyResult]);
