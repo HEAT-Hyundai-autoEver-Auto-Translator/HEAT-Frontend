@@ -101,7 +101,6 @@ const Admin = () => {
       (user: User) => user.userName === userName,
     );
     if (selectedUser) {
-      console.log('@@!@', selectedUser);
       setUsernameInput(selectedUser.userName);
     }
     if (showInputDropdown) {
@@ -114,12 +113,10 @@ const Admin = () => {
 
   // 드롭다운 메뉴에서 선택시 작동하는 함수 (유저 권한 변경, 유저 삭제)
   const handleControlDropdownSelect = (value: string) => {
-    console.log(value);
     if (!searchedUser) return;
     if (value === 'delete') {
       deleteUser.mutate(searchedUser?.userAccountNo, {
         onSuccess: data => {
-          console.log(data);
           setToast({
             type: 'success',
             title: 'Delete Success',
@@ -184,7 +181,6 @@ const Admin = () => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      console.log(usernameInput);
       userDataRefetch();
       inputRef.current?.blur();
       setShowInputDropdown(false);

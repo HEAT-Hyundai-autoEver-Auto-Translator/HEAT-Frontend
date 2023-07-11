@@ -26,7 +26,12 @@ export const GoogleLoginButton = ({
   };
   // 구글 로그인 실패 시 실행되는 함수
   const googleOnError = (error: any) => {
-    console.log(error);
+    setToast({
+      type: 'error',
+      title: 'Login Failed',
+      message: 'Google Login failed',
+      isOpen: true,
+    });
   };
 
   // 구글 로그인을 위한 useGoogleLogin
@@ -67,7 +72,6 @@ export const GoogleLoginButton = ({
 
   useEffect(() => {
     if (token) {
-      console.log(token);
       sendToken(token);
     }
   }, [token]);

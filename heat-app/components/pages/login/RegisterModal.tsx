@@ -88,7 +88,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
       'createUserDto',
       new Blob([JSON.stringify(createUser)], { type: 'application/json' }),
     );
-    console.log('data.avatar', data.avatar);
+
     // 이미지 파일 정보 추가
     if (selectedFile) {
       formData.append('userProfileImage', selectedFile);

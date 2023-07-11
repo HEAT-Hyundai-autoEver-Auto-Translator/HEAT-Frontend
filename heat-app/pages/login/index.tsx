@@ -57,23 +57,18 @@ const Login = () => {
    * @param data :FormValues
    */
   const onSubmit = (data: FormValues) => {
-    console.log(data);
     const formData = new FormData();
     formData.append('userEmail', data.email);
     formData.append('userPassword', data.password);
-    console.log(formData.get('userPassword'));
 
     loginMutate(formData, {
       onSuccess: data => {
-        console.log('data', data);
         setResultUserAccountNo(data.userAccountNo);
         setIsAuthenticated(true);
-        console.log('changed auth to true', isAuthenticated);
         setCookie('accessToken', data.accessToken);
         setCookie('refreshToken', data.refreshToken);
       },
       onError: error => {
-        console.log(error);
         setToast({
           type: 'error',
           title: 'Login Error',
@@ -98,7 +93,6 @@ const Login = () => {
    */
   useEffect(() => {
     if (userResultData) {
-      console.log('userResultData', userResultData);
       setUser(userResultData);
       setIsAuthenticated(true);
 
@@ -108,7 +102,6 @@ const Login = () => {
         message: 'Login Success',
         isOpen: true,
       });
-      console.log('changed auth to true', isAuthenticated);
     }
   }, [userResultData]);
 
