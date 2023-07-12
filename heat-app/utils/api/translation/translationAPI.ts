@@ -29,10 +29,7 @@ export const getTranslationResult = (translationNo: number | null) => {
       }),
     {
       enabled: translationNo !== null,
-      retry: (failureCount, error: { response: { status: number } }) => {
-        // HTTP 상태 코드가 202이면 재시도
-        return error.response.status === 202 && failureCount <= 10;
-      },
+      retry: 10,
       retryDelay: attemptIndex =>
         attemptIndex < 5 ? 1000 : (attemptIndex - 4) * 1000,
     },
