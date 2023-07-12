@@ -8,17 +8,21 @@ import { Spacer } from 'components/common/Spacer';
 import { HStack, VStack } from 'components/common/Stack';
 import Sidebar from 'components/layout/Sidebar';
 import { StyledTextarea, Textarea } from 'components/premade/StyledTextArea';
+import { deleteCookie } from 'cookies-next';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { ROUTES } from 'utils/ROUTES';
 import {
   getTranslationResult,
   postFormToTranslation,
 } from 'utils/api/translation/translationAPI';
+import eventBus from 'utils/eventBus';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
 import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
+import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 const MainPage = () => {
   const router = useRouter();
@@ -34,7 +38,8 @@ const MainPage = () => {
   const [translationNo, setTranslationNo] = useState<number | null>(null); // 번역 번호 상태 추가
   const [languageList] = useAtom(languageListAtom);
   const [loadingText, setLoadingText] = useState('loading');
-  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [, setUser] = useAtom(userAtom);
 
   // 번역 요청을 위한 useMutation
   const translationMutaion = postFormToTranslation();
@@ -101,6 +106,21 @@ const MainPage = () => {
     }
   }, [translationResult]);
 
+  //리프래시 만료시 error감지해서 로그아웃
+  useEffect(() => {
+    const logout = () => {
+      setIsAuthenticated(false);
+      setIsSidebarOpen(false);
+      setUser(defaultUser);
+      deleteCookie('accessToken');
+      deleteCookie('refreshToken');
+      router.push(ROUTES.LOGIN);
+    };
+    eventBus.on('logout', () => logout());
+    return () => {
+      eventBus.off('logout', logout);
+    };
+  }, [setIsAuthenticated, setIsSidebarOpen, setUser, router]);
   return (
     <AuthGuard>
       <HStack h="100vh" w={isMobile ? '100vw' : '75vw'}>
