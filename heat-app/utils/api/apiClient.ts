@@ -1,9 +1,6 @@
 import axios from 'axios';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import { useAtom } from 'jotai';
-import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
-import { isSidebarOpenAtom } from 'utils/jotai/atoms/isSidebarOpenAtom';
-import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
+import { getCookie, setCookie } from 'cookies-next';
+import eventBus from 'utils/eventBus';
 
 export const BACK_END_URL = process.env.NEXT_PUBLIC_BACK_END_URL;
 
@@ -46,8 +43,10 @@ apiClient.interceptors.response.use(
         // 쿠키가 있는 경우, 새로운 access token과 refresh token을 요청합.
         const refreshToken = getCookie('refreshToken');
         const res = await axios.post(
-          BACK_END_URL + '/refresh-token',
-          { refreshToken },
+          BACK_END_URL + '/user/refresh-token',
+          {
+            refreshToken,
+          },
           { withCredentials: true },
         );
 
@@ -60,16 +59,9 @@ apiClient.interceptors.response.use(
           'Bearer ' + res.data.accessToken;
         return apiClient(originalRequest);
       } catch (err) {
-        // Refresh token이 만료되었거나, 서버에서 refreshToken을 확인할 수 없는 경우, 로그아웃하거나 에러 페이지로 리다이렉트.
+        // Refresh token이 만료되었거나, 서버에서 refreshToken을 확인할 수 없는 경우, 로그아웃하거나 에러 페이지로 리다이렉트 하도록 emit
         console.error('Refresh token is invalid. Please log in again.', err);
-        const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-        const [, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
-        const [, setUser] = useAtom(userAtom);
-        setIsAuthenticated(false);
-        setIsSidebarOpen(false);
-        setUser(defaultUser);
-        deleteCookie('accessToken');
-        deleteCookie('refreshToken');
+        eventBus.emit('logout');
       }
     }
     // 다른 에러의 경우 axios로 에러를 전달.

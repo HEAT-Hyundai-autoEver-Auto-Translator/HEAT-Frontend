@@ -8,6 +8,7 @@ import { HStack, VStack } from 'components/common/Stack';
 import { Text } from 'components/common/Text';
 import { TranslationHistoryPanel } from 'components/pages/main/TranslationHistoryPanel';
 import { StyledInput } from 'components/premade/StyledInput';
+import { deleteCookie } from 'cookies-next';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import BackIcon from 'public/BackIcon.svg';
@@ -21,10 +22,12 @@ import {
   getSelectedUserData,
   patchUserRole,
 } from 'utils/api/user/userAPI';
+import eventBus from 'utils/eventBus';
 import { useDebounce } from 'utils/hooks/useDebounce';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import { userAtom } from 'utils/jotai/atoms/userAtom';
+import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 const ControlOptions = [
   { label: 'GIVE ADMIN', value: 'admin' },
@@ -34,8 +37,9 @@ const ControlOptions = [
 const Admin = () => {
   const [, setToast] = useAtom(toastAtom);
   const [usernameInput, setUsernameInput] = useState('');
-  const [user] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
   const theme = useTheme();
+  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [showInputDropdown, setShowInputDropdown] = useState(false);
   const [showControlDropdown, setShowControlDropdown] = useState(false);
   const [, setShowSortDropdown] = useState(false);
@@ -203,6 +207,20 @@ const Admin = () => {
     }
   }, [userDataResult]);
 
+  //리프래시 만료시 error감지해서 로그아웃
+  useEffect(() => {
+    const logout = () => {
+      setIsAuthenticated(false);
+      setUser(defaultUser);
+      deleteCookie('accessToken');
+      deleteCookie('refreshToken');
+      router.push(ROUTES.LOGIN);
+    };
+    eventBus.on('logout', () => logout());
+    return () => {
+      eventBus.off('logout', logout);
+    };
+  }, [setIsAuthenticated, setUser, router]);
   return (
     <AuthGuard adminOnly>
       <AdminPageContainer onClick={e => clearDropdowns()}>
