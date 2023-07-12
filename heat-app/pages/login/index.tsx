@@ -24,7 +24,7 @@ import {
 } from 'utils/api/user/userAPI';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
-import { userAtom } from 'utils/jotai/atoms/userAtom';
+import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
 interface FormValues {
   email: string;
@@ -109,7 +109,12 @@ const Login = () => {
    * @description 이미 로그인 된 상태이면 바로 메인 페이지로 이동
    */
   useEffect(() => {
-    if (isAuthenticated && user && user.userAccountNo) {
+    if (
+      isAuthenticated &&
+      user &&
+      user.userAccountNo &&
+      user.userName !== defaultUser.userName
+    ) {
       router.push(ROUTES.MAIN(user.userAccountNo));
     }
   }, [isAuthenticated, user, router]);

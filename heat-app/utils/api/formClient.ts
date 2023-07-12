@@ -30,7 +30,10 @@ formClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      (error.response.status === 401 || error.response.status === 403) &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
         // 쿠키가 있는 경우, 새로운 access token과 refresh token을 요청합.
@@ -41,7 +44,7 @@ formClient.interceptors.response.use(
           { withCredentials: true },
         );
 
-        // 응답으로 받은 새로운 accessToken과 refreshToken을 쿠키에 저장합니다.
+        // 응답으로 받은 새로운 accessToken과 refreshToken을 쿠키에 저장함.
         setCookie('accessToken', res.data.accessToken);
         setCookie('refreshToken', res.data.refreshToken);
 
