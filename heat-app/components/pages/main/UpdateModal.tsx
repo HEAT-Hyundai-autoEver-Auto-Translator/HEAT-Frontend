@@ -38,7 +38,9 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   const [user, setUser] = useAtom(userAtom);
   const [, setToast] = useAtom(toastAtom);
   const [changePassword, setChangePassword] = useState(false);
-
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    user.languageName || 'English',
+  );
   //제출 폼 관련
   const {
     register,
@@ -119,6 +121,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   // 모달이 닫힐 때마다 폼을 리셋해준다.
   useEffect(() => {
     if (!isModalOpen) {
+      setSelectedLanguage(user.languageName);
       reset({
         email: user.userEmail,
         username: user.userName,
@@ -186,18 +189,21 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               <Controller
                 control={control}
                 name="language"
-                rules={{ required: 'First language is required' }}
+                rules={{ required: 'Default language is required' }}
                 render={({ field }) => (
                   <HStack>
                     <Dropdown
-                      placeholder="Select your first language"
+                      placeholder="Select default language"
                       size={'lg'}
                       options={[
-                        { label: 'Select your first language', value: '' },
-                        ...languageList,
+                        { label: 'Select default language', value: '' },
+                        ...languageList.map(languageDTO => ({
+                          label: languageDTO.languageName,
+                          value: languageDTO.languageName,
+                        })),
                       ]}
-                      value={field.value}
-                      onChange={field.onChange}
+                      value={selectedLanguage}
+                      onChange={setSelectedLanguage}
                     />
                   </HStack>
                 )}
