@@ -243,9 +243,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
                 <ErrorPanel style={{ marginBottom: '1rem' }}>
                   {errors.password ? errors.password.message : null}
-                </ErrorPanel>
-                <ErrorPanel style={{ marginBottom: '1rem' }}>
-                  {errors.confirmPassword
+                  {errors.confirmPassword && !errors.password
                     ? errors.confirmPassword.message
                     : null}
                 </ErrorPanel>
