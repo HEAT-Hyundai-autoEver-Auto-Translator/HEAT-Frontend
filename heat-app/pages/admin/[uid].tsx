@@ -128,6 +128,7 @@ const Admin = () => {
             isOpen: true,
           });
           userDataRefetch();
+          setSearchedUser(null);
         },
         onError: error => {
           setToast({
