@@ -62,8 +62,9 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
    * @param value
    * @returns boolean
    */
-  const validatePassword = (value: string) => {
-    if (value === getValues().password) {
+  const validatePassword = () => {
+    if (getValues().confirmPassword === getValues().password) {
+      clearErrors('confirmPassword');
       return true;
     } else {
       setError('confirmPassword', { message: 'Passwords do not match' });
@@ -134,6 +135,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
     selectedFile: selectedFile,
     setSelectedFile: setSelectedFile,
   };
+
   return (
     <>
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
@@ -241,7 +243,9 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
 
                 <ErrorPanel style={{ marginBottom: '1rem' }}>
                   {errors.password ? errors.password.message : null}
-                  {errors.confirmPassword && !errors.password
+                </ErrorPanel>
+                <ErrorPanel style={{ marginBottom: '1rem' }}>
+                  {errors.confirmPassword
                     ? errors.confirmPassword.message
                     : null}
                 </ErrorPanel>
