@@ -137,6 +137,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   useEffect(() => {
     if (userResultData) {
       setUser(userResultData);
+      setSelectedLanguage(userResultData.languageName);
       setToast({
         type: 'success',
         title: 'Status Updated',
@@ -203,7 +204,10 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
                         })),
                       ]}
                       value={selectedLanguage}
-                      onChange={setSelectedLanguage}
+                      onChange={value => {
+                        field.onChange(value);
+                        setSelectedLanguage(value);
+                      }}
                     />
                   </HStack>
                 )}
