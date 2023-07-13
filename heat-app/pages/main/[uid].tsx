@@ -30,7 +30,6 @@ const MainPage = () => {
   const [, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const isMobile = useMediaQuery(theme.Media.mobile_query);
   const { uid } = router.query;
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
@@ -39,7 +38,10 @@ const MainPage = () => {
   const [languageList] = useAtom(languageListAtom);
   const [loadingText, setLoadingText] = useState('loading');
   const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [, setUser] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    user.languageName || 'English',
+  );
 
   // 번역 요청을 위한 useMutation
   const translationMutaion = postFormToTranslation();
@@ -73,6 +75,7 @@ const MainPage = () => {
   const clearInputOutput = () => {
     setInputText('');
     setOutputText('');
+    setSelectedLanguage(user.languageName || 'English');
   };
 
   // 로딩 중일 때 실행되는 useEffect
@@ -141,7 +144,12 @@ const MainPage = () => {
               <HStack w="100%" spacing={isMobile ? '1rem' : '2rem'}>
                 <StyledText>TO</StyledText>
                 <Dropdown
-                  options={languageList}
+                  options={[
+                    ...languageList.map(languageDTO => ({
+                      label: languageDTO.languageName,
+                      value: languageDTO.languageName,
+                    })),
+                  ]}
                   value={selectedLanguage}
                   onChange={setSelectedLanguage}
                   paddingLeft="1rem"

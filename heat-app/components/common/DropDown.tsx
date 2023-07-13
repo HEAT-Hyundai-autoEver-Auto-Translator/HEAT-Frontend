@@ -149,7 +149,7 @@ const Dropdown = ({
   value,
   onChange,
   size,
-  placeholder = 'Select your first language',
+  placeholder = 'Select default language',
   paddingLeft = '1.5rem',
   paddingRight = '1.5rem',
 }: DropdownProps) => {

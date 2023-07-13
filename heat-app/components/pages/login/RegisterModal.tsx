@@ -187,15 +187,18 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               <Controller
                 control={control}
                 name="language"
-                rules={{ required: 'First language is required' }}
+                rules={{ required: 'Default language is required' }}
                 render={({ field }) => (
                   <HStack>
                     <Dropdown
-                      placeholder="Select your first language"
+                      placeholder="Select default language"
                       size={'lg'}
                       options={[
-                        { label: 'Select your first language', value: '' },
-                        ...languageList,
+                        { label: 'Select default language', value: '' },
+                        ...languageList.map(languageDto => ({
+                          label: languageDto.languageName,
+                          value: languageDto.languageName,
+                        })),
                       ]}
                       value={field.value}
                       onChange={field.onChange}

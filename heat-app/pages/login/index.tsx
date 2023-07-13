@@ -18,11 +18,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ROUTES } from 'utils/ROUTES';
+import { getLanguageList } from 'utils/api/language/languageAPI';
 import {
   getUserDataResultsLogin,
   postFormToLogin,
 } from 'utils/api/user/userAPI';
 import { isAuthenticatedAtom } from 'utils/jotai/atoms/isAuthenticatedAtom';
+import { languageListAtom } from 'utils/jotai/atoms/languageListAtom';
 import { toastAtom } from 'utils/jotai/atoms/toastAtom';
 import { defaultUser, userAtom } from 'utils/jotai/atoms/userAtom';
 
@@ -37,6 +39,7 @@ const Login = () => {
   const theme = useTheme();
   const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [, setLanguageList] = useAtom(languageListAtom);
   const [, setToast] = useAtom(toastAtom);
   const [resultUserAccountNo, setResultUserAccountNo] = useState<number | null>(
     null,
@@ -87,10 +90,17 @@ const Login = () => {
   //axios 요청 관련
   const { data: userResultData } = getUserDataResultsLogin(resultUserAccountNo);
   const { mutate: loginMutate } = postFormToLogin();
+  const { data: languageList } = getLanguageList();
 
   /**
-   * @description userResultData가 존재하면 userAtom에 저장하고 로그인 성공 후 메인으로 이동
+   * @description languageList가 존재하면 languageListAtom에 저장
    */
+  useEffect(() => {
+    if (languageList) {
+      setLanguageList(languageList);
+    }
+  }, [languageList]);
+
   useEffect(() => {
     if (userResultData) {
       setUser(userResultData);
