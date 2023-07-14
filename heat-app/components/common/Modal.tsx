@@ -1,7 +1,7 @@
+import { Overlay } from '@/../components/common/Overlay';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Overlay } from '@/../components/common/Overlay';
 
 type CenterProps = Partial<{
   w: string;
@@ -41,7 +41,7 @@ const preventScroll = () => {
   document.body.style.position = 'fixed';
   document.body.style.width = '100%';
   document.body.style.top = `-${currentScrollY}px`; // 현재 스크롤 위치
-  document.body.style.overflowY = 'scroll';
+  document.body.style.overflowY = 'auto';
   return currentScrollY;
 };
 
