@@ -122,6 +122,7 @@ const UpdateModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
   useEffect(() => {
     if (!isModalOpen) {
       setSelectedLanguage(user.languageName);
+      setChangePassword(false);
       reset({
         email: user.userEmail,
         username: user.userName,
