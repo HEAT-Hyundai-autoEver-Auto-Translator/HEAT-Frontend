@@ -1,8 +1,8 @@
 import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import ArrowDownIcon from 'public/ArrowDownIcon.svg';
 import { useState } from 'react';
 import { useMediaQuery } from 'utils/hooks/useMediaQuery';
+import ArrowDownIcon from './Icons/ArrowDownIcon';
 import { Text } from './Text';
 
 export const DropdownMenu = styled.ul<DropdownButtonProps>`
@@ -134,7 +134,7 @@ interface Option {
   value: string;
 }
 
-interface DropdownProps {
+export interface DropdownProps {
   placeholder?: string;
   options: Option[];
   value: string;
@@ -221,8 +221,8 @@ const StyledArrowDownIcon = styled(ArrowDownIcon)<StyledArrowDownIconProps>`
   left: auto;
   right: ${({ size }) => (size === 'xs' ? '10px' : '15px')};
   top: ${({ size }) => (size === 'xs' ? '38%' : '45%')};
-  width: 12px;
-  height: 8px;
+  width: ${({ size }) => (size === 'xs' ? '8.4px' : '12px')};
+  height: ${({ size }) => (size === 'xs' ? '5.6px' : '8px')};
   transform: ${({ open }) => (open ? 'rotate(180deg)' : 'none')};
   transition: transform 0.2s ease-in-out;
 

@@ -39,7 +39,7 @@ const getSizeImage = (size: string): number => {
   }
 };
 
-interface AvatarProps {
+export interface AvatarProps {
   src: string | null;
   alt?: string;
   size: 'sm' | 'md' | 'lg';

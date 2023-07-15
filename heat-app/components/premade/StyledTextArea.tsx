@@ -41,7 +41,7 @@ export const StyledTextarea = styled.textarea<TextareaProps>`
   }
 `;
 
-type TextareaProps = {
+export type TextareaProps = {
   bgColor?: string;
   borderColor?: string;
   color?: string;

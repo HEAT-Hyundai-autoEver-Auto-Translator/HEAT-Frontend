@@ -7,7 +7,7 @@ const load = keyframes`
   }
 `;
 
-interface SkeletonProps {
+export interface SkeletonProps {
   height?: string;
   width?: string;
 }
