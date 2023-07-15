@@ -1,5 +1,5 @@
-import HeatLogo from 'public/HeatLogo.svg';
 import styled from '@emotion/styled';
+import HeatLogo from 'public/HeatLogo.svg';
 
 export const StyledHeatLogo = styled(HeatLogo)`
   width: 550px;

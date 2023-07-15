@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-type ButtonProps = {
+export type ButtonProps = {
   bgColor?: string;
   fontColor?: string;
   hoverColor?: string;
