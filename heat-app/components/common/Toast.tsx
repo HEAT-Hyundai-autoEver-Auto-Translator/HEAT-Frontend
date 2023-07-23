@@ -139,7 +139,7 @@ const StyledSuccessIcon = styled(SuccessIcon)`
 `;
 
 /*
-
+next/Image로 해보고 싶었으나, svg를 지원하지 않아서 이런 방식으로 하면 된다고만 남겨놓음
 interface ImageIconProps {
   src: StaticImageData;
   alt?: string;

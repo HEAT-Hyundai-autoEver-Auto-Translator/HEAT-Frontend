@@ -164,6 +164,14 @@ export const Button = (props: ButtonProps) => {
   );
 };
 
+/**
+ * @deprecated
+ * Button with loading animation
+ * 버튼에 로딩 애니메이션을 추가한 버튼을 추가하여
+ * 제출 전 한번더 확인하는 절차를 추가할 수 있도록 함
+ * 제출 -> 확인을 위한 버튼으로 바뀜 -> 로딩이 끝나기전 한번더 눌러야 진짜 제출됨
+ * 그러나 작동이 되다가 안되다가 하는 않는 버그 발견 -> 추후 수정 예정
+ */
 // import { keyframes, useTheme } from '@emotion/react';
 // import styled from '@emotion/styled';
 // import React, { MouseEventHandler, useEffect, useState } from 'react';

@@ -72,7 +72,9 @@ apiClient.interceptors.response.use(
 export default apiClient;
 
 /*
-용자가 처음 로그인하면 서버는 HTTP 응답의 Set-Cookie 헤더를 사용하여 accessToken과 refreshToken을 브라우저에 전달
+interceptor로 구현한 인증 방식에 대한 설명
+-------------------------------------------
+사용자가 처음 로그인하면 서버는 HTTP 응답의 Set-Cookie 헤더를 사용하여 accessToken과 refreshToken을 브라우저에 전달
 브라우저는 이 쿠키를 자동으로 저장하고, 이후 서버에 요청을 보낼 때마다 쿠키를 자동으로 첨부 (withCredentials: true 설정 덕분).
 accessToken이 만료될 경우, axios의 response 인터셉터는 401 응답을 감지하고 /refresh_token 엔드포인트를 호출하여 새로운 토큰을 요청. 
 이 요청에도 쿠키가 자동으로 첨부, 이 쿠키에는 refreshToken이 포함됨.

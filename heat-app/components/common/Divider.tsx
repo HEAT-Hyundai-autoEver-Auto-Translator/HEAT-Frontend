@@ -8,6 +8,16 @@ type DividerProps = Partial<{
   height: string;
 }>;
 
+/**
+ * @description
+ * div의 border를 이용하여 구현한 Divider
+ * 수직 방향일 경우 left border를 사용하고 수평 방향일 경우 top border를 사용합니다.
+ * 기본값은 수평 방향이며, 색상은 theme.colors.mono.gray100, 두께는 0.1rem입니다.
+ * @param {DividerProps} props
+ * orientation: horizontal | vertical
+ * color: 색상
+ * thickness: 두께
+ */
 export const Divider = styled.div<DividerProps>`
   width: ${({ orientation = 'horizontal', width }) =>
     orientation === 'horizontal' ? width : 'auto'};
@@ -26,14 +36,3 @@ export const Divider = styled.div<DividerProps>`
     thickness = '0.1rem',
   }) => (orientation === 'vertical' ? `${thickness} solid ${color}` : 0)};
 `;
-
-/**
- * 6/20
- * div의 border를 이용하여 구현한 Divider
- * orientation: horizontal | vertical
- * color: 색상
- * thickness: 두께
- * 수직 방향일 경우 left border를 사용하고 수평 방향일 경우 top border를 사용한다.
- * 기본값은 수평 방향이며, 색상은 theme.colors.mono.gray100, 두께는 0.1rem이다.
- *
- */

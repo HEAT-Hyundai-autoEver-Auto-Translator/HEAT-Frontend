@@ -1,16 +1,14 @@
-import React from 'react';
-
 interface ArrowDownIconProps {
   width?: string;
   height?: string;
   className?: string;
 }
 
-const ArrowDownIcon: React.FC<ArrowDownIconProps> = ({
+const ArrowDownIcon = ({
   width = '100%',
   height = '100%',
   className,
-}) => {
+}: ArrowDownIconProps) => {
   return (
     <svg
       className={className}
