@@ -1,4 +1,5 @@
 // utils/api.ts
+// axios client를 이용한 api 요청 함수들을 정의한 템플릿 파일입니다.
 import apiClient from './apiClient';
 
 // POST

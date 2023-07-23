@@ -256,7 +256,7 @@ const RegisterModal = ({ isModalOpen, toggleModal }: ModalContainerProps) => {
               <HStack w="100%" spacing="1rem" justifyContent="flex-end">
                 <Button
                   size="xs"
-                  type="submit" // Make this button submit the form
+                  type="submit" // Make this button submit the form->중요!
                   // onClick={toast}
                 >
                   Submit

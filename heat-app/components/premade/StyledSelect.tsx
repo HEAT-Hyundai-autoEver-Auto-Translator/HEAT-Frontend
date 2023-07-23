@@ -1,3 +1,10 @@
+/**
+ * @deprecated
+ * 셀렉트를 커스텀하게 사용하기 위해 만든 컴포넌트
+ * 그러나 태생이 셀렉트에 기반하기때문에 브라우저 기본 스타일을 제거하는 것이 불가능하다.
+ * 따라서 셀렉트를 커스텀하게 사용하고 싶다면, 셀렉트를 직접 만들어서 사용하는 것이 좋다.
+ * -> components/common/DropDown.tsx 를 제작하여 사용했음.
+ */
 // import { useTheme } from '@emotion/react';
 // import styled from '@emotion/styled';
 // import { Select } from 'components/common/Select';
